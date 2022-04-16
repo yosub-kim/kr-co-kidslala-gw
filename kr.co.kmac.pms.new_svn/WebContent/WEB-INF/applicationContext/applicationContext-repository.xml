@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="repositoryManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.repository.manager.impl.RepositoryManager">
+				<property name="repositoryDao" ref="repositoryDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="repositoryDao" class="kr.co.kmac.pms.common.repository.dao.impl.RepositoryDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="serverIp" value="${server.ip}" />
+		<property name="serverPort" value="${server.port}" />
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="${attach.file.max.size}" />
+		<property name="uploadTempDir" ref="uploadDirResorce" />
+	</bean>
+
+	<bean id="uploadDirResorce" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg value="${attach.file.temp.path}" />
+	</bean>
+
+
+	<bean id="repositoryDispatchActionSupport" class="kr.co.kmac.pms.common.repository.action.RepositoryDispatchActionSupport" abstract="true">
+		<property name="repositoryManager" ref="repositoryManager" />
+		<property name="multipartResolver" ref="multipartResolver" />
+		<property name="filePath" value="${attach.file.save.path}" />
+		<property name="photoPath" value="${attach.photo.save.path}" />
+	</bean>
+</beans>

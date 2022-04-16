@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=1600">
+		<title>KMAC 통합 인트라넷</title>
+
+		<link rel="stylesheet" href="../resources/css/common.css" type="text/css" />
+		<link rel="stylesheet" href="../resources/css/login.css" type="text/css" />
+
+		<script type="text/javascript" src="../resources/js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" src="../resources/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="../resources/js/common.js"></script>
+
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../resources/js/html5shiv.js"></script>
+		<![endif]-->
+ 
+	</head>
+
+	<body>	
+
+		<div class="wrap">
+
+			<div class="login_container">
+
+				<div class="login_bg">
+					<div class="logo"><img src="../resources/img/logo_login.png" alt="KMAC" /></div>
+				</div>
+				<!-- // login_bg -->		
+
+				<div class="login_inner">
+					<div class="login_contents">						
+
+						<div><a href="javascript:layer_open(this,'pop_Auth');" class="d-line">인증코드 입력 팝업 창 열기</a></div>
+						<br />
+						<!-- 인증코드 입력 팝업 -->
+						<div id="pop_Auth" class="popup_layer">
+							<div class="popup_inner">								
+								<button type="button" class="btn-close" onclick="javascript:layer_close('pop_Auth');" title="닫기"><i class="mdi mdi-close"></i></button>
+								<div class="popup_contents">
+									<p class="h1">인증코드 입력</p>
+									<p class="popup_text">+8201012345678번으로 보내드린<br /><span>인증코드 6자리</span>를 입력하세요</p>
+									<div class="form_box">
+										<div>
+											<label for="userPhone"></label>
+											<input type="text" name="userPhone" id="userPhone" title="인증코드 입력" />
+										</div>
+									</div>
+									<div class="btn_area">
+										<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">다음</button>
+										<button type="button" class="btn btn_grey" onclick="location.href='javascript:;'">취소</button>
+									</div>
+									<a href="javascript:;" class="d-line">인증번호 재전송</a>
+								</div>
+							</div>
+						</div>
+						<!-- // 인증코드 입력 팝업 -->
+
+						<div><a href="javascript:layer_open(this,'pop_newpass');" class="d-line">비밀번호 재설정 팝업 창 열기</a></div>
+						<!-- 비밀번호 재설정 팝업 -->
+						<div id="pop_newpass" class="popup_layer">
+							<div class="popup_inner">								
+								<button type="button" class="btn-close" onclick="javascript:layer_close('pop_newpass');" title="닫기"><i class="mdi mdi-close"></i></button>
+								<div class="popup_contents">
+									<p class="h1">비밀번호 재설정</p>								
+									<p class="h2"><span>김요섭(yskim)</span>님의 사용할 새로운 비밀번호를 입력하세요.</p>
+									<p class="info_text">
+										- 비밀번호는 8자리 이상, 영문대소문자, 숫자를 혼용하셔야 합니다.<br />
+										- 3자리 이상 동일한 문자나 숫자를 허용하지 않습니다. 예) 111, aaa<br />
+										- 3자리 이상 연속된 문자나 숫자를 허용하지 않습니다. 예) 123, abc
+									</p>									
+									<div class="form_box">
+										<div>
+											<label for="newPassword"></label>
+											<input type="password" name="newPassword" id="newPassword" placeholder="새 비밀번호 입력" title="새 비밀번호 입력" />
+										</div>
+									</div>
+									<div class="form_box">
+										<div>
+											<label for="confPassword"></label>
+											<input type="password" name="confPassword" id="confPassword" placeholder="새 비밀번호 입력 확인" title="새 비밀번호 입력 확인" />
+										</div>
+									</div>
+									<div class="btn_area">
+										<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">변경</button>
+										<button type="button" class="btn btn_grey" onclick="location.href='javascript:;'">취소</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- // 비밀번호 재설정 팝업 -->
+
+						
+						
+
+					</div>
+				</div>
+				<!-- // login_inner -->	
+
+			</div>
+			<!-- // login_container -->				
+
+		</div>
+		<!-- // wrap -->
+
+	</body>
+</html>

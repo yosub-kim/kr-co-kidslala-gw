@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<bean id="expenseErpScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.ExpenseErpScheduleService">
+		<property name="expenseErpDataServiceDao" ref="expenseErpDataServiceDao" />
+	</bean>
+	<bean id="vocMailSendScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.VocMailSendScheduleService">
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+	</bean>
+	<bean id="projectReportScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.ProjectReportScheduleService">
+		<property name="projectReportScheduleServiceDao" ref="projectReportScheduleServiceDao" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectReportManager" ref="projectReportManager" />
+		<property name="projectReportDao" ref="projectReportDao" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="expertPoolDao" ref="expertPoolDao" />
+	</bean>
+	<bean id="deptHistoryScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.DeptHistoryScheduleService">
+		<property name="deptHistoryServiceDao" ref="deptHistoryServiceDao" />
+	</bean>
+	<bean id="costOverService" class="kr.co.kmac.pms.service.scheduler.batch.CostOverService">
+		<property name="costOverManager" ref="costOverManager" />
+	</bean>
+	<bean id="downloadLimitService" class="kr.co.kmac.pms.service.scheduler.batch.DownloadLimitService">
+		<property name="expertPoolDao" ref="expertPoolDao" />
+	</bean>
+	<bean id="weeklyReportScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.WeeklyReportScheduleService">
+		<property name="weeklyReportScheduleServiceDao" ref="weeklyReportScheduleServiceDao" />
+		<property name="weeklyReportDao" ref="weeklyReportDao" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="worklistManager" ref="worklistManager" />
+	</bean>
+	<bean id="monthlyReportScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.MonthlyReportScheduleService">
+		<property name="monthlyReportScheduleServiceDao" ref="monthlyReportScheduleServiceDao" />
+		<property name="monthlyReportDao" ref="monthlyReportDao" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="worklistManager" ref="worklistManager" />
+	</bean>
+	<bean id="expertPoolScheduleService" class="kr.co.kmac.pms.service.scheduler.batch.ExpertPoolScheduleService">
+		<property name="expertPoolScheduleServiceDao" ref="expertPoolScheduleServiceDao" />
+		<property name="expertPoolDao" ref="expertPoolDao" />
+	</bean>
+	<bean id="bizplayInfoSendService" class="kr.co.kmac.pms.service.scheduler.batch.BizplayInfoSendService">
+		<property name="bizplayInfoSendManager" ref="bizplayInfoSendManager" />
+	</bean>
+	
+	
+	
+	<bean id="projectReportScheduleManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.service.scheduler.manager.impl.ProjectReportScheduleManagerImpl">
+				<property name="projectReportScheduleService" ref="projectReportScheduleService" />
+			</bean>
+		</property>
+	</bean>	
+	<bean id="weeklyReportScheduleManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.service.scheduler.manager.impl.WeeklyReportScheduleManagerImpl">
+				<property name="weeklyReportScheduleService" ref="weeklyReportScheduleService" />
+			</bean>
+		</property>
+	</bean>	
+	<bean id="monthlyReportScheduleManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.service.scheduler.manager.impl.MonthlyReportScheduleManagerImpl">
+				<property name="monthlyReportScheduleService" ref="monthlyReportScheduleService" />
+			</bean>
+		</property>
+	</bean>	
+	<bean id="costOverManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.service.scheduler.manager.impl.CostOverManagerImpl">
+				<property name="costOverDao" ref="costOverDao" />
+			</bean>
+		</property>
+	</bean>	
+	<bean id="bizplayInfoSendManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.service.scheduler.manager.impl.BizplayInfoSendManagerImpl">
+				<property name="bizplayInfoSendDao" ref="bizplayInfoSendDao" />
+			</bean>
+		</property>
+	</bean>	
+		
+	
+	<bean id="costOverDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.CostOverDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+	</bean>
+	<bean id="projectReportScheduleServiceDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.ProjectReportScheduleServiceDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expenseErpDataServiceDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.ExpenseErpDataServiceDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+	</bean>
+	<bean id="deptHistoryServiceDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.DeptHistoryServiceDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="weeklyReportScheduleServiceDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.WeeklyReportScheduleServiceDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="monthlyReportScheduleServiceDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.MonthlyReportScheduleServiceDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expertPoolScheduleServiceDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.ExpertPoolScheduleServiceDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="bizplayInfoSendDao" class="kr.co.kmac.pms.service.scheduler.dao.impl.BizplayInfoSendDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="erpJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="expenseErpScheduleService" />
+		<property name="targetMethod" value="updateCostRelatedField" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="vocMailSendJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="vocMailSendScheduleService" />
+		<property name="targetMethod" value="vocMailSend" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="preportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="projectReportScheduleService" />
+		<property name="targetMethod" value="assignProjectReportUntilToday" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="costOverJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="costOverService" />
+		<property name="targetMethod" value="costOverWrite" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="deptHistoryInsertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="deptHistoryScheduleService" />
+		<property name="targetMethod" value="insertDeptInfoIntoHistory" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="downloadLimitInitJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="downloadLimitService" />
+		<property name="targetMethod" value="initDownloadUnlimitState" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="weeklyReportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="weeklyReportScheduleService" />
+		<property name="targetMethod" value="assignWeeklyReport" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="monthlyReportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="monthlyReportScheduleService" />
+		<property name="targetMethod" value="assignMonthlyReport" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="expertPoolJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="expertPoolScheduleService" />
+		<property name="targetMethod" value="updateExpertPoolToStandby" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="bizplayInfoSendJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="bizplayInfoSendService" />
+		<property name="targetMethod" value="bizplayInfoSend" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+
+	<bean id="bizplayInfoSendCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="bizplayInfoSendJobDetail" />
+		<property name="cronExpression" value="0 0 7 * * ?" />
+	</bean>
+	<bean id="erpCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="erpJobDetail" />
+		<property name="cronExpression" value="0 0 1 * * ?" />
+	</bean>
+	<bean id="vocMailSendCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="vocMailSendJobDetail" />
+		<property name="cronExpression" value="0 0 10 * * ?" />
+	</bean>
+<!-- 	<bean id="preportCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="preportJobDetail" />
+		<property name="cronExpression" value="0 0 14 * * ?" />
+	</bean> -->
+	<bean id="costOverTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="costOverJobDetail" />
+		<property name="cronExpression" value="0 0 19 * * ?" />
+	</bean>
+	<!-- Job Date: 2008-01-11	Author: yhyim	Description: dept history insert job -->
+	<bean id="deptHistoryInsertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="deptHistoryInsertJobDetail" />
+		<property name="cronExpression" value="0 0 4 1 * ?" />
+	</bean>
+	<bean id="downloadLimitInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="downloadLimitInitJobDetail" />
+		<property name="cronExpression" value="0 0 5 1 * ?" />
+	</bean>
+	<bean id="weeklyReportInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="weeklyReportJobDetail" />
+		<property name="cronExpression" value="0 0 5 ? * THU" />
+	</bean>
+	<bean id="monthlyReportInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="monthlyReportJobDetail" />
+		<property name="cronExpression" value="0 0 3 20 * ?" />
+	</bean>
+	<!-- <bean id="expertPoolInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="expertPoolJobDetail" />
+		<property name="cronExpression" value="0 30 4 6 * ?" />
+	</bean> -->
+	
+
+	<!--
+		<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean"> <property name="jobDetail" ref="jobDetail" /> <property name="startDelay"
+		value="30000" /> <property name="repeatInterval" value="9000000" /> </bean>
+	-->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.scheduler.instanceName">batchScheduler</prop>
+				<prop key="org.quartz.scheduler.instanceId">batch_1</prop>
+				<prop key="org.quartz.scheduler.rmi.export">false</prop>
+				<prop key="org.quartz.scheduler.rmi.proxy">false</prop>
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">3</prop>
+				<prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>
+			</props>
+		</property>
+		<property name="triggers">
+			<list>
+				<ref bean="vocMailSendCronTrigger" />
+				<!-- <ref bean="preportCronTrigger" /> -->
+				<ref bean="erpCronTrigger" />
+				<ref bean="costOverTrigger" />
+				<ref bean="deptHistoryInsertTrigger" />
+				<ref bean="downloadLimitInitTrigger" />
+				<ref bean="weeklyReportInitTrigger" />
+				<ref bean="monthlyReportInitTrigger" />
+				<!-- <ref bean="expertPoolInitTrigger" /> -->
+				<ref bean="bizplayInfoSendCronTrigger" />
+			</list>
+		</property>
+	</bean>
+</beans>

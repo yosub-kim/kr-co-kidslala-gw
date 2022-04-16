@@ -1,0 +1,51 @@
+
+.leftCont { border-bottom:none !important; border-right:1px solid #d5d5d5;  }
+/* sub.css */
+.subConTaIner {width:751px; float:left; padding-left:14px; margin-left:210px; }
+.subTitle { color:#006dc6; font-weight:bold; font-size:15px; margin:15px 0; }
+
+.tableWrap01 { width:100%; padding-bottom:23px; margin-bottom:20px; border-bottom:1px solid #d5d5d5; }
+.tableStyle03 { width:100%; border-top:1px solid #d5d5d5; border-left:1px solid #d5d5d5; }
+.tableStyle03 th { color:#5c5c5c; font-weight:bold !important; 
+
+				/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f4f4f4+99 */
+				background: #ffffff; /* Old browsers */
+				background: -moz-linear-gradient(top,  #ffffff 0%, #f4f4f4 99%); /* FF3.6-15 */
+				background: -webkit-linear-gradient(top,  #ffffff 0%,#f4f4f4 99%); /* Chrome10-25,Safari5.1-6 */
+				background: linear-gradient(to bottom,  #ffffff 0%,#f4f4f4 99%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f4f4f4',GradientType=0 ); /* IE6-9 */
+
+			}
+.tableStyle03 th,.tableStyle03 td { border-right:1px solid #d5d5d5; padding:0 5px 0 5px; border-bottom:1px solid #d5d5d5; }
+.tableStyle03 td { padding:5px 5px 5px 5px; }
+.tableStyle03 td input,.tableStyle03 td select {  border:1px solid #d5d5d5; }
+.tableStyle03 td select.W236 { width:236px; height:20px; }
+.tableStyle03 td select.W100 { width:100px; height:20px; }
+.tableStyle03 .srchTextArea { width:74%; height:24px; }
+
+.cal {  }
+.cal span { display:inline-block; padding:3px 4px 4px 4px; border:1px solid #d5d5d5; border-left:none; }
+.cal input { width:80px; border:1px solid #d5d5d5; }
+.cal .first { float:left; margin-right:5px; }
+.cal .second { float:left;  }
+
+
+.sunbCont01 {  }
+.sunbCont01 .tableStyle01.plusStyle { border-left:1px solid #dedede; }
+
+.paging { text-align:center; margin-top:20px; }
+.paging a { margin-right:10px; }
+.paging a.on { color:#3b74a1; font-weight:bold; }
+.paging .prev { margin-right:10px; }
+.paging .next {  }
+.pagingArea { position:relative; }
+
+
+ .tableStyle01 { width:100%; text-align:center; }
+ .tableStyle01 thead { background:#137ad7; border-top:1px solid #dedede; }
+ .tableStyle01 thead th { padding:7px 10px 7px 10px; color:#fff; border-bottom:1px solid #dedede; border-right:1px solid #dedede; }
+ .tableStyle01 tbody td { padding:7px 10px 7px 10px; color:#666; border-bottom:1px solid #dedede; border-right:1px solid #dedede; }
+ .tableStyle01 tbody td.last,.tableStyle01 tbody th.last { border-right:none; }
+
+
+.position { position:absolute; top:-5px; right:0; }

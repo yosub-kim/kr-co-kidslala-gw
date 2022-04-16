@@ -1,0 +1,1418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>webmail.kmac.co.kr</value>
+		</property>
+	</bean>
+	<bean id="simpleMailMessage" class="org.springframework.mail.SimpleMailMessage" />
+
+	<bean id="pmsInfoMailSender" class="kr.co.kmac.pms.service.mailsender.manager.PmsInfoMailSender">
+		<property name="mailSender" ref="mailSender" />
+		<property name="simpleMailMessage" ref="simpleMailMessage" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" /> 
+		<property name="mailContents" ref="mailContents" />
+		<property name="projectVocManager" ref="projectVocManager" />
+		<property name="pmsInfoMailSenderManager" ref="pmsInfoMailSenderManager" />
+	</bean>
+	
+	<bean id="pmsInfoMailSenderManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.service.mailsender.manager.impl.PmsInfoMailSenderManagerImpl">
+				<property name="dataSource" ref="dataSource" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="pmsInfoSMSSender" class="kr.co.kmac.pms.service.mailsender.manager.PmsInfoSMSSender">
+		
+	</bean>
+	
+	<bean id="mailContents" class="kr.co.kmac.pms.service.mailsender.data.MailContents">
+		<property name="content">
+			<props>
+				<prop key="projectCSMailContentKOR">
+					<![CDATA[
+<html>
+<head>
+	<title>CSI mail</title>
+</head>
+<body>
+	<div style="background-color:#F6F6F6; margin:0; width:100%; border:0;">
+		<p>&nbsp;</p>
+		<table align="center" style="background-color:#FFF; font-family: 나눔고딕,NanumGothic,Sans-serif; color: 333; font-size:13px;" border="0" cellpadding="0" cellspacing="0" width="800">
+			<tbody>
+				<tr>
+					<td><img src="http://www.kmac.co.kr/webmail/images/mail_top.png"></td>
+				</tr>
+				
+				<tr>
+					<td align="center">
+						<!-- 타이틀 -->
+						<table border="0">
+							<tbody>
+								<tr>
+									<td><img alt="노트북" src="http://www.kmac.co.kr/webmail/images/mail_img01.png" style="margin:30px 0px 30px 0px"></td>
+								</tr>
+							</tbody>
+						</table>
+	      
+						<!--  프로젝트명 -->   
+						<table  border="0">
+							<tbody>
+								<tr>  
+									<td align="center" style="margin: 0px 50px; padding: 20px 50px; width: 600px; text-align: left; color: #333; line-height: 200%; font-size: 13px; border-top-color: #006bc6; border-bottom-color:#006bc6; border-top-width: 2px; border-bottom-width: 2px; border-top-style: solid; border-bottom-style: solid;">
+										   
+										<img src="http://www.kmac.co.kr/webmail/images/icon_nemo.png">&nbsp;&nbsp;프로젝트명: &nbsp;
+										<strong style="color:#006bc6;">[$projectName]</strong><br>
+											
+										<img src="http://www.kmac.co.kr/webmail/images/icon_nemo.png">&nbsp;&nbsp;추 진 기 간: &nbsp;
+										<strong>[$startDate] ~ [$endDate]</strong><br>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+	
+						<!--  내용 -->
+						<table border="0" style="margin-top:20px">
+							<tbody>
+								<tr>  
+									<td align="center" style="margin: 50px; padding: 30px 50px; border: 1px solid ddd; width: 600px; text-align: left; color: #333; line-height: 150%; font-size: 13px; background-color: #f9f9f9;">
+										<span>안녕하십니까? KMAC 대표이사 한수희 입니다.<br><br>
+										항상 저희 KMAC에 깊은 애정과 관심을 보내 주신데 대해 깊은 감사를 드리며,<br>
+										아울러 저희에게 귀사(귀관)의 PROJECT에 동참할 기회를 주신데 대해서도 감사드립니다.<br><br>
+										저희 KMAC는 항상 고객과 더불어 우리 기업의 변화와 혁신을 선도하고 경쟁력을 제고하는데 기여하고자 매진하고 있습니다.
+										그 일환으로 저희는 당사가 수행한 PROJECT QUALITY에 대한 고객 만족도 조사를 실시함으로써 이를 바탕으로 고객에게 보다
+										더 높은 가치를 제공하고자 노력하고자 합니다.<br><br>
+										이런 취지에서 실시되는 본 조사에 귀사(귀하)의 적극적인 협조를 부탁드립니다.<br><br>
+										귀사의 발전과 귀하의 건승을 기원합니다.<br>
+										감사합니다</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+	
+						<!-- 버튼 -->
+						<span><a href="http://intranet.kmac.co.kr/kmac/vocinfo/[$procFile].asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&seq=[$seq]" target="_blank"><img src="http://www.kmac.co.kr/webmail/images/mail_btn01.png" border="0" style="margin-top:20px; margin-bottom:20px"></a></span> 
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>&nbsp;</p>
+	</div>
+</body>
+</html>
+
+					]]>
+				</prop>
+				
+				<prop key="KCSMAprojectCSMailContentKOR">
+					<![CDATA[
+<html>
+<head>
+	<title>CSI mail</title>
+</head>
+<body>
+	<div style="background-color:#F6F6F6; margin:0; width:100%; border:0;">
+		<p>&nbsp;</p>
+		<table align="center" style="background-color:#FFF; font-family: 나눔고딕,NanumGothic,Sans-serif; color: 333; font-size:13px;" border="0" cellpadding="0" cellspacing="0" width="800">
+			<tbody>
+				<tr>
+					<td><img src="http://www.kmac.co.kr/webmail/images/kcsma_mail_top.png"></td>
+				</tr>
+				
+				<tr>
+					<td align="center">
+						<!-- 타이틀 -->
+						<table border="0">
+							<tbody>
+								<tr>
+									<td><img src="http://www.kmac.co.kr/webmail/images/kcsma_mail_img01.png" style="margin:30px 0px 30px 0px"></td>
+								</tr>
+							</tbody>
+						</table>
+	      
+						<!--  프로젝트명 -->   
+						<table  border="0">
+							<tbody>
+								<tr>  
+									<td align="center" style="margin: 0px 50px; padding: 20px 50px; width: 600px; text-align: left; color: #333; line-height: 200%; font-size: 13px; border-top-color: #006bc6; border-bottom-color:#006bc6; border-top-width: 2px; border-bottom-width: 2px; border-top-style: solid; border-bottom-style: solid;">
+										   
+										<img src="http://www.kmac.co.kr/webmail/images/icon_nemo.png">&nbsp;&nbsp;프로젝트명: &nbsp;
+										<strong style="color:#006bc6;">[$projectName]</strong><br>
+											
+										<img src="http://www.kmac.co.kr/webmail/images/icon_nemo.png">&nbsp;&nbsp;추 진 기 간: &nbsp;
+										<strong>[$startDate] ~ [$endDate]</strong><br>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+	
+						<!--  내용 -->
+						<table border="0" style="margin-top:20px">
+							<tbody>
+								<tr>  
+									<td align="center" style="margin: 50px; padding: 30px 50px; border: 1px solid ddd; width: 600px; text-align: left; color: #333; line-height: 150%; font-size: 13px; background-color: #f9f9f9;">
+										<span>안녕하십니까? <br><br>
+										항상 저희 한국고객만족경영학회에 대한 깊은 애정과 관심을 보내 주신데 대해 깊은 감사를 드리며,<br>
+										아울러 저희에게 귀사(귀관)의 프로젝트에 참여할 수 있는 기회를 주신데 대해서도 감사드립니다.<br><br>
+										저희 한국고객만족경영학회는 우리 기업의 변화와 혁신을 선도하고 경쟁력 제고를 위해 최선의 노력을<br>
+										다하고 있으며, 언제나 고객 가치를 최우선으로 생각하고 있습니다.<br> 
+										당사가 수행한 프로젝트에 대한 고객만족도 조사를 통해, 프로젝트의 품질을 점검하고 개선 포인트를 <br>
+										도출함으로써 더 높은 고객 가치를 제공하기 위한 단초로 활용하고자 합니다.<br><br>
+										이런 취지에서 실시되는 본 조사에 귀사(귀하)의 적극적인 협조를 부탁드립니다.<br><br>
+										귀사의 발전과 귀하의 건승을 기원합니다.<br>
+										감사합니다</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+	
+						<!-- 버튼 -->
+						<span><a href="http://intranet.kmac.co.kr/kmac/vocinfo/[$procFile].asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&seq=[$seq]" target="_blank"><img src="http://www.kmac.co.kr/webmail/images/kcsma_mail_btn01.png" border="0" style="margin-top:20px; margin-bottom:20px"></a></span> 
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>&nbsp;</p>
+	</div>
+</body>
+</html>
+
+					]]>
+				</prop>
+				
+				<prop key="projectCSMailContentCHN">
+					<![CDATA[
+<html>
+<head>
+<title>Project 满足度调查</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #CC0000;
+}
+.letter {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+}
+.style2 {
+	color: #FFFFFF;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style3 {color: #1894d9}
+-->
+</style>
+<style>
+		/* button 
+		---------------------------------------------- */
+		.button {
+		  display: inline-block;
+		  zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+		  *display: inline;
+		  vertical-align: baseline;
+		  margin: 0 1px;
+		  outline: none;
+		  cursor: pointer;
+		  text-align: center;
+		  text-decoration: none;
+		  font: 14px/100% Arial, Helvetica, sans-serif;
+		  padding: .5em 1.9em .55em;
+		  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+		  -webkit-border-radius: .5em; 
+		  -moz-border-radius: .5em;
+		  border-radius: .5em;
+		  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		}
+		.button:hover {
+		  text-decoration: none;
+		}
+		.button:active {
+		  position: relative;
+		  top: 1px;
+		}
+		/* blue */
+/* white */
+.white {
+  color: #606060 !important;
+  border: solid 1px #b7b7b7;
+  background: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+  background: -moz-linear-gradient(top,  #fff,  #ededed);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+.white:hover {
+  background: #ededed;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
+  background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+}
+.white:active {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
+  background: -moz-linear-gradient(top,  #ededed,  #fff);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+}
+/* red */
+.red {
+  color: #ffffff;
+  border: solid 1px #980c10;
+  background: #d81b21;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317));
+  background: -moz-linear-gradient(top,  #ed1c24,  #aa1317);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317');
+}
+.red:hover {
+  background: #ffffff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#c9151b), to(#a11115));
+  background: -moz-linear-gradient(top,  #c9151b,  #a11115);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#c9151b', endColorstr='#a11115');
+}
+.red:active {
+  color: #ffffff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#aa1317), to(#ed1c24));
+  background: -moz-linear-gradient(top,  #aa1317,  #ed1c24);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#aa1317', endColorstr='#ed1c24');
+}
+ 
+</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+              <td height="10"><table width="100%" border="0" cellspacing="1" cellpadding="5" bgcolor="#E1E1E1">               
+                <tr bgcolor="#FFFFFF">
+                  <td width="14%" bgcolor="#F0F5F9" align="center"><b> 任务 </b></td>
+                  <td width="86%" colspan="3">[$projectName]</td>
+                </tr>
+              </table></td>
+        </tr>
+        <tr>
+          <td align="center">
+		  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td height="480" align="center" valign="top" bgcolor="#f4f4f4"><table width="90%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td height="60" align="center" class="title"><p>Project 满足度调查</p></td>
+			      </tr>
+			      <tr>
+			        <td height="380" align="center" bgcolor="#dddddd"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+			          <tr>
+			            <td height="370" align="center" valign="top" bgcolor="#FFFFFF"><br>
+			              <table width="97%" border="0" cellspacing="0" cellpadding="0">
+			              <tr>
+			                <td class="letter"><p>您好! 我是KMAC 董事长 金鐘立.</p>
+			                  <p>&nbsp;</p>
+			                  <p>非常感谢大家长期以来对KMAC的关心和支持.</p>
+			                  <p>同时,感谢给与我们参与贵公司项目的机会.</p>
+			                  <p>&nbsp;</p>
+			                  <p>KMAC一直同顾客一起竭尽全力在引导企业的变化和革新以及提</p>
+			                  <p>高竞争力上做出贡献. 作为此一环,我们对在贵公司执行的项目</p>
+			                  <p>品质实施顾客满足度调查,并以此为基础为提供给顾客更优质服</p>
+			                  <p>务而更加努力.</p>
+			                  <p>&nbsp;</p>
+			                  <p>希望贵公司能够积极参与以此宗旨而实施的调查.</p>
+			                  <p>&nbsp;</p>
+			                  <p>声援贵社的无限发展和昌盛.</p>
+			                  <p>&nbsp;</p>
+			                  <p>谢谢.</p>
+			                </td>
+			              </tr>
+			              <tr>
+			                <td align="right" class="letter">
+			                  <br>KMAC 董事长 金鐘立 </td>
+			              </tr>              
+			            </table></td>
+			          </tr>
+			        </table></td>
+			      </tr>
+				  <tr>
+					<td height="10">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<a href="http://intranet.kmac.co.kr/kmac/vocinfo/[$procFile]_c.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&seq=[$seq]" target="_blank" class="button red"><b>入力意见</b></a> 
+					</td>
+				</tr>
+				<tr> 
+					<td height="10"><img src="http://intranet.kmac.co.kr/kmac/VocInfo/icsiMailcheck.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&seq=[$seq]" width="0" height="0"></td>
+				  </tr>
+			    </table></td>
+			  </tr>
+			</table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					]]>
+				</prop>
+				<prop key="projectCSMailContentENG">
+					<![CDATA[
+<html>
+<head>
+<title>customer satisfaction survey</title>
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #222222;
+}
+.letter {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+}
+.style2 {
+	color: #FFFFFF;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style3 {color: #1894d9}
+-->
+</style>
+<style>
+		/* button 
+		---------------------------------------------- */
+		.button {
+		  display: inline-block;
+		  zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+		  *display: inline;
+		  vertical-align: baseline;
+		  margin: 0 1px;
+		  outline: none;
+		  cursor: pointer;
+		  text-align: center;
+		  text-decoration: none;
+		  font: 14px/100% Arial, Helvetica, sans-serif;
+		  padding: .5em 1.9em .55em;
+		  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+		  -webkit-border-radius: .5em; 
+		  -moz-border-radius: .5em;
+		  border-radius: .5em;
+		  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		}
+		.button:hover {
+		  text-decoration: none;
+		}
+		.button:active {
+		  position: relative;
+		  top: 1px;
+		}
+/* white */
+.white {
+  color: #606060 !important;
+  border: solid 1px #b7b7b7;
+  background: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+  background: -moz-linear-gradient(top,  #fff,  #ededed);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+.white:hover {
+  background: #ededed;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
+  background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+}
+.white:active {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
+  background: -moz-linear-gradient(top,  #ededed,  #fff);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+}
+ 
+</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="10"><table width="100%" border="0" cellspacing="1" cellpadding="5" bgcolor="#E1E1E1">
+            <tr bgcolor="#FFFFFF">
+              <td width="14%" bgcolor="#F0F5F9" align="center"><b><font color="#2A739C">Project</font></b></td>
+              <td width="86%" colspan="3">[$projectName]</td>
+            </tr>
+          </table></td>
+        </tr>
+        <tr>
+          <td align="center">
+		  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td height="480" align="center" valign="top" bgcolor="#f4f4f4"><table width="90%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td height="60" align="center" class="title"><p>Project Customer Satisfaction </p></td>
+			      </tr>
+			      <tr>
+			        <td height="380" align="center" bgcolor="#dddddd"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+			          <tr>
+			            <td height="370" align="center" valign="top" bgcolor="#FFFFFF"><br>
+			              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+			              <tr>
+			                <td class="letter"><p>Greetings, </p>
+			                  <p>&nbsp;</p>
+			                  <p>We deeply appreciate your concern for KMAC and giving us the opportunity<br>to work with you.</p>
+			                  <p>&nbsp;</p>
+			                  <p>KMAC always strive to devote to lead change and innovation, and boost </p>
+			                  <p>competitiveness of Korean companies'. As a part of the activities, we do our best </p>
+			                  <p>to deliver higher value to the customer based on the customer satisfaction survey. </p>
+			                  <p>For this reason, we ask for your cooperation. </p>
+			                  <p>&nbsp;</p>
+			                  <p>We wish you and your company all the best. </p>
+			                  <p>&nbsp;</p>
+			                  Thank you. </td>
+			              </tr>
+			              <tr>
+			                <td align="right" class="letter">
+			                  <br><br>President & CEO, KMAC, Kim Jong-Lib</td>
+			              </tr>
+			            </table></td>
+			          </tr>
+			        </table></td>
+			      </tr>
+			      <tr>
+					<td height="10">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<a href="http://intranet.kmac.co.kr/kmac/vocinfo/[$procFile]_e.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&seq=[$seq]" target="_blank" class="button white"><b>Survey</b></a> 
+					</td>
+				</tr>
+				<tr> 
+					<td height="10"><img src="http://intranet.kmac.co.kr/kmac/VocInfo/icsiMailcheck.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&seq=[$seq]" width="0" height="0"></td>
+				</tr>
+			    </table></td>
+			  </tr>
+			</table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					]]>
+				</prop>
+				<prop key="projectCSMailContentJPN">
+					<![CDATA[
+					]]>
+				</prop>
+				<prop key="customerThxKOR">
+					<![CDATA[
+<html>
+<head>
+<title>프로젝트 감사 메일</title>
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td><img src="http://intranet.kmac.co.kr/kmac/image/thanksMail/com_mail_logo.gif" width="702" height="31"></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="21"></td>
+        </tr>
+        <tr>
+          <td align="center">
+            <table width="658" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td><img src="http://intranet.kmac.co.kr/kmac/image/thanksMail/20080818_mail_img1.jpg"></td>
+              </tr>
+              <tr> 
+                <td background="http://intranet.kmac.co.kr/kmac/image/thanksMail/20080818_mail_img2.jpg" height="46" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td width="18%">&nbsp;</td>
+                      <td width="42%" class="thanks">[$projectName]</td>
+                      <td width="40%">&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr> 
+                <td><img src="http://intranet.kmac.co.kr/kmac/image/thanksMail/20080818_mail_img3.jpg"></td>
+              </tr>
+              <tr> 
+                <td><img src="http://intranet.kmac.co.kr/kmac/image/thanksMail/20080818_mail_img4.jpg"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="21"><img src="http://intranet.kmac.co.kr/kmac/thanksmail/mailcheck.asp?projectCode=[$projectCode]&email=[$email]" width="0" height="0"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					]]>
+				</prop>
+				<prop key="customerThxENG">
+					<![CDATA[
+<html>
+<head>
+<title>Greeting</title>
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #222222;
+}
+.letter {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+}
+.style2 {
+	color: #FFFFFF;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style3 {color: #1894d9}
+
+
+-->
+</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+              <td height="10"><table width="100%" border="0" cellspacing="1" cellpadding="5" bgcolor="#E1E1E1">
+                <tr bgcolor="#FFFFFF">
+                  <td width="14%" bgcolor="#F0F5F9" align="center"><b><font color="#2A739C">Project</font></b></td>
+                  <td width="86%" colspan="3">[$projectName]</td>
+                </tr>
+              </table></td>
+        </tr>
+        <tr>
+          <td align="center">
+		  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td height="520" align="center" valign="top" bgcolor="#f4f4f4"><table width="90%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td height="90" align="center" class="title">KMAC’s VOC Application &amp; Assessment</td>
+			      </tr>
+			      <tr>
+			        <td height="420" align="center" bgcolor="#dddddd"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+			          <tr>
+			            <td height="410" align="center" valign="top" bgcolor="#FFFFFF"><br>
+			              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+				                <td class="letter">Greeting from KMAC.<br>
+								We truly appreciate your concern and support for KMAC. <br>
+								<br>
+								We have been making our best effort to provide high quality service and improve your competitiveness even under the worst conditions. Additionally, <br>
+								we keep doing our best to enhance the value of our customers. <br>
+								<br>
+								Regarding the project’s quality we desire to improve the performance quality <br>
+								by a system registered customer’s feedback for each project. <br>
+								<br>
+								After completing the project, we are expecting to conduct the satisfaction <br />
+								assessment  of the projects. <br>
+								<br>
+								We are going to continuously do our best to deliver high value <br>
+								for our customers. <br>
+								<br>
+								Thank you.
+								</td>
+		              		</tr>
+		              		<tr>
+		                		<td align="right" class="letter"><br><br><br>Jonglib Kim, President of KMAC</td>
+	              			</tr>
+			              </table>
+            			</td>
+			          </tr>
+			        </table></td>
+			      </tr>
+			      <tr>
+			        <td><img src="http://intranet.kmac.co.kr/kmac/thanksmail/mailcheck.asp?projectCode=[$projectCode]&email=[$email]" width="0" height="0"></td>
+			      </tr>
+			    </table></td>
+			  </tr>
+			</table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					]]>
+				</prop>
+				<prop key="customerThxCHN">
+					<![CDATA[
+<html>
+<head>
+<title>对顾客意见登记 及 评价的介绍</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #CC0000;
+}
+.letter {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+}
+.style2 {
+	color: #FFFFFF;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style3 {color: #1894d9}
+
+
+-->
+</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+	<tr> 
+		<td>&nbsp;</td>
+	</tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td height="10"><table width="100%" border="0" cellspacing="1" cellpadding="5" bgcolor="#E1E1E1">               
+           <tr bgcolor="#FFFFFF">
+             <td width="14%" bgcolor="#F0F5F9" align="center"><b>任务 </b></td>
+             <td width="86%" colspan="3">[$projectName]</td>
+           </tr>
+         </table></td>
+        </tr>
+        <tr>
+          <td align="center">
+		  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td height="520" align="center" valign="top" bgcolor="#f4f4f4"><table width="90%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td height="90" align="center" class="title"><p>对顾客意见登记 及 评价的介绍</p></td>
+			      </tr>
+			      <tr>
+			        <td height="420" align="center" bgcolor="#dddddd"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+			          <tr>
+			            <td height="410" align="center" valign="top" bgcolor="#FFFFFF"><br>
+			              <table width="97%" border="0" cellspacing="0" cellpadding="0">
+			              <tr>
+			                <td class="letter"><p>您好!</p>
+			                  <p>非常感谢大家长期以来对KMAC的关心和支持.</p>
+			                  <p>&nbsp;</p>
+			                  <p>现如今,众多企业在面临困难的对外条件下,也为了给顾客提供</p>
+			                  <p>优质的产品和服务以及提高竞争力,坚持不懈地努力着.</p>
+			                  <p>KMAC也一直竭尽全力来提高这些企业的价值.</p>
+			                  <p>&nbsp;</p>
+			                  <p>同时, KMAC针对在进行项目过程中发生的顾客不满,树立了登记</p>
+			                  <p>及反馈制度来强化执行品质.而且计划在项目结束后进行对执行</p>
+			                  <p>结果的满意度评价.</p>
+			                  <p>&nbsp;</p>
+			                  <p>为了日后给顾客提供更优质的服务, KMAC将尽最大努力.</p>
+			                  <p>&nbsp;</p>
+			                  <p>谢谢.</p>
+							</td>
+			              </tr>
+			              <tr>
+			                <td align="right" class="letter">
+			                  <br>KMAC CEO 金鐘立 </td>
+			              </tr>
+			            </table></td>
+			          </tr>
+			        </table></td>
+			      </tr>
+			      <tr>
+			        <td><img src="http://intranet.kmac.co.kr/kmac/thanksmail/mailcheck.asp?projectCode=[$projectCode]&email=[$email]" width="0" height="0"></td>
+			      </tr>
+			    </table></td>
+			  </tr>
+			</table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					
+					]]>
+				</prop>
+				<prop key="customerThxJPN">
+					<![CDATA[
+					]]>
+				</prop>
+				<prop key="vocKOR">
+					<![CDATA[
+<html>
+<head>
+	<title>고객의견 청취 안내</title>
+</head>
+<body>
+	<div style="background-color:#F6F6F6; margin:0; width:100%; border:0;">
+		<p>&nbsp;</p>
+			<table align="center" style="background-color:#FFFFFF; font-family: 나눔고딕,NanumGothic,Sans-serif; color: 333; font-size:13px;" border="0" cellpadding="0" cellspacing="0" width="800">
+				<tbody>
+					<tr>
+						<td><img src="http://www.kmac.co.kr/webmail/images/mail_top.png"></td>
+					</tr>
+					<tr>
+						<td align="center">
+							<!-- 타이틀 -->
+							<table border="0">
+								<tbody>
+									<tr>
+										<td><img alt="노트북" src="http://www.kmac.co.kr/webmail/images/mail_img02.png" style="margin:30px 0px 30px 0px"></td>
+									</tr>
+								</tbody>
+							</table>
+		  
+							<!--  프로젝트명 -->  
+							<table  border="0">
+								<tbody>
+									<tr>  
+										<td align="center" style="margin: 0px 50px; padding: 20px 50px; width: 600px; text-align: left; color: #333; line-height: 200%; font-size: 13px; border-top-color:#006bc6; border-bottom-color: #006bc6; border-top-width: 2px; border-bottom-width: 2px; border-top-style: solid; border-bottom-style: solid; ">
+
+											<img src="http://www.kmac.co.kr/webmail/images/icon_nemo.png">&nbsp;&nbsp;프로젝트명 : &nbsp;
+											<strong style="color:#006bc6;">[$projectname]</strong><br>
+
+											<img src="http://www.kmac.co.kr/webmail/images/icon_nemo.png">&nbsp;&nbsp;추 진 기 간 : &nbsp;
+											<strong>[$startDate] ~ [$endDate]</strong>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					
+							<!--  내용 -->
+							<table border="0" style="margin-top:20px">
+								<tbody>
+									<tr>  
+										<td align="center" style="margin: 50px; padding: 30px 50px; border: 1px solid ddd; width: 600px; text-align: left; color: #333; line-height: 150%; font-size: 13px; background-color: #f9f9f9;">
+										   <span>안녕하십니까?<br><br>
+										   KMAC 대표이사 한수희 입니다.<br>
+										   현재 저희 KMAC에서 수행하고 있는 프로젝트에 대한 의견을 청취하고자 합니다.<br><br>	
+										   프로젝트 진행 과정에서 발생되는 의견 또는 불만에 대해 말씀해주시면 프로젝트 총괄자에게 전달됩니다.<br>
+										   말씀해주신 의견을 바탕으로 귀사에 더 높은 가치를 제공하고자 노력하겠습니다.<br><br>
+										   감사합니다</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					
+							<!-- 버튼 -->
+					
+							<span><a href="http://intranet.kmac.co.kr/kmac/VocInfo/Voc.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&requestDate=[$requestDate]" target="_blank"><img src="http://www.kmac.co.kr/webmail/images/mail_btn02.png" border="0" style="margin-top:20px; margin-bottom:20px"></a></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		<p>&nbsp;</p>
+	</div>
+</body>
+</html>
+
+					]]>
+				</prop>
+				<prop key="vocENG">
+					<![CDATA[
+<html>
+<head>
+<title>VOC</title>
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #222222;
+}
+.letter {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+}
+.style2 {
+	color: #FFFFFF;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style3 {color: #1894d9}
+-->
+</style>
+<style>
+		/* button 
+		---------------------------------------------- */
+		.button {
+		  display: inline-block;
+		  zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+		  *display: inline;
+		  vertical-align: baseline;
+		  margin: 0 1px;
+		  outline: none;
+		  cursor: pointer;
+		  text-align: center;
+		  text-decoration: none;
+		  font: 14px/100% Arial, Helvetica, sans-serif;
+		  padding: .5em 1.9em .55em;
+		  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+		  -webkit-border-radius: .5em; 
+		  -moz-border-radius: .5em;
+		  border-radius: .5em;
+		  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		}
+		.button:hover {
+		  text-decoration: none;
+		}
+		.button:active {
+		  position: relative;
+		  top: 1px;
+		}
+		/* blue */
+/* white */
+.white {
+  color: #606060 !important;
+  border: solid 1px #b7b7b7;
+  background: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+  background: -moz-linear-gradient(top,  #fff,  #ededed);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+.white:hover {
+  background: #ededed;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
+  background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+}
+.white:active {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
+  background: -moz-linear-gradient(top,  #ededed,  #fff);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+}
+ 
+		</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td height="10"><table width="100%" border="0" cellspacing="1" cellpadding="5" bgcolor="#E1E1E1">
+           <tr bgcolor="#FFFFFF">
+             <td width="14%" bgcolor="#F0F5F9" align="center"><b><font color="#2A739C">Project</font></b></td>
+             <td width="86%" colspan="3">[$projectname]</td>
+           </tr>
+         </table></td>
+        </tr>
+        <tr>
+          <td align="center">
+		  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td height="480" align="center" valign="top" bgcolor="#f4f4f4"><table width="90%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td height="60" align="center" class="title"><p>VOC of the Project</p></td>
+			      </tr>
+			      <tr>
+			        <td height="380" align="center" bgcolor="#dddddd"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+			          <tr>
+			            <td height="370" align="center" valign="top" bgcolor="#FFFFFF"><br>
+			              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+			              <tr>
+			                <td class="letter"><p>Hello</p>
+			                  <p>&nbsp;</p>
+			                  <p>I am Kim Jong-Lib, the CEO of KMAC.</p>
+			                  <p>We would like to get feedback from our customers about the project we are currently performing.</p>
+			                  <p>Please leave your opinions or complaints that arise in the process of the project.</p>
+			                  <p>Your comment will be delivered to Chief Project Manager.</p>
+			                  <p>&nbsp;</p>
+			                  <p>We, KMAC, always try to do our best for creating higher value, based on your feedback.</p>
+			                  Thank you. </td>
+			              </tr>
+			              <tr>
+			                <td align="right" class="letter">
+			                  <br><br>President & CEO, Kim Jong-Lib</td>
+			              </tr>
+			            </table></td>
+			          </tr>
+			        </table></td>
+			      </tr>
+			      <tr>
+					<td height="10">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<a href="http://intranet.kmac.co.kr/kmac/VocInfo/Voc_e.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&requestDate=[$requestDate]" target="_blank" class="button white"><b>Comment</b></a> 
+					</td>
+				</tr>
+				<tr> 
+					<td height="10">&nbsp;</td>
+				  </tr>
+			    </table></td>
+			  </tr>
+			</table>
+          </td>
+        </tr>
+        <tr>
+          <td height="21"><img src="http://intranet.kmac.co.kr/kmac/VocInfo/VocMailcheck.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&requestDate=[$requestDate]" width="0" height="0"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					]]>
+				</prop>
+				<prop key="vocCHN">
+					<![CDATA[
+<html>
+<head>
+<title>VOC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<style type="text/css">
+td {font-size:9pt; color:#555555;>
+</style>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 21px;
+	color: #CC0000;
+}
+.letter {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+}
+.style2 {
+	color: #FFFFFF;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style3 {color: #1894d9}
+-->
+</style>
+<style>
+		/* button 
+		---------------------------------------------- */
+		.button {
+		  display: inline-block;
+		  zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+		  *display: inline;
+		  vertical-align: baseline;
+		  margin: 0 1px;
+		  outline: none;
+		  cursor: pointer;
+		  text-align: center;
+		  text-decoration: none;
+		  font: 14px/100% Arial, Helvetica, sans-serif;
+		  padding: .5em 1.9em .55em;
+		  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+		  -webkit-border-radius: .5em; 
+		  -moz-border-radius: .5em;
+		  border-radius: .5em;
+		  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+		}
+		.button:hover {
+		  text-decoration: none;
+		}
+		.button:active {
+		  position: relative;
+		  top: 1px;
+		}
+		/* blue */
+/* white */
+.white {
+  color: #606060 !important;
+  border: solid 1px #b7b7b7;
+  background: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+  background: -moz-linear-gradient(top,  #fff,  #ededed);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+.white:hover {
+  background: #ededed;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
+  background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+}
+.white:active {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
+  background: -moz-linear-gradient(top,  #ededed,  #fff);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+}
+/* red */
+.red {
+  color: #ffffff;
+  border: solid 1px #980c10;
+  background: #d81b21;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317));
+  background: -moz-linear-gradient(top,  #ed1c24,  #aa1317);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317');
+}
+.red:hover {
+  background: #ffffff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#c9151b), to(#a11115));
+  background: -moz-linear-gradient(top,  #c9151b,  #a11115);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#c9151b', endColorstr='#a11115');
+}
+.red:active {
+  color: #ffffff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#aa1317), to(#ed1c24));
+  background: -moz-linear-gradient(top,  #aa1317,  #ed1c24);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#aa1317', endColorstr='#ed1c24');
+}
+ 
+</style>
+<link href="http://intranet.kmac.co.kr/kmac/common/css/thanks_style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="702" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+  <tr>
+    <td bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+         <td height="10"><table width="100%" border="0" cellspacing="1" cellpadding="5" bgcolor="#E1E1E1">               
+           <tr bgcolor="#FFFFFF">
+             <td width="14%" bgcolor="#F0F5F9" align="center"><b> 任务 </b></td>
+             <td width="86%" colspan="3">[$projectname]</td>
+           </tr>
+         </table></td>
+        </tr>
+        <tr>
+          <td align="center">
+		  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+			    <td height="480" align="center" valign="top" bgcolor="#f4f4f4"><table width="90%" border="0" cellspacing="0" cellpadding="0">
+			      <tr>
+			        <td height="60" align="center" class="title"><p>聆听顾客对项目的意见</p></td>
+			      </tr>
+			      <tr>
+			        <td height="380" align="center" bgcolor="#dddddd"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+			          <tr>
+			            <td height="370" align="center" valign="top" bgcolor="#FFFFFF"><br>
+			              <table width="97%" border="0" cellspacing="0" cellpadding="0">
+			              <tr>
+			                <td class="letter"><p>您好!</p>
+			                  <p>我是KMAC的董事长 金種立 </p>
+			                  <p>&nbsp;</p>
+			                  <p>我们想聆听您对我们KMAC现在正在执行中的[$projectname]的意见.</p>
+			                  <p>&nbsp;</p>
+			                  <p>如果您提出在项目进行过程中发生的不满或者意见,这些将传达</p>
+			                  <p>到项目总负责人.</p>
+			                  <p>&nbsp;</p>
+			                  <p>我们将以您提出的意见为基础,更加努力来为贵公司提供更高的价值.</p>
+			                  <p>&nbsp;</p>
+			                  <p>谢谢.</p>
+			                </td>
+			              </tr>
+			            </table></td>
+			          </tr>
+			        </table></td> 
+			      </tr>
+				  <tr>
+					<td height="10">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<a href="http://intranet.kmac.co.kr/kmac/VocInfo/Voc_c.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&requestDate=[$requestDate]" target="_blank" class="button red"><b>入力意见</b></a> 
+					</td>
+				</tr>
+				<tr> 
+					<td height="10"><img src="http://intranet.kmac.co.kr/kmac/VocInfo/VocMailcheck.asp?receiveEmail=[$receiveEmail]&ProjectCode=[$projectCode]&requestDate=[$requestDate]" width="0" height="0"></td>
+				</tr>
+			    </table></td>
+			  </tr>
+			</table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+					
+					]]>
+				</prop>
+				<prop key="vocJPN">
+					<![CDATA[
+					]]>
+				</prop>
+				<prop key="educationCSIMailContent">
+					<![CDATA[
+<html>
+<head>
+<title>공개교육 고객만족도</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+</head>
+<body bgcolor="#FFFFFF">
+	<table width="702" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td><img src="http://intranet.kmac.co.kr/kmac/image/vocinfo/com_mail_logo.gif" width="702" height="31"></td>
+		</tr>
+	</table>
+	<table width="702" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+		<tr>
+			<td bgcolor="#FFFFFF">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td height="25"></td>
+					</tr>
+					<tr>
+						<td align="center" width="100%" height="770">
+						<iframe width="700" id="frm1" height="770" name="frm1" src="http://intranet.kmac.co.kr/kmac/vocinfo/eduCsiView.asp?projectCode=[$projectCode]&gubun=NOT" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+						</td>
+					</tr>
+					<tr>
+						<td height="25"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<table width="702" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td>
+				<table width="100%" border="0" cellspacing="1" cellpadding="0" bgcolor="#CECECE">
+					<tr>
+						<td bgcolor="#FFFFFF" align="center" height="90"><img src="http://intranet.kmac.co.kr/kmac/image/vocinfo/com_mail_copyright.gif" width="581" height="62"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
+					]]>
+				</prop>	
+				<prop key="salaryMailingContent">
+					<![CDATA[
+<html>
+
+<head>
+<style type="text/css">
+.pjt_name	{
+	padding: 5px 0px; text-align: center; border-right-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid;	
+}
+.pjt_amount	{
+	text-align: right; border-bottom-color: rgb(204, 204, 204); border-bottom-width: 1px; border-bottom-style: solid; padding-right:10px;	
+}
+.pjt_name_total {
+	padding: 5px 0px; text-align: center; border-right-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; background-color: rgb(255, 246, 247); font-weight: bold;
+}
+.pjt_amount_total {
+	text-align: right; margin-right: 10px; border-bottom-color: rgb(204, 204, 204); border-bottom-width: 1px; border-bottom-style: solid; background-color: rgb(255, 246, 247); padding-right:10px;
+}
+</style>
+</head>
+<body>
+<table align="center" border="0" cellpadding="0" cellspacing="0" style="background-color:#ffffff; color:#333333; font-family:나눔고딕,&quot;궁서&quot;,NanumGothic,Sans-serif; font-size:13px; width:600px">
+	<tbody>
+		<tr>
+			<td align="center"><img src="http://www.kmac.co.kr/edu/mail_img/mail_top_600.png" /></td>
+		</tr>
+		<tr>
+			<td align="center">
+			<table border="0" style="margin-top:5px">
+				<tbody>
+					<tr>
+						<td style="background: rgb(47, 66, 96); border-radius: 5px; height: 80px; text-align: center; color: rgb(255, 255, 255); line-height: 80px; font-family: &quot;궁서&quot;; font-size: 24px;"><strong>[$year]년 [$month]월 수행성과급 지급 내역서</strong></td>
+					</tr>
+					<tr>
+						<td style="padding: 1px 0px;">&nbsp;</td>
+					</tr>
+					<tr>
+						<td align="center" style="padding: 25px 40px 15px; border: 1px solid rgb(221, 221, 221); border-image: none; width: 600px; text-align: left; color: rgb(51, 51, 51); font-size: 13px;">
+						<p><span style="line-height:24px">안녕하십니까.</span></p>
+
+						<p><span style="line-height:20px">KMAC에 대한 많은 관심과 노고에 감사드리며 [$year]년 [$month]월 수행 성과급이 아래와 같이 지급<br />
+						되었음을 안내해 드립니다.</span></p>
+
+						<table style="color:#333333; font-family:나눔고딕,NanumGothic,Sans-serif; font-size:13px; margin-top:40px">
+							<thead>
+								<tr>
+									<td style="padding: 5px 0px; text-align: center; background-color: rgb(204, 204, 204);" width="382"><strong>프로젝트명</strong></td>
+									<td style="text-align: center; background-color: rgb(204, 204, 204); text-weight: bold;" width="178"><strong>수행 성과급</strong></td>
+								</tr>
+								[$amount]
+								<!-- 프로젝트명과 금액 (n개)
+								<tr>
+									<td class="pjt_name">2018년도 과기정통부 직할기관 및 연구회</td>
+									<td class="pjt_amount">1,500,000 원</td>
+								</tr>
+								<tr>
+									<td class="pjt_name">2018년 위치정보산업 활성화 지원</td>
+									<td class="pjt_amount">1,000,000 원</td>
+								</tr>
+								-->
+								[$amountGrandTotal]
+								<!-- 합계와 합계 금액 (1개)
+								<tr>
+									<td class="pjt_name_total">합계</td>
+									<td class="pjt_amount_total">2,500,000 원</td>
+								</tr>
+								-->
+							</thead>
+						</table>
+
+						<p style="text-align: right;"><span style="color:#999999; font-size:12px; margin-top:5px; text-align:right">*위 금액은 세전 금액임을 알려 드립니다.</span></p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table>
+				<tbody>
+					<tr>
+						<td align="center" style="margin: 0px; padding: 10px 40px; border: 1px solid rgb(221, 221, 221); border-image: none; width: 600px; text-align: left; color: rgb(51, 51, 51); line-height: 150%; font-size: 13px; background-color: rgb(249, 249, 249);"><span>* 문의 : 경영기획1팀 김은경 (☎ 02-3786-0521) </span></td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>
+					]]>
+				</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

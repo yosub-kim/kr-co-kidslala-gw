@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<!-- expertPool beans-->
+	<bean id="projectMasterInfoManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.master.manager.impl.ProjectMasterInfoManagerImpl">
+				<property name="projectDao" ref="projectDao" />
+				<property name="projectMemberDao" ref="projectMemberDao" />
+				<property name="erpProjectDao" ref="erpProjectDao" />
+				<property name="erpProjectMemberDao" ref="erpProjectMemberDao" />
+				<property name="expertPoolManager" ref="expertPoolManager" />
+				<property name="projectReportInfoManager" ref="projectReportInfoManager" />
+				<property name="projectOrgdbManager" ref="projectOrgdbManager" />
+				<property name="projectProgressManager" ref="projectProgressManager" />
+				<property name="projectVocDao" ref="projectVocDao" />
+				<property name="projectCsrInfoDao" ref="projectCsrInfoDao" />
+				<property name="projectCustomerInfoDao" ref="projectCustomerInfoDao" />
+				<property name="sanctionDocDao" ref="sanctionDocDao" />
+				<property name="attachManager" ref="attachManager" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectReportInfoManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.preport.manager.impl.ProjectReportInfoManagerImpl">
+				<property name="projectReportDao" ref="projectReportDao" />
+				<property name="projectReportDetailDao" ref="projectReportDetailDao" />
+				<property name="projectDao" ref="projectDao" />
+			</bean> 
+		</property>
+	</bean>
+	<bean id="projectEndingManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.endprocess.manager.impl.ProjectEndingManagerImpl">
+				<property name="projectEndingDao" ref="projectEndingDao" />
+				<property name="worklistManager" ref="worklistManager" />
+				<property name="projectEndTaskAssignManager" ref="projectEndTaskAssignManager" />
+				<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+				<property name="projectDao" ref="projectDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectSummaryManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.summary.manager.impl.ProjectSummaryManagerImpl">
+				<property name="projectSummaryDao" ref="projectSummaryDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectEndProcessManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.endprocess.manager.impl.ProjectEndProcessManagerImpl">
+				<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+				<property name="projectEndTaskAssignManager" ref="projectEndTaskAssignManager" />
+			</bean>
+		</property>
+	</bean> 
+	<bean id="projectEndTaskAssignManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.endprocess.manager.impl.ProjectEndTaskAssignManagerImpl">
+				<property name="projectDao" ref="projectDao" />
+				<property name="expertPoolManager" ref="expertPoolManager" />
+				<property name="endProcessCheckDao" ref="endProcessCheckDao" />
+				<property name="projectEndingDao" ref="projectEndingDao" />
+				<property name="worklistManager" ref="worklistManager" />
+				<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+				<property name="projectMemberDao" ref="projectMemberDao" />
+				<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectRollingManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.endprocess.manager.impl.ProjectRollingManagerImpl">
+				<property name="projectRollingDao" ref="projectRollingDao" />
+				<property name="worklistManager" ref="worklistManager" />
+				<property name="projectEndTaskAssignManager" ref="projectEndTaskAssignManager" />
+				<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectProgressManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.progress.manager.impl.ProjectProgressManagerImpl">
+				<property name="projectProgressExeDao" ref="projectProgressExeDao" />
+				<property name="projectProgressPlanDao" ref="projectProgressPlanDao" />
+				<property name="projectProgressExeDetailDao" ref="projectProgressExeDetailDao" />
+				<property name="projectProgressPlanDetailDao" ref="projectProgressPlanDetailDao" />
+				<property name="projectProgressContentDao" ref="projectProgressContentDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectOrgdbManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.master.manager.impl.ProjectOrgdbManagerImpl">
+				<property name="projectOrgdbDao" ref="projectOrgdbDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectVocManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.voc.manager.impl.ProjectVocManagerImpl">
+				<property name="projectVocDao" ref="projectVocDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="expenseManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.expense.manager.impl.ExpenseManagerImpl">
+				<property name="expenseDao" ref="expenseDao" />
+				<property name="expenseRestDao" ref="expenseRestDao" />
+				<property name="expenseDetailDao" ref="expenseDetailDao" />
+				<property name="expenseDetailRestDao" ref="expenseDetailRestDao" />
+				<property name="expenseHistoryDao" ref="expenseHistoryDao" />
+				<property name="projectMemberDao" ref="projectMemberDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="projectCsrInfoManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.master.manager.impl.ProjectCsrInfoManagerImpl">
+				<property name="projectCsrInfoDao" ref="projectCsrInfoDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="monthlyReportManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.mreport.manager.impl.MonthlyReportManagerImpl">
+				<property name="monthlyReportDao" ref="monthlyReportDao" />
+				<property name="projectDao" ref="projectDao" />
+				<property name="worklistManager" ref="worklistManager" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="weeklyReportManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.wreport.manager.impl.WeeklyReportManagerImpl">
+				<property name="weeklyReportDao" ref="weeklyReportDao" />
+				<property name="projectDao" ref="projectDao" />
+				<property name="worklistManager" ref="worklistManager" />
+			</bean>
+		</property>
+	</bean>	
+	<bean id="projectManpowerManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.manpower.manager.impl.ProjectManpowerManagerImpl">
+				<property name="projectManpowerDao" ref="projectManpowerDao" />
+				<property name="projectManpowerDetailDao" ref="projectManpowerDetailDao" />
+			</bean> 
+		</property>
+	</bean>
+	<bean id="hashTagManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.project.search.manager.impl.HashTagManagerImpl">
+				<property name="hashTagDao" ref="hashTagDao" />
+			</bean> 
+		</property>
+	</bean>
+
+
+
+	<!-- dao -->
+	<bean id="erpProjectDao" class="kr.co.kmac.pms.project.master.dao.impl.ErpProjectDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="erpProjectMemberDao" class="kr.co.kmac.pms.project.master.dao.impl.ErpProjectMemberDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectDao" class="kr.co.kmac.pms.project.master.dao.impl.ProjectDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="intranetEduDataSource" ref="intranetEduDataSource" />
+	</bean>
+	<bean id="projectMemberDao" class="kr.co.kmac.pms.project.master.dao.impl.ProjectMemberDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectCsrInfoDao" class="kr.co.kmac.pms.project.master.dao.impl.ProjectCsrInfoDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectCustomerInfoDao" class="kr.co.kmac.pms.project.master.dao.impl.ProjectCustomerInfoDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="projectReportDao" class="kr.co.kmac.pms.project.preport.dao.impl.ProjectReportDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectReportDetailDao" class="kr.co.kmac.pms.project.preport.dao.impl.ProjectReportDetailDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="projectRollingDao" class="kr.co.kmac.pms.project.endprocess.dao.impl.ProjectRollingDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectEndingDao" class="kr.co.kmac.pms.project.endprocess.dao.impl.ProjectEndingDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="projectSummaryDao" class="kr.co.kmac.pms.project.summary.dao.impl.ProjectSummaryDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="endProcessCheckDao" class="kr.co.kmac.pms.project.endprocess.dao.impl.EndProcessCheckDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="projectProgressExeDao" class="kr.co.kmac.pms.project.progress.dao.impl.ProjectProgressExeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectProgressExeDetailDao" class="kr.co.kmac.pms.project.progress.dao.impl.ProjectProgressExeDetailDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectProgressPlanDao" class="kr.co.kmac.pms.project.progress.dao.impl.ProjectProgressPlanDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectProgressPlanDetailDao" class="kr.co.kmac.pms.project.progress.dao.impl.ProjectProgressPlanDetailDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="projectProgressContentDao" class="kr.co.kmac.pms.project.progress.dao.impl.ProjectProgressContentDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="projectVocDao" class="kr.co.kmac.pms.project.voc.dao.impl.ProjectVocDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<bean id="projectOrgdbDao" class="kr.co.kmac.pms.project.master.dao.impl.ProjectOrgdbDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	
+	<bean id="expenseDao" class="kr.co.kmac.pms.project.expense.dao.impl.ExpenseDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expenseRestDao" class="kr.co.kmac.pms.project.expense.dao.impl.ExpenseRestDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expenseDetailDao" class="kr.co.kmac.pms.project.expense.dao.impl.ExpenseDetailDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expenseDetailRestDao" class="kr.co.kmac.pms.project.expense.dao.impl.ExpenseDetailRestDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expenseHistoryDao" class="kr.co.kmac.pms.project.expense.dao.impl.ExpenseHistoryDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<bean id="weeklyReportDao" class="kr.co.kmac.pms.project.wreport.dao.impl.WeeklyReportDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="monthlyReportDao" class="kr.co.kmac.pms.project.mreport.dao.impl.MonthlyReportDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="projectManpowerDao" class="kr.co.kmac.pms.project.manpower.dao.impl.ProjectManpowerDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="projectManpowerDetailDao" class="kr.co.kmac.pms.project.manpower.dao.impl.ProjectManpowerDetailDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="hashTagDao" class="kr.co.kmac.pms.project.search.dao.impl.HashTagDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

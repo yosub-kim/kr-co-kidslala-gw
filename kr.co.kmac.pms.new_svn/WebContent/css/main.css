@@ -1,0 +1,93 @@
+
+ .leftCont .picAreaTop { padding:10px 33px; border-bottom:1px solid #ddd; border-top:1px solid #ddd !important;  }
+ .centerCont3 .left h3 { padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid #dedede; }
+
+ #container.main h3{ font-size:17px; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid #dedede; }
+
+
+ .centerCont1 { float:left; margin-left:0px;  }
+ .centerCont1 > div { border:1px solid #dedede; }
+ .centerCont1 .left { float:left; position:relative; width:360px; padding:10px 12px 25px 12px; }
+ .centerCont1 .left .more { position:absolute; right:12px; top:10px; }
+ .centerCont1 .left ul li { color:#000; line-height:1.7em; }
+ .centerCont1 .left ul li a { color:#000; padding-left:7px; }
+
+ .centerCont1 .left2 { float:left; position:relative; width:360px; margin-left:8px; padding:10px 12px 25px 12px; }
+ .centerCont1 .left2 .more { position:absolute; right:12px; top:10px; }
+ .centerCont1 .left2 ul li { color:#000; line-height:1.7em; }
+ .centerCont1 .left2 ul li a { color:#000; padding-left:7px; }
+
+ .centerCont2 { float:left; margin-left:0px; margin-top:10px;  }
+ .centerCont2 > div { border:1px solid #dedede; }
+ .centerCont2 .left { float:left; position:relative; width:515px; padding:10px 12px 10px 12px; }
+ .centerCont2 .left .more { position:absolute; right:12px; top:10px; }
+
+ .tableStyle01 { width:100%; text-align:center; font-size:12px}
+ .tableStyle01 thead { background:#f6f6f6; border-top:2px solid #344156; }
+ .tableStyle01 thead th { padding:7px 2px; color:#333; border-bottom:1px solid #dedede; border-right:1px solid #dedede; }
+ .tableStyle01 tbody td { padding:7px 2px; color:#666; border-bottom:1px solid #dedede; border-right:1px solid #dedede; }
+ .tableStyle01 thead th.last { border-right:none; }
+ .tableStyle01 tbody td.last,.tableStyle01 tbody th.last { border-right:none; }
+
+
+ .centerCont2 .left2 { float:left; position:relative; width:205px; margin-left:8px; padding:10px 12px 15px 12px; margin-bottom: 10px;}
+ .centerCont2 .left2 .more { position:absolute; right:12px; top:10px; }
+ .centerCont2 .left2 ul li { color:#000; line-height:2em; }
+ .centerCont2 .left2 ul li a { color:#000; padding-left:7px; }
+ .centerCont2 .notice {  }
+ .centerCont2 .notice .middot { color:#00ade7; font-size:xx-small; letter-spacing:-1px;}
+ .centerCont2 .notice li a { color:#828282; }
+
+
+ .centerCont3 { float:left; margin-left:0px; margin-top:10px;  }
+ .centerCont3 > div { border:1px solid #dedede; }
+ .centerCont3 .left { float:left; position:relative; width:515px; padding:10px 12px 10px 12px; }
+ .centerCont3 .left .more { position:absolute; right:12px; top:10px; }
+ .centerCont3 .left2 { float:left; position:relative; width:205px; margin-left:8px; padding:10px 12px 15px 12px; }
+ .centerCont3 .left2 h3 { padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid #dedede; }
+ .centerCont3 .left2 .more { position:absolute; right:12px; top:10px; }
+ .centerCont3 .left2 ul li { color:#000; line-height:2em; }
+ .centerCont3 .left2 ul li a { color:#000; padding-left:7px; }
+ .centerCont3 .notice {  }
+ .centerCont3 .notice .middot { color:#00ade7; }
+ .centerCont3 .notice li a { color:#828282; }
+ .centerCont3 .notice li a:hover { color:#0069b7; text-decoration:underline; }
+
+ .color009fe9 { color:#009fe9 !important; font-weight:bold; }
+
+
+ .centerCont4 { float:left; margin-left:0px; margin-top:10px;  }
+ .centerCont4 > div { border:1px solid #dedede; }
+ .centerCont4 .left { float:left; position:relative; width:515px; padding:10px 12px 10px 12px; }
+ .centerCont4 .left .more { position:absolute; right:12px; top:10px; }
+ .centerCont4 .left2 { float:left; position:relative; width:205px; margin-left:8px; padding:10px 12px 15px 12px; }
+ .centerCont4 .left2 .more { position:absolute; right:12px; top:10px; }
+
+ .centerCont5 { float:left; margin-left:0px; margin-top:10px;  }
+ .centerCont5 > div { border:1px solid #dedede; }
+ .centerCont5 .left h3 { padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid #dedede; }
+ .centerCont5 .left { float:left; position:relative; width:515px; padding:10px 12px 10px 12px; }
+ .centerCont5 .left .more { position:absolute; right:12px; top:10px; }
+ .centerCont5 .left2 { float:left; position:relative; width:205px; margin-left:8px; padding:10px 12px 15px 12px; }
+ .centerCont5 .left2 h3 { padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid #dedede; }
+ .centerCont5 .left2 .more { position:absolute; right:12px; top:10px; }
+
+ .tableStyle02 { width:100%; text-align:center; }
+ .tableStyle02 thead { background:#1aa6a5; border-top:1px solid #dedede; }
+ .tableStyle02 thead th { padding:7px 10px 7px 10px; color:#fff; border-bottom:1px solid #dedede; border-right:1px solid #dedede; }
+ .tableStyle02 tbody td { padding:7px 10px 7px 10px; color:#666; border-bottom:1px solid #dedede; border-right:1px solid #dedede; }
+ .tableStyle02 tbody td.last,.tableStyle01 tbody th.last { border-right:none; }
+
+.textalignLeft { text-align:left !important; }
+
+.ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: left;}
+/*
+.myoverflow { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: left;}
+*/
+.myoverflow {  overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis; white-space:nowrap; position:relative; float:left; text-align:left; }
+.myoverflowcenter { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: center;}
+
+
+@media screen and (min-width:0\0){ .quickLinkList2 li.third { padding-right:26px !important; } }
+@media screen and (min-width:0\0){ .quickLink .quickLinkList { padding-top:5px; padding-left:20px; } }
+@media screen and (min-width:0\0){ .quickLink .quickLinkList2 { padding-left:25px; } }

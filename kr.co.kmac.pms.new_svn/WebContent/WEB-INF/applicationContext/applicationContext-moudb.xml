@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- expertPool beans-->
+	<bean id="moudbManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.moudb.manager.impl.MoudbManagerImpl">
+				<property name="moudbDao" ref="moudbDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- dao -->
+	<bean id="moudbDao" class="kr.co.kmac.pms.moudb.dao.impl.MoudbDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+</beans>

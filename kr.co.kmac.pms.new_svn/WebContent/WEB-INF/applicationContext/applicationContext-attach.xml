@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<!-- authority beans-->
+	<bean id="attachManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.attach.manager.impl.AttachManagerImpl">
+				<property name="attachDao" ref="attachDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="attachTemplateManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.attach.manager.impl.AttachTemplateManagerImpl">
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- dao -->
+	<bean id="attachDao" class="kr.co.kmac.pms.attach.dao.impl.AttachDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+</beans>

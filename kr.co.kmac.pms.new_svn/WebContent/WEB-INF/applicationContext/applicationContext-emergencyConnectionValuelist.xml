@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="emergencyConnectionBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="selectType_A">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select	ssn, enable, replace(replace(dept,'CCO','CCO'),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터') AS dept, replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(deptid) over(partition by deptid) as rowCnt 
+									from 
+									(
+										select ssn, enable, dept, (case r.name when 'AAⅢ' then 'AA' when 'AAⅡ' then 'AA' when 'AAⅠ' then 'AA' else r.name end) as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq, M.companyPositionName
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2,  dept as deptId, g.seq, e.companyPositionName
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+											and e.companyposition <> '64GT'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass in ('A','B')
+									order by seq, deptId, companyPositionId, companyPositionName, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_B">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	ssn, enable, ltrim(replace(replace(dept, ' 전문가그룹', ''),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터')) dept, replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(dept) over(partition by dept) as ssnCnt
+									from
+									(
+										select ssn, enable, dept, r.name as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2, dept as deptId, g.seq
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1'and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass='B' and companyPositionId <> ''
+									  and companyPositionId <> '61DT' and companyPositionId <> '62DT'
+									order by seq, deptId, jobClass, companyPositionId, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_C">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	ssn, enable, ltrim(replace(replace(dept, ' 전문가그룹', ''),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터')) dept, replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(dept) over(partition by dept) as rowCnt
+									from
+									(
+										select ssn, enable, dept, r.name as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2, dept as deptId, g.seq
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass='J'
+									order by seq, deptId, jobClass, companyPositionId, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_H">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	ssn, enable, dept, companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(dept) over(partition by dept) as rowCnt
+									from
+									(
+										select ssn, enable, dept, r.name as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2, dept as deptId, g.seq
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+											and e.companyposition = '64GT'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass='H'  and companypositionid != '64GT'
+									order by seq, deptId, jobClass, companyPositionId, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_H2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	ssn, enable, dept, companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(dept) over(partition by dept) as rowCnt
+									from
+									(
+										select ssn, enable, dept, r.name as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2, dept as deptId, g.seq
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass='N'
+									order by seq, deptId, jobClass, companyPositionId, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_R">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	ssn, enable, dept, companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(dept) over(partition by dept) as rowCnt
+									from
+									(
+										select ssn, enable, dept, r.name as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2, dept as deptId, g.seq
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass='R'
+									order by seq, deptId, jobClass, companyPositionId, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_A_Mobile">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select	ssn, enable, case when companyPositionId = '02GM' then '자문위원' when companyPositionId = '02HM' then '고문컨설턴트' else replace(replace(dept,'CCO','CCO'),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터') end AS dept, 
+											replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count( case when companyPositionId = '02GM' then '자문위원' when companyPositionId = '02HM' then '고문컨설턴트' else dept end) over(partition by  case when companyPositionId = '02GM' then '자문위원' when companyPositionId = '02HM' then '고문컨설턴트' else dept end) as rowCnt
+									from 
+									(
+										select ssn, enable, dept, (case r.name when 'AAⅢ' then 'AA' when 'AAⅡ' then 'AA' when 'AAⅠ' then 'AA' else r.name end) as companyPosition, M.name, email,  right(companyTelNo, 4) as companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq, M.companyPositionName
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2,  dept as deptId, g.seq, e.companyPositionName
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass in ('A','B')
+					/~name:			and name like {name} ~/
+									order by seq, deptId, companyPositionId, companyPositionName, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_J_Mobile">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select	ssn, enable, replace(replace(dept,'CCO','CCO'),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터') AS dept, replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(deptid) over(partition by deptid) as rowCnt 
+									from 
+									(
+										select ssn, enable, dept, (case r.name when 'AAⅢ' then 'AA' when 'AAⅡ' then 'AA' when 'AAⅠ' then 'AA' else r.name end) as companyPosition, M.name, email, right(companyTelNo, 4) as companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq, M.companyPositionName
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2,  dept as deptId, g.seq, e.companyPositionName
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass in ('J')
+					/~name:			and name like {name} ~/
+									order by seq, deptId, companyPositionId, companyPositionName, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectType_N_Mobile">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select	ssn, enable, replace(replace(dept,'CCO','CCO'),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터') AS dept, replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+											companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+											count(deptid) over(partition by deptid) as rowCnt 
+									from 
+									(
+										select ssn, enable, dept, (case r.name when 'AAⅢ' then 'AA' when 'AAⅡ' then 'AA' when 'AAⅠ' then 'AA' else r.name end) as companyPosition, M.name, email, right(companyTelNo, 4) as companyTelNo, mobileNo, jobClass, 
+											   address1, address2, deptId, companyPosition as companyPositionId, M.seq, M.companyPositionName
+										from
+										(
+											select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2,  dept as deptId, g.seq, e.companyPositionName
+											from expertPool e
+											LEFT OUTER JOIN
+											smgroup g
+											on e.dept=g.id
+											where e.enable='1' and e.restrictUser <> 'Y'
+										) M
+										LEFT OUTER JOIN
+										smrole r
+										on M.companyPosition=r.id
+									) Ma
+									where jobClass in ('N')
+					/~name:			and name like {name} ~/
+									order by seq, deptId, companyPositionId, companyPositionName, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="emergencyConnectionWapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="emergencyConnectionWapper" class="kr.co.kmac.pms.emergencyConnection.vl.EmergencyConnectionWapper" />
+</beans>
+

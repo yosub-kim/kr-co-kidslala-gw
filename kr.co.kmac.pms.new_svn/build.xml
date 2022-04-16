@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<project name="InterMajorSeminar"  default="init">
+    
+    <property file="build.properties"/>
+    <property environment="env"/>
+        
+    <target name="init">
+        <path id="xdoclet.class.path">
+    		<fileset dir="${xlib.dir}"	includes="**/*.jar" />
+    		<fileset dir="${build.lib.dir}"	includes="**/*.jar" />
+        </path>         	
+    </target>
+    
+    
+    <target name="generateDD" depends="init">
+      <delete file="${build.webinf.dir}/struts-config.xml"/>
+      <taskdef name="webdoclet"
+               classname="xdoclet.modules.web.WebDocletTask" 
+               classpathref="xdoclet.class.path"/>
+      <webdoclet destdir="${build.dir}" mergedir="${merge.dir}">   	  
+         <fileset dir="${src.dir}">
+         	<include name="**/*Action.java" /> 
+         	<include name="**/*Form.java" /> 
+         	<include name="**/data/*.java" /> 
+         </fileset>
+         
+         <strutsconfigxml version="1.1" destdir="${build.webinf.dir}"/>
+      </webdoclet>
+    </target>
+    
+    
+</project>

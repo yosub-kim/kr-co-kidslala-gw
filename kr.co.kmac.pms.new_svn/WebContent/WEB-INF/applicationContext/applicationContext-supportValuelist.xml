@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<!-- web -->
+	<bean id="supportValueList" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<!-- <entry key="issueSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT
+									left(in_date,4)+'/'+substring(in_date,5,2)+'/'+right(in_date,2) as wtime, *
+									FROM INS058M
+									WHERE 1=1
+						/~content:		AND content		like {content} ~/
+						/~dept_name:	AND dept_name	like {dept_name}~/
+						/~receive:		AND receive		like {receive} ~/
+						/~year:			AND year		like {year}	~/
+						/~gubun:		AND gubun		like {gubun} ~/
+						/~gaksa:		AND gaksa		=	 {gaksa} ~/
+									ORDER BY no DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchIssueListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="namecardListSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT ROW_NUMBER() OVER(ORDER BY idx ASC) + 0 as no, regdate, username, name, title, memo, state, idx, prj_nm 
+											, dept, email, phone, mobile, (SELECT COUNT(*) FROM namecard_tbl WHERE state = 'N') AS cnt, application_email
+									FROM namecard_tbl
+									WHERE 1=1
+						/~start_date:	AND regdate 	>=	 {start_date} ~/
+						/~end_date:		AND regdate		<=	 {end_date} ~/
+						/~state:		AND state		= 	 {state} ~/
+						/~name:			AND name		like {name} ~/
+						/~username:		AND username 	=	 {username} ~/
+									ORDER BY idx DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="NamecardSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="namecardListSelectList2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT TOP 5 ROW_NUMBER() OVER(ORDER BY idx DESC) + 0 as no, regdate, username, name, title, memo, state, idx, prj_nm, cnt
+											, dept, email, phone, mobile, application_email
+									FROM namecard_tbl
+									WHERE 1=1
+						/~name:			AND name	=	 {name} ~/
+									ORDER BY idx DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="NamecardSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="namecardListSelectList3">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT ROW_NUMBER() OVER(ORDER BY idx ASC) + 0 as no, regdate, username, name, title, memo, state, idx, prj_nm 
+											, dept, email, phone, mobile, (SELECT COUNT(*) FROM namecard_tbl WHERE state = 'N') AS cnt, application_email
+									FROM namecard_tbl
+									WHERE 1=1
+						/~start_date:	AND regdate 	>=	 {start_date} ~/
+						/~end_date:		AND regdate		<=	 {end_date} ~/
+						/~state:		AND state		= 	 {state} ~/
+						/~name:			AND name		like {name} ~/
+									ORDER BY idx DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="NamecardSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="namecardSearchName">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT   a.name, b.name as dept, c.name as title, a.email, isnull(a.companyTelNo,'') as phone, isnull(a.mobileNo,'') as mobile ,
+											 0 as idx, 0 as regdate, 0 as username, 0 as memo, 0 as state, 0 as prj_nm, 0 as cnt, 0 as no, 0 as application_email
+									FROM ExpertPool a, smgroup b, smrole c 
+									WHERE a.enable='1' and a.dept = b.id        
+										AND a.companyposition = c.id 
+						/~sname:		AND a.name	like	{sname} ~/  
+																	]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="NamecardSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="namecardExcelList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT ROW_NUMBER() OVER(ORDER BY idx ASC) + 0 as no, regdate, username, name, title, dept, email, phone, fax, mobile,
+										Ename, Etitle, Edept, memo, prj_nm, cnt, application_email
+									FROM namecard_tbl
+									WHERE state = 'N'
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="NamecardExcelWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="certificateManagerList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT certify_num, RIGHT(certify_num, 3) AS num, (SELECT name FROM newkmacpms.dbo.expertPool WHERE userid=writerid AND userid <> '') AS writer, status,
+										(SELECT name FROM newkmacpms.dbo.expertpool WHERE userid=a.userid AND userid <> '') AS username, writerDept, ctype, gubun, userDept,
+										CONVERT(VARCHAR(10), regdate, 23) AS regdate, CONVERT(VARCHAR(10), manager_approvedate, 23) AS manager_approvedate, use_kind, use_place, print_yn,
+										(case when datediff(D,regdate,GETDATE()) < 2 then 'new' else '' end) as new
+									FROM certificate A
+									WHERE approvedate <> ''  
+						/~ctype:		AND ctype		=	 {ctype} ~/ 
+						/~status:		AND status		=	 {status} ~/ 
+						/~username:		AND username	like {username} ~/  
+									ORDER BY status ASC, certify_num DESC   
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="CertificateSelectWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry> -->
+				<entry key="certificateList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT  certify_num, RIGHT(certify_num, 4) AS num, (SELECT name FROM newkmacpms.dbo.expertPool WHERE userid=writerid AND userid <> '') AS writer, status,
+										(SELECT name FROM newkmacpms.dbo.expertpool WHERE userid=a.userid AND userid <> '') AS username, writerDept, ctype, gubun, userDept,
+										CONVERT(VARCHAR(10), regdate, 23) AS regdate, CONVERT(VARCHAR(10), manager_approvedate, 23) AS manager_approvedate, use_kind, use_place, print_yn,
+										(case when datediff(D,regdate,GETDATE()) < 2 then 'new' else '' end) as new
+									FROM certificate A
+									WHERE 1=1 
+						/~userId:		AND (writerid	=	 {userId}	OR		userid		= {userId}) ~/ 
+						/~ctype:		AND ctype		=	 {ctype} ~/ 
+						/~status:		AND status		=	 {status} ~/ 
+									ORDER BY certify_num DESC   
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="CertificateSelectWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- <entry key="certificateSearch">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT name, userid, deptname, companypositionname, ssn, jobclass
+									FROM expertPool
+									WHERE enable = 1
+						/~sname:		AND name		like {sname} ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="CertificateSearchWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry> -->
+			</map>
+		</property>
+	</bean>
+	
+	<!-- mobile -->
+	<bean id="mobileSupportBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="mobileSalaryList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT prov_date, CASE gubun WHEN '1' THEN '급여' WHEN '2' THEN '성과급' WHEN '3' THEN '급여/PI(1)성과급' WHEN '4' THEN 'PI(2)성과급'
+										WHEN '5' THEN 'PS 성과급' WHEN '6' THEN 'PI 성과급' WHEN '7' THEN '개인연봉' WHEN '8' THEN '실행 성과급' WHEN '9' THEN '특별급'
+										WHEN '0' THEN 'PI 성과급' END gubun_str, REPLACE(CONVERT(VARCHAR, CONVERT(MONEY, realpay), 1), '.00', '') AS realPay, idx
+									FROM SalaryData
+									WHERE 1=1
+						/~empno:		AND empno		= {empno} ~/
+						/~start_date:	AND prov_date 	>=	 {start_date} ~/
+						/~end_date:		AND prov_date	<=	 {end_date} ~/
+									ORDER BY CASE WHEN LEN(prov_date) = 4 THEN prov_date + '12-32' ELSE prov_date END DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="MobileSalaryListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="mobileIncentiveList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="erpDataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT (SUBSTR(m.FUND_APP_DATE,1,4)||'-'||SUBSTR(m.FUND_APP_DATE,5,2)||'-'||SUBSTR(m.FUND_APP_DATE,7,2)) as fund_date,
+										 TO_CHAR(A_JAGUM.amt, '9,999,999') AS amt, A_JAGUM.REMARK      
+           							FROM (                                                                                                                                                     
+                     					select b.slip_nbr,b.remark remark , a.amt, a.DRAW_NBR, a.DRAW_DATE,a.COMP_CODE from A_JAGUM a,ag0101d b                                                                                    
+                       					where a.comp_code =b.comp_code and a.draw_date =b.draw_date and a.draw_nbr  =b.draw_nbr and a.line_nbr=b.line_nbr                                  
+                       	/~comp_code:		AND a.COMP_CODE		= {comp_code} ~/
+                       						and b.fact_code ='A01' and b.draw_dept like '%'  and nvl(a.CUST_CODE,'%') in 
+                       						(select sno from perinfo 
+                       						where 1=1
+                       	/~jumin:			AND ju_no		= {jumin} ~/)          
+            							) A_JAGUM, ag0100m m                                                                                                                                
+          							WHERE m.FACT_CODE = 'A01' and m.draw_date = A_JAGUM.draw_date and m.draw_nbr = A_JAGUM.draw_nbr  and FUND_APP_DATE is not null and m.slip_nbr= A_JAGUM.slip_nbr 
+          				/~comp_code:		AND A_JAGUM.COMP_CODE		= {comp_code} ~/
+          				/~start_date:		AND to_char(to_date(m.FUND_APP_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD') >=	{start_date}~/
+          				/~end_date:			AND to_char(to_date(m.FUND_APP_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD') <=	{end_date}~/
+          							ORDER BY FUND_APP_DATE DESC
+											
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="MobileIncentiveListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="mobileBonusList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="erpDataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT pname, dept_name, b.tea_amt, SUBSTR(b.YYYYMM, 1, 4) AS year, SUBSTR(b.YYYYMM, 5, 2) AS month,
+										SUM(tea_amt) OVER() as total
+									FROM a_projm a, a_teaslip_pms b, deptcode c
+									WHERE a.projid=b.projid AND eteam_code=c.dept_code AND b.comp_code=c.comp_code
+						/~jumin:			AND jumin					= {jumin} ~/
+						/~pname:			AND pname					like {pname} ~/
+						/~year:				AND substr(b.YYYYMM, 1, 4)	= {year} ~/
+						/~month:			AND substr(b.YYYYMM, 5, 2)	= {month} ~/
+									ORDER BY b.YYYYMM DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="MobileBonusListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- <bean id="searchIssueListWrapper" class="kr.co.kmac.pms.support.issue.vl.SearchIssueListWrapper" />
+	<bean id="NamecardSelectListWrapper" class="kr.co.kmac.pms.support.namecard.vl.NamecardSelectListWrapper" />
+	<bean id="NamecardExcelWrapper" class="kr.co.kmac.pms.support.namecard.vl.NamecardExcelWrapper" />  -->
+	<bean id="CertificateSelectWrapper" class="kr.co.kmac.pms.support.certificate.vl.CertificateSelectWrapper" />
+	<!-- <bean id="CertificateSearchWrapper" class="kr.co.kmac.pms.support.certificate.vl.CertificateSearchWrapper" /> -->
+	<bean id="MobileSalaryListWrapper" class="kr.co.kmac.pms.support.taxWork.vl.MobileSalaryListWrapper" />
+	<bean id="MobileIncentiveListWrapper" class="kr.co.kmac.pms.support.taxWork.vl.MobileIncentiveListWrapper" />
+	<bean id="MobileBonusListWrapper" class="kr.co.kmac.pms.support.taxWork.vl.MobileBonusListWrapper" />
+</beans>

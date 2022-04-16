@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="orgDbValueList" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="orgDbSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn"> 
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT M.orgCode, M.NAME as orgName, M.PHONE as telNo, M.hompage as homePage, O.kmacrelation as relWithKmac, O.MAJOR as specialField, M.writer, isnull(C.checkYN, 'N') as checkYN
+									FROM ORGDBMAIN M
+									LEFT JOIN
+									(
+										SELECT * FROM OrgDBSpecialField WHERE kmacrelation NOT IN ('RELB','RELC','RELD','')
+									)O
+									ON M.ORGCODE = O.ORGCODE
+									LEFT JOIN
+									(
+										SELECT * FROM orgdbCheck
+									)C
+									ON M.ORGCODE = C.ORGCODE
+									WHERE 1=1
+			/~relWithKmac: 		AND M.OrgCODE IN (select orgCode from OrgDBSpecialField where kmacrelation = {relWithKmac}) ~/
+			/~companyName:			AND M.name like {companyName} ~/
+									ORDER BY ORGCODE DESC
+													
+										]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchOrgdbListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- 진행정보 History 고객정보현황 부분 -->
+				<entry key="orgDbCustomerSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn"> 
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT ROW_NUMBER() OVER(ORDER BY c.idx DESC) AS ROWNUM
+										,c.idx, c.subject as subject
+										,c.embbsDept as runningDiv									
+										,(select d.data_1 from cmtableData d where c.businessTypeCode = d.key_1 and d.table_name = 'business_type_code') as businessType									
+										,(select o.name from orgdbMain o where c.customerCode = o.orgCode and isOrg = 'Y') as customerName									
+										,(select e.name from expertPool e where e.ssn = c.writerSsn) as writerName									
+										,c.regDate as writeDate
+										,c.customerCode as customerCode
+								FROM 	Customer c									
+								WHERE 	c.customerCode IS NOT NULL
+								AND		c.customerCode <> ''
+		/~orgCode: 			AND		c.customerCode = {orgCode}~/
+								order by 1				
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbHistoryCustomerListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- 진행정보 History 인력현황 부분 -->
+				<entry key="orgDbExpertSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn"> 
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select	ROW_NUMBER() OVER(ORDER BY A.ssn DESC) AS ROWNUM
+												, a.ssn
+												, a.name
+												, a.companyId
+												, a.company
+												, a.createrId
+												, (select e.name from expertpool e where e.ssn = a.createrId) as createrName
+												, a.createdDate
+										from expertpool A
+						/~orgCode:  where a.companyId = {orgCode}~/
+										order by 1
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbHistoryExpertListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- 진행정보 History Project 부분 -->
+				<entry key="orgDbProjectSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn"> 
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select ROW_NUMBER() OVER(ORDER BY A.projectCode DESC) AS ROWNUM
+										, a.projectCode
+										, a.BusinesstypeCode
+										, (select data_1 from cmtabledata where table_name = 'BUSINESS_TYPE_CODE' and key_1 = a.BusinesstypeCode) as businessType
+										, a.runningDivCode
+										, (select data_1 from cmtabledata where table_name = 'RUNNING_DIV_CODE' and key_1 = a.runningDivCode) as runningDiv
+										, a.projectName
+										, a.projectState
+										,(case 
+											when projectState  = '1' then '등록절차'
+											when projectState  = '2' then '품의'
+											when projectState  = '3' then '진행'
+											when projectState  = '4' then '평가'
+											when projectState  = '5' then '종료처리'
+											when projectState  = '6' then '완료'
+										 end) as projectStateName
+										, (select m.ssn from projectMember m where m.projectCode = a.projectCode and m.trainingYn = 'Y' and role = 'PM') as pmSsn
+										, (select e.name from expertpool e 
+											where e.ssn = ( select m.ssn from projectMember m 
+																where m.projectCode = a.projectCode and m.trainingYn = 'Y' 
+																and role = 'PM')) as pmName										
+								from project a
+								where projectCode in 
+										(select distinct projectCode 
+											from projectOrgdbRel 
+							/~orgCode:  where orgCode = {orgCode}~/
+										)
+								order by 1
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbHistoryProjectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="searchOrgdbListWrapper" class="kr.co.kmac.pms.orgdb.vl.SearchOrgdbListWrapper" />
+	<bean id="orgdbHistoryCustomerListWrapper" class="kr.co.kmac.pms.orgdb.vl.OrgdbHistoryCustomerListWrapper" />
+	<bean id="orgdbHistoryExpertListWrapper" class="kr.co.kmac.pms.orgdb.vl.OrgdbHistoryExpertListWrapper" />
+	<bean id="orgdbHistoryProjectListWrapper" class="kr.co.kmac.pms.orgdb.vl.OrgdbHistoryProjectListWrapper" />
+</beans>

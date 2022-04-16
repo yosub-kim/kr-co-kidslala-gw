@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="mobileBoardBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+		    <map>
+		        <entry key="mobileBoardIndex">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	seq, b.bbsId, b.bbsName, totalCnt, isNull(recentCnt, 0) recentCnt
+									FROM (
+										select a.bbsId, totalCnt, recentCnt
+										from (
+											select bbsId, count(*) totalCnt
+											from StandardBBS WITH(NOLOCK) 
+											group by bbsId
+										) a left outer join (
+											select bbsId, count(*) recentCnt
+											from StandardBBS WITH(NOLOCK) 
+											where wtime >= (getDate() -7)
+											group by bbsId
+										) b 
+										on a.bbsId = b.bbsId	
+									) a right outer join (
+										select key_1 bbsId, data_1 bbsName, seq
+										from cmTableData
+										where table_name = 'StandardBBS_Master'
+										and data_3 = 'Y'
+									) b
+									on a.bbsId = b.bbsId
+									ORDER BY seq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="mobileBoardIndexListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>		            
+		        </entry>
+		    </map>
+	    </property>
+    </bean>
+	<bean id="boardListBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="selectListEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt, isnull(r.likeCnt, 0) as likeCnt
+										, isnull(a.prjType, 1) as prjType
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+										left join
+										(
+											select bbsId, seq, likeYN, count(likeYN) as likeCnt From recommendCnt group by bbsId, seq, likeYN  
+										)r
+										on a.bbsid = r.bbsid and a.seq = r.seq
+						/~bbsId: WHERE	(a.bbsid = {bbsId} or  a.bbsid = (case when {bbsId} = 'sharebbs' then 'doobitCorps' else {bbsId} end)) ~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+									AND	(a.email is null or a.email = '')
+						/~bbsId:   ORDER BY topArticle DESC, (case when {bbsId} = 'sharebbs' then wtime else '' end) DESC, REF DESC, STEP ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="selectListEntry2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+						/~bbsId: WHERE	(a.bbsid = {bbsId} or  a.bbsid = (case when {bbsId} = 'sharebbs' then 'doobitCorps' else {bbsId} end)) ~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+									 AND	(a.email is not null and a.email != '')
+							/~bbsId:   ORDER BY topArticle DESC, (case when {bbsId} = 'sharebbs' then wtime else '' end) DESC, REF DESC, STEP ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="selectListEntry3">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt, isnull(r.likeCnt, 0) as likeCnt
+										, isnull(a.prjType, 1) as prjType
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+										left join
+										(
+											select bbsId, seq, likeYN, count(likeYN) as likeCnt From recommendCnt group by bbsId, seq, likeYN  
+										)r
+										on a.bbsid = r.bbsid and a.seq = r.seq
+						/~bbsId: WHERE	(a.bbsid = {bbsId} or  a.bbsid = (case when {bbsId} = 'sharebbs' then 'doobitCorps' else {bbsId} end)) ~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+									AND	(a.email is null or a.email = '')
+									AND isnull(a.prjType, '1') in ('1','2') 
+							/~bbsId:   ORDER BY topArticle DESC, (case when {bbsId} = 'sharebbs' then wtime else '' end) DESC, REF DESC, STEP ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="selectListEntry4">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt, isnull(r.likeCnt, 0) as likeCnt
+										, isnull(a.prjType, 1) as prjType
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+										left join
+										(
+											select bbsId, seq, likeYN, count(likeYN) as likeCnt From recommendCnt group by bbsId, seq, likeYN  
+										)r
+										on a.bbsid = r.bbsid and a.seq = r.seq
+						/~bbsId: WHERE	(a.bbsid = {bbsId} or  a.bbsid = (case when {bbsId} = 'sharebbs' then 'doobitCorps' else {bbsId} end)) ~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+									AND	(a.email is null or a.email = '')
+									AND isnull(a.prjType, '1') in ('1','3') 
+						/~bbsId:   ORDER BY topArticle DESC, (case when {bbsId} = 'sharebbs' then wtime else '' end) DESC, REF DESC, STEP ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="selectListEntry5">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt, isnull(r.likeCnt, 0) as likeCnt
+										, isnull(a.prjType, 1) as prjType
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+										left join
+										(
+											select bbsId, seq, likeYN, count(likeYN) as likeCnt From recommendCnt group by bbsId, seq, likeYN  
+										)r
+										on a.bbsid = r.bbsid and a.seq = r.seq
+						/~bbsId: WHERE	(a.bbsid = {bbsId} or  a.bbsid = (case when {bbsId} = 'sharebbs' then 'doobitCorps' else {bbsId} end)) ~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+									AND	(a.email is null or a.email = '')
+									AND isnull(a.prjType, '1') in ('1') 
+						/~bbsId:   ORDER BY topArticle DESC, (case when {bbsId} = 'sharebbs' then wtime else '' end) DESC, REF DESC, STEP ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="selectListEntryQM">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+						/~bbsId: WHERE	a.bbsid = {bbsId}~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+								   AND	(a.email is not null and a.email != '')
+								 ORDER BY topArticle DESC, REF DESC, STEP
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>		
+				
+					<entry key="selectListEntryHome">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select 	sd.seq,  sd.approvalType, st.approvalName, sd.createrDate,
+										sd.projectCode,
+										(case  sd.projectCode when '8888888' then sd.subject else sd.subject end) projectName,
+										sd.registerDept, sm.description as registerDeptName, substring(sd.registerDept, 1, 3) + '0' divCode,
+										sd.registerSsn, sd.registerName, sd.registerDate,
+										(case  sd.state	when 'SANCTION_STATE_DRAFT'				then '작성'		when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+														when 'SANCTION_STATE_REVIEW'			then '검토'		when 'SANCTION_STATE_CHECK'				then '확인'		when 'SANCTION_STATE_APPROVE' then '승인'		
+														when 'SANCTION_STATE_ASSIST1'			then '협의'		when 'SANCTION_STATE_ASSIST2'			then '협의'		
+														when 'SANCTION_STATE_ASSIST3'			then '협의'		when 'SANCTION_STATE_ASSIST4'			then '협의'		
+														when 'SANCTION_STATE_SUPPORT_DRAFT'		then '기획실'	when 'SANCTION_STATE_SUPPORT_REVIEW'	then '기획실'		
+														when 'SANCTION_STATE_SUPPORT_APPROVE'	then '기획실'	when 'SANCTION_STATE_CEO'				then 'CEO'		
+														when 'SANCTION_STATE_COMPLETE'			then '종료'		
+										else '진행' 	end) as present,
+										(case  sd.state	when 'SANCTION_STATE_COMPLETE'			then '종료'
+														when  'SANCTION_STATE_DRAFT' 			then dbo.getExpertPoolName(sd.registerSsn)
+														when  'SANCTION_STATE_REJECT_DRAFT'		then dbo.getExpertPoolName(sd.registerSsn)
+														when  'SANCTION_STATE_REVIEW' 			then dbo.getExpertPoolName(sd.teammanagerSsn)
+														when  'SANCTION_STATE_CHECK' 			then dbo.getExpertPoolName(sd.cfoSsn)
+														when  'SANCTION_STATE_APPROVE' 			then dbo.getExpertPoolName(sd.cioSsn)
+														when  'SANCTION_STATE_ASSIST1' 			then dbo.getExpertPoolName(sd.assistant1Ssn)
+														when  'SANCTION_STATE_ASSIST2' 			then dbo.getExpertPoolName(sd.assistant2Ssn)
+														when  'SANCTION_STATE_ASSIST3' 			then dbo.getExpertPoolName(sd.assistant3Ssn)
+														when  'SANCTION_STATE_ASSIST4'			then dbo.getExpertPoolName(sd.assistant4Ssn)
+														when  'SANCTION_STATE_SUPPORT_DRAFT'	then dbo.getExpertPoolName(sd.assistant1Ssn)
+														when  'SANCTION_STATE_SUPPORT_REVIEW'	then dbo.getExpertPoolName(sd.assistant2Ssn)
+														when  'SANCTION_STATE_SUPPORT_APPROVE'	then dbo.getExpertPoolName(sd.assistant3Ssn)
+														when  'SANCTION_STATE_CEO'				then dbo.getExpertPoolName(sd.ceoSsn)
+										else '~' end) as presentName,												
+										(case  sd.state	when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+														when 'SANCTION_STATE_COMPLETE'			then '종료'		
+										else '진행' 	end) as state, worktype, wt.formUrl workTypeUrl, isWholeApproval, wt.useMobile 
+								from		sanctionDoc sd with(nolock)
+									inner join sanctionTemplate st with(nolock)
+									on sd.approvalType = st.approvalType
+									and sd.approvalType <> 'draft21' and sd.approvalType <> 'draft22'
+									and sd.approvalType <> 'draft3'	and sd.approvalType <> 'draft5'	and sd.approvalType <> 'draft15' and sd.approvalType <> 'salary'	
+									and sd.state <> 'SANCTION_STATE_DRAFT'
+									inner join worktype wt with(nolock)
+									on wt.id = sd.workType
+									left outer join smGroup sm
+									on sd.registerDept = sm.id
+									left outer join project pr
+									on sd.projectCode = pr.projectCode
+									where 1=1
+									and sd.approvalType like 'draft26'
+						/~ssn:		and sd.registerSsn={ssn} ~/
+					/~subject: 		and sd.subject like {subject} ~/
+							order by seq desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="sanctionBoardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>		
+				
+				<entry key="selectListEntry_pjt">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, ROW_NUMBER() OVER (ORDER BY a.wtime asc) as ref
+										, a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq 
+										, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = a.bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt
+										--, '' AS fileCnt
+										, topArticle
+										, (select count(commentSeq) from dbo.StandardBBSComment i where i.bbsId = a.bbsId and i.seq = a.seq) commentCnt
+										FROM StandardBBS a WITH(NOLOCK)
+										left outer join  expertpool b WITH(NOLOCK)
+										on a.writerid = b.ssn
+						/~bbsId: WHERE	a.bbsid = {bbsId}~/
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+								   AND	(a.email is null or a.email = '')
+								 ORDER BY REF DESC, STEP
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>	
+				
+				<entry key="selectPrjListEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT bbsId, lev, ref, subject, p.projectName as maskName, writer, wtime, readcnt, writerid, email, b.seq
+											, (SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = bbsId + '_' + CAST(SEQ AS varchar(20)))) AS fileCnt
+											--, '' AS fileCnt
+											, topArticle
+								FROM
+								(
+									SELECT	a.bbsId, a.lev, a.ref,						
+											a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, a.writerid, a.email, a.seq, a.prjType, a.topArticle
+											FROM StandardBBS a WITH(NOLOCK)
+											left outer join  expertpool b WITH(NOLOCK)
+											on a.writerid = b.ssn
+									 WHERE	substring(bbsid,1,1) = '0'
+									   AND	(b.jobClass = 'A' OR b.jobClass = 'B' OR b.jobClass = 'J')
+									   AND	(a.prjType = 'prj' OR a.prjType = 'prjShare')
+						 /~to:		   AND	CONVERT(VARCHAR, a.wtime, 112) <= {to}~/
+						 /~from:	   AND	CONVERT(VARCHAR, a.wtime, 112) >= {from}~/
+						 /~subject:	   AND  a.subject like {subject}~/
+						 /~content:	   AND  a.content like {content}~/
+						 /~writerDept: AND	b.dept like {writerDept}~/
+						 /~writer:	   AND	a.writerid = {writer}~/				   
+								) b, project p
+								WHERE b.bbsId = p.projectCode
+								ORDER BY wtime DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="selectExceptionListEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	a.bbsId, a.lev, a.ref, 
+										a.subject, a.maskname, b.name as writer, a.wtime, a.readcnt, --0 AS fileCnt,
+										(SELECT COUNT(seq) FROM ProjectTaskFormAttachData WITH(NOLOCK) WHERE (taskId = bbsId + '_' + CAST(a.SEQ AS varchar(20)))) AS fileCnt, 
+										a.writerid, a.email, a.seq,  a.topArticle										 
+								  FROM	StandardBBS a WITH(NOLOCK)
+					   			  LEFT OUTER JOIN  expertpool b WITH(NOLOCK)
+									ON	a.writerid = b.ssn
+								 WHERE	(bbsid = 'managementInfo' or bbsid = 'managementMeeting' or bbsid = 'managementEtc')
+						/~subject: AND  a.subject like {subject}~/
+						/~content: AND  a.content like {content}~/
+						/~writer:  AND  b.name like {writer}~/
+								 ORDER BY SEQ DESC, REF DESC, STEP
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="boardListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="boardListWrapper"				class="kr.co.kmac.pms.board.vl.SelectListWrapper" />
+	<bean id="mobileBoardIndexListWrapper"	class="kr.co.kmac.pms.board.vl.MobileBoardIndexListWrapper" />
+	<bean id="sanctionBoardListWrapper"		class="kr.co.kmac.pms.board.vl.SanctionBoardListWrapper" />
+</beans>
+

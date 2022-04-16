@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="sanctionTemplateManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.sanction.manager.impl.SanctionTemplateManagerImpl">
+				<property name="sanctionTemplateDao" ref="sanctionTemplateDao" />
+				<property name="scheduleDao" ref="scheduleDao" />
+				<property name="expertPoolDao" ref="expertPoolDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="sanctionTemplateDao" class="kr.co.kmac.pms.system.sanction.dao.impl.SanctionTemplateDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="popUpConfigManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.popup.manager.PopUpConfigManager">
+				<property name="popUpConfigDAO" ref="popUpConfigDAO" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="popUpConfigDAO" class="kr.co.kmac.pms.system.popup.dao.impl.PopUpConfigDAOImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="processTemplateManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.processtemplate.manager.impl.ProcessTemplateManagerImpl">
+				<property name="processTemplateAttachDao" ref="processTemplateAttachDao" />
+				<property name="processTemplateDao" ref="processTemplateDao" />
+				<property name="processTemplateDetailDao" ref="processTemplateDetailDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="processTemplateAttachDao" class="kr.co.kmac.pms.system.processtemplate.dao.impl.ProcessTemplateAttachDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="processTemplateDao" class="kr.co.kmac.pms.system.processtemplate.dao.impl.ProcessTemplateDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="processTemplateDetailDao" class="kr.co.kmac.pms.system.processtemplate.dao.impl.ProcessTemplateDetailDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="processCategoryManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.processcategory.manager.impl.ProcessCategoryManagerImpl">
+				<property name="processCategoryDao" ref="processCategoryDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="processCategoryDao" class="kr.co.kmac.pms.system.processcategory.dao.impl.ProcessCategoryDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="authorityManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.authority.manager.impl.AuthorityManagerImpl">
+				<property name="authorityDao" ref="authorityDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="authorityDao" class="kr.co.kmac.pms.system.authority.dao.impl.AuthorityDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="gadgetManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.gadget.manager.impl.GadgetManagerImpl">
+				<property name="gadgetDao" ref="gadgetDao" />
+				<property name="expertPoolDao" ref="expertPoolDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="gadgetDao" class="kr.co.kmac.pms.system.gadget.dao.impl.GadgetDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="downloadLogManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.downloadlog.manager.impl.DownloadLogManagerImpl">
+				<property name="downloadLogDao" ref="downloadLogDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="downloadLogDao" class="kr.co.kmac.pms.system.downloadlog.dao.impl.DownloadLogDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="salaryInfoMailLogManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.emaillog.manager.impl.SalaryInfoMailLogManagerImpl">
+				<property name="salaryInfoMailLogDao" ref="salaryInfoMailLogDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="salaryInfoMailLogDao" class="kr.co.kmac.pms.system.emaillog.dao.impl.SalaryInfoMailLogDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="menuLogManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.accesslog.manager.impl.MenuLogManager">
+				<property name="menuLogDao" ref="menuLogDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="accountHistoryManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.accesslog.manager.impl.AccountHistoryManagerImpl">
+				<property name="accountHistoryDao" ref="accountHistoryDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="menuLogDao" class="kr.co.kmac.pms.system.accesslog.dao.impl.MenuLogDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="accountHistoryDao" class="kr.co.kmac.pms.system.accesslog.dao.impl.AccountHistoryDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+		
+	<bean id="loginLogDao" class="kr.co.kmac.pms.system.accesslog.dao.impl.LoginLogDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="userAuthenticationManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.system.authentication.manager.impl.UserAuthenticationManagerImpl">
+				<property name="userAuthenticationDao" ref="userAuthenticationDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="userAuthenticationDao" class="kr.co.kmac.pms.system.authentication.dao.impl.UserAuthenticationDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

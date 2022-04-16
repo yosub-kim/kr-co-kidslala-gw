@@ -1,0 +1,269 @@
+<!-- td {font-family: 나눔고딕; color: #4F401D; font-size: 9pt; line-height:19px;} -->
+
+A:link { color :274D77; font : 9pt 나눔고딕,verdana; TEXT-DECORATION: none }
+A:visited {color :274D77 ; font : 9pt 나눔고딕,verdana; TEXT-DECORATION: none}
+A:hover { color :709000; font : 9pt 나눔고딕,verdana; TEXT-DECORATION:none }
+
+body {
+margin-top: 0px;
+margin-left:0px;
+font-family : 나눔고딕, Gulim , verdana;
+font-size : 9pt;
+scrollbar-face-color:#FFFFFF;
+scrollbar-highlight-color: #999999;
+scrollbar-3dlight-color: #E8E8E8;
+scrollbar-shadow-color: #999999;
+scrollbar-darkshadow-color: #E8E8E8;
+scrollbar-track-color: #E8E8E8;
+scrollbar-arrow-color: #E8E8E8}
+}
+
+/* 테이블 정의 형식- <table class='TB' width='167' cellpadding="0" cellspacing="0">*/
+.TB {padding:0px; border-collapse:collapse};
+.TV {
+	height:21;
+	width:150;
+	border-color: #D8D8D8; 
+	border-style: solid; 
+	border-top-width: 0px; 
+	border-right-width: 0px; 
+	border-bottom-width: 0px; 
+	border-left-width: 0px;
+}
+/* 메인카렌더 상단 날짜폰트지정 */
+.CD	{
+	border-width:0;
+	font-size: 10 pt;
+	color : #5B3F0C;
+	font-weight: bold;
+}
+/*selectbox 스타일 */
+.box-s	{
+	border-style: solid;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	font-size: 9pt;
+	color : #33270A;
+}
+/* 메인카렌더 일반 배경 */
+.T0	  {
+	border-width:1;
+	height:74;
+	width:97;
+	border-color: #DDDDDD;
+	border-style: solid;
+	font-size: 9 pt;
+	//background-image: url('/images/calendar/T_main_tback2.gif');
+	background:#ffffff;
+	cursor:hand;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden; 
+}
+/* 메인카렌더 당일 배경 */
+.T1	  {
+	border-width:1;
+	height:74;
+	width:97;
+	border-color: #AA9C7E;
+	border-style: solid;
+	font-size: 9 pt;
+	//background-image: url('/images/calendar/T_main_tback3.gif');
+	background:#afe0f3;	
+	cursor:hand;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden; 
+}
+/* 날짜 없는 칸 */
+.T2	  {
+	border-width:1;
+	height:74;
+	width:97;
+	border-color: #DDDDDD;
+	border-style: solid;
+	font-size: 9 pt;
+	//background-image: url('/images/calendar/T_main_tback2.gif');
+	background:#ffffff;
+}
+.SubT1 li {
+	font-size: 9 pt;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+/* 메인카렌더 날짜폰트(휴일/일요일/빨간날) */
+.DAY1	  {
+	font-size: 9pt;
+	color: #FF3000;
+	font-weight: bold;
+}
+/* 토요일 */
+.DAY2	  {
+	font-size: 9pt;
+	color: #2F6BAF;
+	font-weight: bold;
+}
+/* 메인카렌더 날짜폰트(평일) */
+.DAY3	  {
+	font-size: 9pt;
+	color: #4F401D;
+	font-weight: bold;
+}
+/* 메인카렌더 건수폰트설정 */
+.WK	  {
+	font-size: 9pt;
+	color: #D60000;
+	font-weight: bold;
+}
+/* 로그인정보 폰트설정 */
+.LF	  {
+	font-size: 9pt;
+	color: #04394F;
+	font-weight: bold;
+}
+/* 검색에 들어가는 타이틀글씨 */
+.SF	{
+	font-size: 9 pt;
+	letter-spacing:-1px;
+	color : #274D77;
+}
+/* 팝업타이틀(제목) 폰트설정 */
+.POT	  {
+	font-size: 9pt;
+	color: #4E4817;
+	font-weight: bold;
+}
+/* 팝업 검색용 폰트설정 */
+.PCM	  {
+	font-size: 9pt;
+	color: #ffffff;
+}
+/* 기본적으로 세팅된(변경안되는)내용보여줄때 사용폰트설정 */
+.POP	  {
+	font-size: 9pt;
+	color: #B75A00;
+	font-weight: bold;
+}
+/* input type=text box 기본형. */
+.outbox1	  {
+	border-width:1;
+	font-size: 9 pt;
+	color : #6E6E6E;
+	border-color: #A6A6A9;
+	border-style: solid;
+	background-color: #FFFFFF;
+}
+/* 테이블타이틀. */
+.TBT	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	text-align: center;
+	background-color: #D4D2C2;
+}
+/* 테이블리스트(어두운색). */
+.TBV	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	text-align: center;
+	background-color: #F0EFE5;
+}
+/* 팝업창 테이블용 타이틀(진한바탕+굵은글씨). */
+.PPP	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #5F5C3D;
+	font-weight: bold;
+	text-align: center;
+	background-color: #D4D2C2;
+}
+/* 테이블리스트(밝은색). */
+.TBB	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	text-align: center;
+	background-color: #FAF9F6;
+}
+/* 좌측정열 테이블(어두운색-타이틀용). */
+.TBP	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	padding:2;
+	background-color: #E8E6DA;
+}
+/* 좌측정열 테이블(어두운색-타이틀용=> ). */
+.TBP50	  {
+	border-width:1;
+	height:50;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	padding:3;
+	background-color: #E8E6DA;
+}
+/* 좌측정열 테이블(밝은색-내용용). */
+.TBS	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	padding:2;
+	background-color: #FAF9F6;
+}
+/* 가운데정열 테이블(밝은색-내용용). */
+.TBSC	  {
+	border-width:1;
+	height:24;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	padding:2;
+	text-align: center;
+	background-color: #FAF9F6;
+}
+/* textarea 설정 */
+.viewbox1	  {
+	border-width:1;
+	border-color: #B6B4A3;
+	border-top-color: #B6B4A3;
+	border-right-color: #B6B4A3;
+	border-left-color: #B6B4A3;
+	border-style: solid;
+}
+/* 트리구조 나오는 부분 TD 설정. */
+.TRI	  {
+	border-width:1;
+	height:363;
+	width:173;
+	border-color: #B6B4A3;
+	border-style: solid;
+	font-size: 9 pix;
+	color: #33270A;
+	padding:2;
+	background-color: #FFFFFF;
+}

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="sanctionDocManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.general.manager.impl.SanctionDocManagerImpl">
+				<property name="worklistManager" ref="worklistManager" />
+				<property name="sanctionDocDao" ref="sanctionDocDao" />
+				<property name="sanctionDocCCDao" ref="sanctionDocCCDao" />
+				<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="projectReportManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.preport.manager.impl.ProjectReportManagerImpl">
+				<property name="projectReportContentDao" ref="projectReportContentDao" />
+				<property name="worklistManager" ref="worklistManager" />
+				<property name="projectReportInfoManager" ref="projectReportInfoManager" />
+				<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="projectChangeManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.projectchange.manager.impl.ProjectChangeManagerImpl">
+				<property name="scheduleChangeDao" ref="scheduleChangeDao" />
+				<property name="memberChangeDao" ref="memberChangeDao" />
+				<property name="projectMemberDao" ref="projectMemberDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="sanctionLineManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.line.manager.impl.SanctionLineManagerImpl">
+				<property name="sanctionLineDao" ref="sanctionLineDao" />
+				<property name="scheduleDao" ref="scheduleDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="ccoTargetManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.general.manager.impl.CcoTargetManagerImpl">
+				<property name="ccoTargetDao" ref="ccoTargetDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="projectExpenseManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.projectexpense.manager.impl.ProjectExpenseManagerImpl">
+				<property name="projectExpenseDao" ref="projectExpenseDao" />
+				<property name="projectExpenseTempForSanctionDao" ref="projectExpenseTempForSanctionDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="projectExpenseRestManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.sanction.projectexpense.manager.impl.ProjectExpenseRestManagerImpl">
+				<property name="projectExpenseRestDao" ref="projectExpenseRestDao" />
+				<property name="projectExpenseTempForSanctionDao" ref="projectExpenseTempForSanctionDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	
+
+	<bean id="sanctionDocDao" class="kr.co.kmac.pms.sanction.general.dao.impl.SanctionDocDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+		<property name="intranetDataSource" ref="intranetDataSource" />
+		<property name="intranetEduDataSource" ref="intranetEduDataSource" />
+	</bean>
+	<bean id="sanctionDocCCDao" class="kr.co.kmac.pms.sanction.general.dao.impl.SanctionDocCCDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="projectReportContentDao" class="kr.co.kmac.pms.sanction.preport.dao.impl.ProjectReportContentDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="scheduleChangeDao" class="kr.co.kmac.pms.sanction.projectchange.dao.impl.ScheduleChangeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="memberChangeDao" class="kr.co.kmac.pms.sanction.projectchange.dao.impl.MemberChangeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sanctionLineDao" class="kr.co.kmac.pms.sanction.line.dao.impl.SanctionLineDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="projectExpenseDao" class="kr.co.kmac.pms.sanction.projectexpense.dao.impl.ProjectExpenseDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+	</bean>
+
+	<bean id="projectExpenseRestDao" class="kr.co.kmac.pms.sanction.projectexpense.dao.impl.ProjectExpenseRestDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+	</bean>
+
+	<bean id="ccoTargetDao" class="kr.co.kmac.pms.sanction.general.dao.impl.CcoTargetDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="projectExpenseTempForSanctionDao" class="kr.co.kmac.pms.sanction.projectexpense.dao.impl.ProjectExpenseTempForSanctionDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

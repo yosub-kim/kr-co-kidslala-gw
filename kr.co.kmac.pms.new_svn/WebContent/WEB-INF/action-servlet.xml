@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<!-- auto proxy 
+	<bean id="actionAutoProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="interceptorNames">
+			<list>
+				<idref local="responseFormTransactionInterceptor" />
+			</list>
+		</property>
+		<property name="beanNames">
+			<list>
+				<value>/action*</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="responseFormTransactionInterceptor" class="kr.co.kmac.pms.common.transaction.ResponseFormTransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	-->
+
+	<bean name="/action/RepositoryTestAction" class="kr.co.kmac.pms.common.repository.action.RepositoryTestAction" parent="repositoryDispatchActionSupport">
+	</bean>
+
+	<bean name="/action/RepositoryAction" class="kr.co.kmac.pms.common.repository.action.RepositoryAction" parent="repositoryDispatchActionSupport">
+	</bean>
+
+	<bean name="/action/ExpertPoolCodeRetrieveAction" class="kr.co.kmac.pms.common.code.action.ExpertPoolCodeRetrieveAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/MobileExpertPoolManagerAction" class="kr.co.kmac.pms.expertpool.action.MobileExpertPoolManagerAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+		<bean name="/action/ExpertPoolManagerAction" class="kr.co.kmac.pms.expertpool.action.ExpertPoolManagerAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="hashTagManager" ref="hashTagManager" />
+	</bean>
+
+	<bean name="/action/ExpertPoolSpecialFieldAction" class="kr.co.kmac.pms.expertpool.action.ExpertPoolSpecialFieldAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ExpertPoolCheckAction" class="kr.co.kmac.pms.expertpool.action.ExpertPoolCheckAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/CommonCodeRetrieveAction" class="kr.co.kmac.pms.common.code.action.CommonCodeRetrieveAction">
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+
+	<bean name="/action/AuthorityAction" class="kr.co.kmac.pms.system.authority.action.AuthorityAction">
+		<property name="authorityManager" ref="authorityManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="scheduleManager" ref="scheduleManager" />
+		<property name="menuMyManager" ref="menuMyManager" />
+		<property name="gadgetManager" ref="gadgetManager" />
+	</bean>
+
+	<bean name="/action/SanctionTemplateAction" class="kr.co.kmac.pms.system.sanction.action.SanctionTemplateAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+	</bean>
+	
+	<bean name="/action/DownloadLogReportAction" class="kr.co.kmac.pms.system.downloadlog.action.DownloadLogReportAction">
+		<property name="downloadLogManager" ref="downloadLogManager" />
+	</bean>
+	
+	<bean name="/action/EmailLogAction" class="kr.co.kmac.pms.system.emaillog.action.EmailLogAction">
+		<property name="salaryInfoMailLogManager" ref="salaryInfoMailLogManager" />
+	</bean>
+
+	<bean name="/action/WorkCabinetAction" class="kr.co.kmac.pms.sanction.workcabinet.action.WorkCabinetAction">
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+	</bean>
+
+	<bean name="/action/GeneralSanctionAction" class="kr.co.kmac.pms.sanction.general.action.GeneralSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+	</bean>
+
+	<bean name="/action/ProjectLaunchSanctionAction" class="kr.co.kmac.pms.sanction.general.action.ProjectLaunchSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+		<property name="projectReportScheduleManager" ref="projectReportScheduleManager" />		
+		<property name="ccoTargetManager" ref="ccoTargetManager" />		
+		<property name="weeklyReportScheduleManager" ref="weeklyReportScheduleManager" />		
+		<property name="monthlyReportScheduleManager" ref="monthlyReportScheduleManager" />		
+	</bean>
+
+	<bean name="/action/ProjectRunningSanctionAction" class="kr.co.kmac.pms.sanction.general.action.ProjectRunningSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+	</bean>
+
+	<bean name="/action/ProjectDropSanctionAction" class="kr.co.kmac.pms.sanction.general.action.ProjectDropSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+	</bean>
+
+	<bean name="/action/CommonCodeAction" class="kr.co.kmac.pms.system.code.action.CommonCodeAction">
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+	<bean name="/action/PopupConfigAction" class="kr.co.kmac.pms.system.popup.action.PopupConfigAction">
+		<property name="popUpConfigManager" ref="popUpConfigManager" />
+		<property name="popUpConfigDAO" ref="popUpConfigDAO" />
+		<property name="projectManpowerManager" ref="projectManpowerManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+	</bean>
+	<bean name="/action/ScheduleAction" class="kr.co.kmac.pms.schedule.action.ScheduleAction">
+		<property name="scheduleManager" ref="scheduleManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="companyScheduleManager" ref="companyScheduleManager" />
+	</bean>
+	<bean name="/action/ScheduleNewAction" class="kr.co.kmac.pms.schedule.action.ScheduleNewAction">
+		<property name="scheduleManager" ref="scheduleManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="companyScheduleManager" ref="companyScheduleManager" />
+	</bean>
+	<bean name="/action/ScheduleMobileAction" class="kr.co.kmac.pms.schedule.action.ScheduleMobileAction">
+		<property name="scheduleManager" ref="scheduleManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="companyScheduleManager" ref="companyScheduleManager" />
+	</bean>
+
+	<bean name="/action/CompanyScheduleAction" class="kr.co.kmac.pms.companySchedule.action.CompanyScheduleAction">
+		<property name="companyScheduleManager" ref="companyScheduleManager" />
+		<property name="scheduleManager" ref="scheduleManager" />
+	</bean>
+
+	<bean name="/action/CompanyScheduleNewAction" class="kr.co.kmac.pms.companySchedule.action.CompanyScheduleNewAction">
+		<property name="companyScheduleManager" ref="companyScheduleManager" />
+		<property name="scheduleManager" ref="scheduleManager" />
+	</bean>
+
+	<bean name="/action/ProcessCategoryAction" class="kr.co.kmac.pms.system.processcategory.action.ProcessCategoryAction">
+		<property name="processCategoryManager" ref="processCategoryManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="processTemplateManager" ref="processTemplateManager" />
+	</bean>
+
+	<bean name="/action/ProcessTemplateAction" class="kr.co.kmac.pms.system.processtemplate.action.ProcessTemplateAction">
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="processTemplateManager" ref="processTemplateManager" />
+	</bean>
+
+	<bean name="/action/ErpProjectAction" class="kr.co.kmac.pms.project.master.action.ErpProjectAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+	</bean>
+
+	<bean name="/action/ProjectBudjetInfoAction" class="kr.co.kmac.pms.project.master.action.ProjectBudjetInfoAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+	</bean>
+
+	<bean name="/action/ProjectMasterInfoAction" class="kr.co.kmac.pms.project.master.action.ProjectMasterInfoAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="processCategoryManager" ref="processCategoryManager" />
+		<property name="projectProgressManager" ref="projectProgressManager" />
+		<property name="processTemplateManager" ref="processTemplateManager" />
+		<property name="projectOrgdbManager" ref="projectOrgdbManager" />
+		<property name="projectReportInfoManager" ref="projectReportInfoManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="hashTagManager" ref="hashTagManager" />
+	</bean>
+	
+	<!-- added 2019-07-13 투입률 관리 -->
+	<bean name="/action/ProjectMemberMMPlanAction" class="kr.co.kmac.pms.project.statistics.action.ProjectMemberMMPlanAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="projectMemberDao" ref="projectMemberDao" />
+	</bean>
+
+	<bean name="/action/RegisterProjectAction" class="kr.co.kmac.pms.project.master.action.RegisterProjectAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+	</bean>
+
+	<bean name="/action/ProjectReportInfoAction" class="kr.co.kmac.pms.project.preport.action.ProjectReportInfoAction">
+		<property name="projectReportInfoManager" ref="projectReportInfoManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectReportManager" ref="projectReportManager" />
+		<property name="projectReportScheduleManager" ref="projectReportScheduleManager" />
+		<property name="worklistManager" ref="worklistManager" />
+	</bean>
+
+	<bean name="/action/OrgTreeAction" class="kr.co.kmac.pms.common.org.action.OrgTreeAction">
+		<property name="orgUnitManager" ref="orgUnitManager" />
+	</bean>
+
+	<bean name="/action/OrgTableAction" class="kr.co.kmac.pms.common.org.action.OrgTableAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/BoardAction" class="kr.co.kmac.pms.board.action.BoardAction">
+		<property name="boardManager" ref="boardManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+
+	<bean name="/action/MobileBoardAction" class="kr.co.kmac.pms.board.action.MobileBoardAction">
+		<property name="boardManager" ref="boardManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ProjectMemberSelectAction" class="kr.co.kmac.pms.project.master.action.ProjectMemberSelectAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+	</bean>
+
+	<bean name="/action/ProjectETCInfoAction" class="kr.co.kmac.pms.project.master.action.ProjectETCInfoAction" parent="repositoryDispatchActionSupport">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+		<property name="projectCsrInfoManager" ref="projectCsrInfoManager" />
+	</bean>
+
+	<bean name="/action/OrgMngAction" class="kr.co.kmac.pms.system.orgmng.action.OrgMngAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="entityManager" ref="entityManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+	</bean>
+
+	<bean name="/action/GadgetAction" class="kr.co.kmac.pms.system.gadget.action.GadgetAction">
+		<property name="gadgetManager" ref="gadgetManager" />
+		<property name="scheduleManager" ref="scheduleManager" />
+		<property name="companyScheduleManager" ref="companyScheduleManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/OrgdbAction" class="kr.co.kmac.pms.orgdb.action.OrgdbAction">
+		<property name="orgdbManager" ref="orgdbManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+	</bean>
+	<bean name="/action/OrgdbMonitoringAction" class="kr.co.kmac.pms.orgdb.action.OrgdbMonitoringAction">
+		<property name="orgdbManager" ref="orgdbManager" />
+	</bean>
+	
+	<bean name="/action/MoudbAction" class="kr.co.kmac.pms.moudb.action.MoudbAction">
+		<property name="moudbManager" ref="moudbManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+	</bean>
+	
+	<!-- <bean name="/action/IssueAction" class="kr.co.kmac.pms.support.issue.action.IssueAction">
+		<property name="issueManager" ref="issueManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+	</bean> -->
+
+	<bean name="/action/MyProjectAction" class="kr.co.kmac.pms.project.myproject.action.MyProjectAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ProjectEndingAction" class="kr.co.kmac.pms.project.endprocess.action.ProjectEndingAction">
+		<property name="projectEndingManager" ref="projectEndingManager" />
+		<property name="projectEndProcessManager" ref="projectEndProcessManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="projectSummaryManager" ref="projectSummaryManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="projectRollingManager" ref="projectRollingManager" />
+	</bean>
+
+	<bean name="/action/ProjectRollingAction" class="kr.co.kmac.pms.project.endprocess.action.ProjectRollingAction">
+		<property name="projectRollingManager" ref="projectRollingManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ProjectViewAction" class="kr.co.kmac.pms.project.endprocess.action.ProjectViewAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectSummaryManager" ref="projectSummaryManager" />
+		<property name="attachManager" ref="attachManager" />
+	</bean>
+
+	<bean name="/action/ProjectProgressInfoAction" class="kr.co.kmac.pms.project.progress.action.ProjectProgressInfoAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectProgressManager" ref="projectProgressManager" />
+	</bean>
+
+	<bean name="/action/ProjectReportCabinetAction" class="kr.co.kmac.pms.sanction.workcabinet.action.ProjectReportCabinetAction">
+	</bean>
+
+	<bean name="/action/ProjectReportContentAction" class="kr.co.kmac.pms.sanction.preport.action.ProjectReportContentAction">
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="projectReportManager" ref="projectReportManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="projectReportScheduleManager" ref="projectReportScheduleManager" />
+	</bean>
+
+	<bean name="/action/BudgetChangeSanctionAction" class="kr.co.kmac.pms.sanction.projectchange.action.BudgetChangeSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/MemberChangeSanctionAction" class="kr.co.kmac.pms.sanction.projectchange.action.MemberChangeSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectChangeManager" ref="projectChangeManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ScheduleChangeSanctionAction" class="kr.co.kmac.pms.sanction.projectchange.action.ScheduleChangeSanctionAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectChangeManager" ref="projectChangeManager" />
+		<property name="orgUnitManager" ref="orgUnitManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ProjectVocAction" class="kr.co.kmac.pms.project.voc.action.ProjectVocAction">
+		<property name="projectVocManager" ref="projectVocManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+	</bean>
+
+	<bean name="/action/ProjectReportSearchAction" class="kr.co.kmac.pms.project.preport.action.ProjectReportSearchAction">
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="projectReportManager" ref="projectReportManager" />
+	</bean>
+
+	<bean name="/action/AttachAction" class="kr.co.kmac.pms.attach.action.AttachAction">
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+	<bean name="/action/ProjectMonthlyReportAction" class="kr.co.kmac.pms.project.statistics.action.ProjectMonthlyReportAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ExpenseManagerAction" class="kr.co.kmac.pms.project.statistics.action.ExpenseManagerAction">
+		<property name="expenseErpDataServiceDao" ref="expenseErpDataServiceDao" />
+		<property name="costOverManager" ref="costOverManager" />
+	</bean>
+
+	<bean name="/action/RealTimeProjectExpenseAction" class="kr.co.kmac.pms.project.statistics.action.RealTimeProjectExpenseAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/CustomerSatisfactionReportAction" class="kr.co.kmac.pms.project.statistics.action.CustomerSatisfactionReportAction">
+	</bean>
+
+	<bean name="/action/ProjectExpenseAction" class="kr.co.kmac.pms.project.expense.action.ProjectExpenseAction">
+		<property name="expenseManager" ref="expenseManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ProjectProgressManagementAction" class="kr.co.kmac.pms.project.progress.action.ProjectProgressManagementAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="projectProgressManager" ref="projectProgressManager" />
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+	</bean>
+
+	<bean name="/action/SanctionLineAction" class="kr.co.kmac.pms.sanction.line.action.SanctionLineAction">
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+	</bean>
+
+	<bean name="/action/CustomerPresentReportAction" class="kr.co.kmac.pms.customer.action.CustomerPresentReportAction">
+		<property name="attachManager" ref="attachManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+	</bean>
+
+	<bean name="/action/CustomerInfoMobileAction" class="kr.co.kmac.pms.customer.action.CustomerInfoMobileAction">
+	    <property name="customerManager" ref="customerManager"/>
+	</bean>
+	
+	<bean name="/action/EmergencyConnectionAction" class="kr.co.kmac.pms.emergencyConnection.action.EmergencyConnectionAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/MailCommonAction" class="kr.co.kmac.pms.service.mailsender.action.MailCommonAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="salaryInfoMailLogManager" ref="salaryInfoMailLogManager" />
+		<property name="pmsInfoMailSender" ref="pmsInfoMailSender" />
+	</bean>
+	
+	<bean name="/action/SmsCommonAction" class="kr.co.kmac.pms.service.mailsender.action.SmsCommonAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="pmsInfoSMSSender" ref="pmsInfoSMSSender" />
+		<property name="pmsInfoMailSenderManager" ref="pmsInfoMailSenderManager" />
+	</bean>
+
+	<bean name="/action/ProjectEmergencyAction" class="kr.co.kmac.pms.project.statistics.action.ProjectEmergencyAction">
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ProjectEndProcessAction" class="kr.co.kmac.pms.project.endprocess.action.ProjectEndProcessAction">
+		<property name="projectEndProcessManager" ref="projectEndProcessManager" />
+		<property name="projectEndTaskAssignManager" ref="projectEndTaskAssignManager" />
+	</bean>
+
+	<bean name="/action/ProjectARExpenseSanctionAction" class="kr.co.kmac.pms.sanction.projectexpense.action.ProjectARExpenseSanctionAction">
+		<property name="projectExpenseManager" ref="projectExpenseManager" />
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+	
+	<bean name="/action/ProjectARExpenseRestSanctionAction" class="kr.co.kmac.pms.sanction.projectexpense.action.ProjectARExpenseRestSanctionAction">
+		<property name="projectExpenseRestManager" ref="projectExpenseRestManager" />
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+
+	<bean name="/action/ProjectKMExpenseSanctionAction" class="kr.co.kmac.pms.sanction.projectexpense.action.ProjectKMExpenseSanctionAction">
+		<property name="projectExpenseManager" ref="projectExpenseManager" />
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="sanctionLineManager" ref="sanctionLineManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+
+	<bean name="/action/SanctiontPresentStateAction" class="kr.co.kmac.pms.sanction.statistics.action.SanctiontPresentStateAction">
+		<property name="sanctionTemplateManager" ref="sanctionTemplateManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="worklistManager" ref="worklistManager" />
+	</bean>
+
+	<bean name="/action/ProjectSearchAction" class="kr.co.kmac.pms.project.master.action.ProjectSearchAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="sanctionDocManager" ref="sanctionDocManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+		<property name="commonCodeManager" ref="commonCodeManager" />
+	</bean>
+
+	<bean name="/action/ProjectReportAssignAction" class="kr.co.kmac.pms.project.preport.action.ProjectReportAssignAction">
+		<property name="projectReportScheduleService" ref="projectReportScheduleService" />
+	</bean>
+
+	<bean name="/action/MonthlyReportAssignAction" class="kr.co.kmac.pms.project.mreport.action.MonthlyReportAssignAction">
+		<property name="monthlyReportScheduleService" ref="monthlyReportScheduleService" />
+	</bean>
+
+	<bean name="/action/BizplayLogAction" class="kr.co.kmac.pms.system.bizplaylog.action.BizplayLogAction">	
+		<property name="bizplayInfoSendService" ref="bizplayInfoSendService" />
+	</bean>
+
+	<bean name="/action/AccessLogAction" class="kr.co.kmac.pms.system.accesslog.action.AccessLogAction">
+		<property name="menuLogManager" ref="menuLogManager" />
+		<property name="accountHistoryManager" ref="accountHistoryManager" />
+	</bean>
+	
+	<bean name="/action/UserAuthenticationAction" class="kr.co.kmac.pms.system.authentication.action.UserAuthenticationAction">
+		<property name="userAuthenticationManager" ref="userAuthenticationManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+	
+	<bean name="/noauthaction/UserAuthenticationAction" class="kr.co.kmac.pms.system.authentication.action.UserAuthenticationAction">
+		<property name="userAuthenticationManager" ref="userAuthenticationManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+	
+	<bean name="/notauth/workInfoAction" class="kr.co.kmac.pms.sanction.workcabinet.action.WorkInfoAction">
+		<property name="scheduleManager" ref="scheduleManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/ReservationAction" class="kr.co.kmac.pms.reservation.action.ReservationAction">
+		<property name="reservationManager" ref="reservationManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+	
+	<bean name="/action/ParkingReservationAction" class="kr.co.kmac.pms.reservation.action.ParkingReservationAction">
+		<property name="parkingReservationManager" ref="parkingReservationManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+	
+	<bean name="/action/BizSchoolReservationAction" class="kr.co.kmac.pms.reservation.action.BizSchoolReservationAction">
+		<property name="bizSchoolReservationManager" ref="bizSchoolReservationManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+
+	<bean name="/action/WeeklyReportAction" class="kr.co.kmac.pms.project.wreport.action.WeeklyReportAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="weeklyReportManager" ref="weeklyReportManager" />
+		<property name="weeklyReportScheduleManager" ref="weeklyReportScheduleManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="attachManager" ref="attachManager" />
+	</bean>
+	
+	<bean name="/action/MonthlyReportAction" class="kr.co.kmac.pms.project.mreport.action.MonthlyReportAction">
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+		<property name="monthlyReportManager" ref="monthlyReportManager" />
+		<property name="monthlyReportScheduleManager" ref="monthlyReportScheduleManager" />
+		<property name="worklistManager" ref="worklistManager" />
+		<property name="attachTemplateManager" ref="attachTemplateManager" />
+		<property name="attachManager" ref="attachManager" />
+	</bean>
+	
+	<bean name="/action/ProjectManpowerAction" class="kr.co.kmac.pms.project.manpower.action.ProjectManpowerAction">
+		<property name="projectManpowerManager" ref="projectManpowerManager" />
+		<property name="projectMasterInfoManager" ref="projectMasterInfoManager" />
+	</bean>
+	
+	<bean name="/action/HashTagAction" class="kr.co.kmac.pms.project.search.action.HashTagAction">
+		<property name="hashTagManager" ref="hashTagManager" />
+	</bean>
+
+	<bean name="/action/MenuMyAction" class="kr.co.kmac.pms.common.menuMy.action.MenuMyAction">
+		<property name="menuMyManager" ref="menuMyManager" />
+	</bean>
+	
+	<bean name="/action/MobileTaxWorkAction" class="kr.co.kmac.pms.support.taxWork.action.MobileTaxWorkAction">
+     	<property name="attachManager" ref="attachManager" />
+      	<property name="expertPoolManager" ref="expertPoolManager" />	
+      	<property name="taxWorkManager" ref="taxWorkManager" />
+	</bean>
+	
+	<bean name="/action/MobileCertificateAction" class="kr.co.kmac.pms.support.certificate.action.MobileCertificateAction">
+		<property name="certificateManager" ref="certificateManager" />
+		<property name="expertPoolManager" ref="expertPoolManager" />
+	</bean>
+	
+	
+</beans>
+

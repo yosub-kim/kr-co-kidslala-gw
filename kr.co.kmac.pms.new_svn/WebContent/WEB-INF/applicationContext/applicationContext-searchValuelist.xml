@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<bean id="searchDataSelectListBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="searchDataSelectListEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+						select top 10000  a.*, b.hashTag 
+						from AttachDataMetaInfo a
+						left outer join (
+						    SELECT projectCode, attachFileId
+							    , STUFF((SELECT '|' + hashTag FROM AttachDataHashTag
+									    WHERE projectCode = a.projectCode and attachFileId = a.attachFileId
+									    ORDER BY createDate
+										 FOR XML PATH('')
+									   ), 1, 1, '') hashTag
+							 FROM AttachDataHashTag a
+							GROUP BY projectCode, attachFileId	 
+						) b
+						on a.attachFileId = b.attachFileId
+					   where 1=2						
+			/~projectNameChk:		or  upper(a.projectName) like {keyword}~/
+			/~projectCodeChk:		or  upper(a.projectCode) like {keyword}~/								
+			/~customerNameChk:		or  upper(a.customerName) like {keyword}~/								
+			/~attachFileNameChk:	or  upper(a.attachFileName) like {keyword}~/
+			/~attachOutputNameChk:	or  upper(a.attachOutputName) like {keyword}~/
+			/~hashTagChk:	 		or  upper(b.hashTag) like {keyword}~/
+			/~attachCreatorNameChk:	or  upper(a.attachCreatorName) like {keyword}~/
+					   order by attachCreateDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchResultDetailWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="searchResultDetailWrapper" class="kr.co.kmac.pms.project.search.vl.SearchResultDetailWrapper" />
+</beans>

@@ -1,0 +1,956 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="industryTree" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select_CboGraph">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	(CASE WHEN GROUPING(key_1) = 1 THEN '합계' ELSE key_1 END) key_1,
+										isNull(dbo.getCmTableDataValue(M.key_1,'BUSINESS_TYPE_CODE'),'합계') data_1,
+										SUM(ingTotal) ingTotal,			SUM(scheDelayCnt) scheDelayCnt,
+										SUM(costOver) costOver,			SUM(reSanction) reSanction,
+										SUM(evalTotal) evalTotal,		SUM(evalDelayCnt) evalDelayCnt,
+										SUM(reviewTotal) reviewTotal,	SUM(reviewDelayCnt) reviewDelayCnt,
+										SUM(doneTotal) doneTotal,		SUM(total) total
+								FROM
+								(
+										SELECT
+												total.key_1,
+												isNull(total.ingTotal, 0) as ingTotal,
+												0 as reSanction,
+												isNull(cost.costOverCnt, 0) as costOver, 
+												isNull(delay.delayCnt, 0) as scheDelayCnt,
+												isNull(total.evalTotal, 0) as evalTotal,
+												isNull(evalDelay.totalCnt, 0) as evalDelayCnt,
+												isNull(total.reviewTotal, 0) as reviewTotal,
+												isNull(reviewDelay.totalCnt, 0) as reviewDelayCnt,
+												isNull(doneTotal.totalCnt, 0) as doneTotal,
+												isNull(total.ingTotal, 0) + isNull(total.evalTotal, 0) 
+													+ isNull(total.reviewTotal, 0) + isNull(doneTotal.totalCnt, 0) as total
+										from 
+										(
+											select	businessTypeCode as key_1,
+													ing as ingTotal, eval as evalTotal, review as reviewTotal
+											from
+											(
+												select	businessTypeCode, 
+														(case projectState	when '3' then 'ing' when '4' then 'eval' when '5' then 'review' 
+																			else projectState end) projectState, 
+														count(projectState) typeCnt
+												from project with(nolock)
+												where projectState > '2' and projectState < '6'
+												and runningDivCode <> '7150'
+												group by businessTypeCode, projectState
+											) data
+											pivot (
+												sum(typeCnt) for projectState in (ing, eval, review)
+											) pvt
+										) total left outer join 
+										(
+											select 	businessTypeCode key_1, count(costOver) as costOverCnt 
+											from project with(nolock)
+											where	projectState = '3'
+											and	costOver = 'Y'
+											and (businessTypeCode in ('BTA', 'BTF') or processTypeCode = 'N4')
+											and runningDivCode <> '7150'
+											group by businessTypeCode
+										) cost on total.key_1 = cost.key_1										
+										left outer join 
+										(
+											select businessTypeCode key_1, count(delay) as delayCnt
+											from 
+											(
+												select pjt.projectCode, pjt.businessTypeCode,  (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end) as delay
+												from	PROJECT pjt WITH(NOLOCK)
+												where pjt.projectstate='3'
+											) res
+											where delay = 'R'
+											group by res.businessTypeCode
+										) delay on total.key_1 = delay.key_1
+										left outer join
+										(
+											select 	businessTypeCode as key_1, count(projectCode) as totalCnt 
+											from	project with(nolock)
+											where	projectState = '4'
+											  and	datediff(day, realEndDate, getDate()) > 30
+											  and 	runningDivCode <> '7150'
+											group by businessTypeCode
+										) evalDelay on total.key_1 = evalDelay.key_1
+										left outer join
+										(
+											select 	businessTypeCode key_1, count(projectCode) as totalCnt 
+											from	project with(nolock)
+											where	projectState = '5'
+											  and	datediff(day, realEndDate, getDate()) > 50
+											  and	runningDivCode <> '7150'
+											group by businessTypeCode
+										) reviewDelay on total.key_1 = reviewDelay.key_1
+										left outer join
+										(
+											select 	businessTypeCode as key_1, count(projectCode) as totalCnt 
+											from	project with(nolock)
+											where	projectState = '6'
+											and runningDivCode <> '7150'
+					/~realStartDate:		and  ( ({realStartDate} >= realStartDate or  ~/
+					/~realEndDate:					  {realEndDate} >= realStartDate ) and  ~/ 
+					/~realStartDate:               ({realStartDate} <= realEndDate or ~/ 
+					/~realEndDate:                    {realEndDate} <= realEndDate ) )  ~/  
+												group by businessTypeCode
+										) doneTotal on total.key_1 = doneTotal.key_1
+										WHERE total.key_1 <> 'BTH'	
+									) M
+									GROUP BY key_1
+									WITH ROLLUP
+									
+									ORDER BY 
+								    CASE when key_1='BTA' then '4'
+									    when key_1='BTB' then '1'
+									    when key_1='BTC' then '2'
+									    when key_1='BTJ' then '3'
+									    when key_1='BTD' then '5'
+									    when key_1='BTE' then '6'
+									    when key_1='BTF' then '7'
+									    when key_1='BTG' then '8'
+									    when key_1='BTI' then '9'
+									    ELSE '99'
+									END 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+
+				<entry key="select_CfoGraph">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT 
+								(CASE WHEN GROUPING(key_1) = 1 THEN '합계' ELSE key_1 END) key_1,
+								isNull((select description from  smGroup with(nolock) where id=key_1),'합계') as data_1,
+								SUM(ingTotal) ingTotal,		  SUM(scheDelayCnt) scheDelayCnt,
+								SUM(costOver) costOver,		  0 as reSanction,
+								SUM(evalTotal) evalTotal,	  SUM(evalDelayCnt) evalDelayCnt,
+								SUM(reviewTotal) reviewTotal,	  SUM(reviewDelayCnt) reviewDelayCnt,
+								SUM(doneTotal) doneTotal,	  SUM(total) total,
+								isNull((select seq from  smGroup with(nolock) where id=key_1),'99') as seq
+							FROM (
+								select 
+										total.key_1,
+										isNull(total.ingTotal, 0) as ingTotal,
+										isNull(cost.costOverCnt, 0) as costOver, 
+										isNull(delay.delayCnt, 0) as scheDelayCnt,
+										isNull(total.evalTotal, 0) as evalTotal,
+										isNull(evalDelay.totalCnt, 0) as evalDelayCnt,
+										isNull(total.reviewTotal, 0) as reviewTotal,
+										isNull(reviewDelay.totalCnt, 0) as reviewDelayCnt,
+										isNull(doneTotal.totalCnt, 0) as doneTotal,
+										isNull(total.ingTotal, 0) + isNull(total.evalTotal, 0) 
+											+ isNull(total.reviewTotal, 0) + isNull(doneTotal.totalCnt, 0) as total
+								from
+								(
+									select	runningDeptCode as key_1,
+											ing as ingTotal, eval as evalTotal, review as reviewTotal
+									from
+									(
+										select	runningDeptCode,
+												(case projectState	when '3' then 'ing' when '4' then 'eval' when '5' then 'review' 
+																	else projectState end) projectState,
+												count(projectState) typeCnt
+										from project
+										where projectState > '2' and projectState < '6'
+										group by runningDeptCode, projectState
+									) data
+									pivot (
+										sum(typeCnt) for projectState in (ing, eval, review)
+									) pvt
+								) total
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as costOverCnt
+									from (
+										select 	runningDeptCode, count(costOver) as cnt 
+										from project with(nolock)
+										where	projectState = '3'
+										and	costOver = 'Y'
+										and (businessTypeCode in ('BTA', 'BTF') or processTypeCode = 'N4')
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) cost on total.key_1 = cost.key_1
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as delayCnt
+									from (
+										select runningDeptCode, count(delay) as cnt
+										from 
+										(
+											select pjt.projectCode, pjt.runningDeptCode, (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end) as delay
+											from	PROJECT pjt WITH(NOLOCK)
+											where pjt.projectstate='3'
+										) res
+										where delay = 'R'
+										group by res.runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) delay on total.key_1 = delay.key_1
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as totalCnt 
+									from (
+										select runningDeptCode, count(projectCode) as cnt
+										from project with(nolock)
+										where	projectState = '4'
+										  and	datediff(day, realEndDate, getDate()) > 30
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) evalDelay on total.key_1 = evalDelay.key_1
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as totalCnt
+									from (
+										select 	runningDeptCode, count(projectCode) as cnt 
+										from project with(nolock)
+										where	projectState = '5'
+										  and	datediff(day, realEndDate, getDate()) > 50
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) reviewDelay on total.key_1 = reviewDelay.key_1
+								left outer join 
+								(
+									select runningDeptCode as key_1, sum(cnt) as totalCnt
+									from (
+										select runningDeptCode,	count(projectCode) as cnt 
+										from project with(nolock)
+										where	projectState = '6'
+				/~realStartDate:		and  ( ({realStartDate} >= realStartDate or  ~/
+				/~realEndDate:					  {realEndDate} >= realStartDate ) and  ~/ 
+				/~realStartDate:               ({realStartDate} <= realEndDate or ~/ 
+				/~realEndDate:                    {realEndDate} <= realEndDate ) )  ~/
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) doneTotal on total.key_1 = doneTotal.key_1
+								WHERE 1=1
+								and total.key_1 not in ('9071', '9073')
+							) total
+							GROUP BY key_1
+							WITH ROLLUP
+							ORDER BY seq								
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="select_CfoGraph2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT 
+								(CASE WHEN GROUPING(key_1) = 1 THEN '합계' ELSE key_1 END) key_1,
+								isNull((select description from  smGroup with(nolock) where id=key_1),'합계') as data_1,
+								SUM(ingTotal) ingTotal,		  SUM(scheDelayCnt) scheDelayCnt,
+								SUM(costOver) costOver,		  0 as reSanction,
+								SUM(evalTotal) evalTotal,	  SUM(evalDelayCnt) evalDelayCnt,
+								SUM(reviewTotal) reviewTotal,	  SUM(reviewDelayCnt) reviewDelayCnt,
+								SUM(doneTotal) doneTotal,	  SUM(total) total,
+								isNull((select seq from  smGroup with(nolock) where id=key_1),'99') as seq
+							FROM (
+								select 
+										total.key_1,
+										isNull(total.ingTotal, 0) as ingTotal,
+										isNull(cost.costOverCnt, 0) as costOver, 
+										isNull(delay.delayCnt, 0) as scheDelayCnt,
+										isNull(total.evalTotal, 0) as evalTotal,
+										isNull(evalDelay.totalCnt, 0) as evalDelayCnt,
+										isNull(total.reviewTotal, 0) as reviewTotal,
+										isNull(reviewDelay.totalCnt, 0) as reviewDelayCnt,
+										isNull(doneTotal.totalCnt, 0) as doneTotal,
+										isNull(total.ingTotal, 0) + isNull(total.evalTotal, 0) 
+											+ isNull(total.reviewTotal, 0) + isNull(doneTotal.totalCnt, 0) as total
+								from
+								(
+									select	runningDeptCode as key_1,
+											ing as ingTotal, eval as evalTotal, review as reviewTotal
+									from
+									(
+										select	runningDeptCode,
+												(case projectState	when '3' then 'ing' when '4' then 'eval' when '5' then 'review' 
+																	else projectState end) projectState,
+												count(projectState) typeCnt
+										from project
+										where projectState > '2' and projectState < '6'
+										group by runningDeptCode, projectState
+									) data
+									pivot (
+										sum(typeCnt) for projectState in (ing, eval, review)
+									) pvt
+								) total
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as costOverCnt
+									from (
+										select 	runningDeptCode, count(costOver) as cnt 
+										from project with(nolock)
+										where	projectState = '3'
+										and	costOver = 'Y'
+										and (businessTypeCode in ('BTA', 'BTF') or processTypeCode = 'N4')
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) cost on total.key_1 = cost.key_1
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as delayCnt
+									from (
+										select runningDeptCode, count(delay) as cnt
+										from 
+										(
+								/~endDate:	select	p.projectCode, p.runningDeptCode, (case	when (endDate >= (select convert(varchar,  {endDate}, 112)) ) then 'B' else 'R' end) as delay ~/
+											from	projectScheduleM m with(nolock), project p with(nolock)
+											where	m.projectCode = p.projectCode
+											and	projectState = '3'
+											and	workSeq = 
+													( 
+														select	min(workSeq) 
+														from	projectScheduleM s with(nolock)
+														where	s.projectCode = p.projectcode
+														and	(s.realEndDate = ''  OR s.realEndDate is null )
+													) 
+											
+											union
+											
+								/~endDate:	select	p.projectCode, p.runningDeptCode, (case	when (p.realEndDate >= (select convert(varchar,  {endDate}, 112)) ) then 'B' else 'R' end) as delay ~/
+											from	projectScheduleM m with(nolock), project p with(nolock)
+											where	m.projectCode = p.projectCode
+											and	projectState = '3'
+											and		( 
+														select	min(workSeq) 
+														from	projectScheduleM s with(nolock)
+														where	s.projectCode = p.projectcode
+														and	(s.realEndDate = ''  OR s.realEndDate is null )
+													) is NULL 
+											group by p.projectCode, p.runningDeptCode, p.realEndDate
+										) res
+										where delay = 'R'
+										group by res.runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) delay on total.key_1 = delay.key_1
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as totalCnt 
+									from (
+										select runningDeptCode, count(projectCode) as cnt
+										from project with(nolock)
+										where	projectState = '4'
+							/~endDate:	 and	datediff(day, realEndDate,  {endDate}) > 30~/
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) evalDelay on total.key_1 = evalDelay.key_1
+								left outer join
+								(
+									select runningDeptCode as key_1, sum(cnt) as totalCnt
+									from (
+										select 	runningDeptCode, count(projectCode) as cnt 
+										from project with(nolock)
+										where	projectState = '5'
+							/~endDate:	and	datediff(day, realEndDate,  {endDate}) > 50~/
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) reviewDelay on total.key_1 = reviewDelay.key_1
+								left outer join 
+								(
+									select runningDeptCode as key_1, sum(cnt) as totalCnt
+									from (
+										select runningDeptCode,	count(projectCode) as cnt 
+										from project with(nolock)
+										where	projectState = '6'
+				/~startDate:		and  ( ({startDate} >= realStartDate or  ~/
+				/~endDate:					  {endDate} >= realStartDate ) and  ~/ 
+				/~startDate:               ({startDate} <= realEndDate or ~/ 
+				/~endDate:                    {endDate} <= realEndDate ) )  ~/
+										group by runningDeptCode
+									) res -- regrouping for div code converting
+									group by runningDeptCode
+								) doneTotal on total.key_1 = doneTotal.key_1
+								WHERE 1=1
+								and total.key_1 not in ('9071', '9073')
+							) total
+							GROUP BY key_1
+							WITH ROLLUP
+							ORDER BY seq								
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+
+				<entry key="select_CioGraph">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT 
+									(CASE WHEN GROUPING(key_1) = 1 THEN '합계' ELSE key_1 END) key_1,
+									isNull((select data_1 from  cmtabledata with(nolock) where key_1 = total.key_1),'합계') as data_1,
+									SUM(ingTotal) ingTotal,			SUM(scheDelayCnt) scheDelayCnt,
+									SUM(costOver) costOver,			0 as reSanction,
+									SUM(evalTotal) evalTotal,		SUM(evalDelayCnt) evalDelayCnt,
+									SUM(reviewTotal) reviewTotal,	SUM(reviewDelayCnt) reviewDelayCnt,
+									SUM(doneTotal) doneTotal,		SUM(total) total
+								FROM (
+									select 
+										total.key_1,
+										isNull(total.ingTotal, 0) as ingTotal,
+										isNull(cost.costOverCnt, 0) as costOver, 
+										isNull(delay.delayCnt, 0) as scheDelayCnt,
+										isNull(total.evalTotal, 0) as evalTotal,
+										isNull(evalDelay.totalCnt, 0) as evalDelayCnt,
+										isNull(total.reviewTotal, 0) as reviewTotal,
+										isNull(reviewDelay.totalCnt, 0) as reviewDelayCnt,
+										isNull(doneTotal.totalCnt, 0) as doneTotal,
+										isNull(total.ingTotal, 0) + isNull(total.evalTotal, 0) 
+											+ isNull(total.reviewTotal, 0) + isNull(doneTotal.totalCnt, 0) as total
+									from 
+									(
+										select	industryTypeCode as key_1,
+												ing as ingTotal, eval as evalTotal, review as reviewTotal
+										from
+										(
+											select	industryTypeCode,
+											 		(case projectState	when '3' then 'ing' when '4' then 'eval' when '5' then 'review' 
+																		else projectState end) projectState,
+													count(projectState) typeCnt
+											from project with(nolock)
+											where projectState > '2' and projectState < '6'
+											and runningDivCode <> '7150'
+											group by industryTypeCode, projectState
+										) data
+										pivot (
+											sum(typeCnt) for projectState in (ing, eval, review)
+										) pvt
+									) total
+									left outer join
+									(
+										select 	industryTypeCode as key_1, count(costOver) as costOverCnt 
+										from project with(nolock)
+										where	projectState = '3'
+										and	costOver = 'Y'
+										and (businessTypeCode in ('BTA', 'BTF') or processTypeCode = 'N4')
+										and  runningDivCode <> '7150'
+										group by industryTypeCode
+									) cost on total.key_1 = cost.key_1
+									left outer join
+									(
+										select industryTypeCode as key_1, count(delay) as delayCnt
+										from 
+										(
+											select pjt.projectCode, pjt.industryTypeCode,  (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end) as delay
+											from	PROJECT pjt WITH(NOLOCK)
+											where pjt.projectstate='3'
+										) res
+										where delay = 'R'
+										group by res.industryTypeCode
+									) delay on total.key_1 = delay.key_1
+									left outer join
+									(
+										select industryTypeCode as key_1, count(projectCode) as totalCnt 
+										from project with(nolock)
+										where	projectState = '4'
+										  and	datediff(day, realEndDate, getDate()) > 30
+										  and runningDivCode <> '7150'
+										group by industryTypeCode
+									) evalDelay on total.key_1 = evalDelay.key_1
+									left outer join
+									(
+										select 	industryTypeCode as key_1, count(projectCode) as totalCnt 
+										from project with(nolock)
+										where	projectState = '5'
+										  and	datediff(day, realEndDate, getDate()) > 50
+										  and runningDivCode <> '7150'
+										group by industryTypeCode
+									) reviewDelay on total.key_1 = reviewDelay.key_1
+									left outer join 
+									(
+										select industryTypeCode as key_1,	count(projectCode) as totalCnt 
+										from project with(nolock)
+										where	projectState = '6'
+										and runningDivCode <> '7150'
+				/~realStartDate:		and  ( ({realStartDate} >= realStartDate or  ~/
+				/~realEndDate:					  {realEndDate} >= realStartDate ) and  ~/ 
+				/~realStartDate:               ({realStartDate} <= realEndDate or ~/ 
+				/~realEndDate:                    {realEndDate} <= realEndDate ) )  ~/
+										group by industryTypeCode
+									) doneTotal on total.key_1 = doneTotal.key_1
+								) total
+								GROUP BY key_1
+								WITH ROLLUP									
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				
+				<entry key="select_costOverGraph">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	(CASE WHEN grouping(total.key_1)=1 THEN '합계' ELSE total.key_1 END) as key_1,
+										isNull((SELECT description FROM smGroup WHERE id=total.key_1),'합계') data_1,
+										SUM(ingTotal) ingTotal, SUM(payCostOver) payCostOver, SUM(etcCostOver) etcCostOver,
+										isNull((select seq from  smGroup where id = total.key_1),'99') as seq
+								FROM
+								(
+									select 	total.key_1,
+											isNull(total.totalCnt, '0') as ingTotal, 
+											isNull(payCost.costOverCnt, '0') as payCostOver, 
+											isNull(etcCost.costOverCnt, '0') as etcCostOver
+									from 
+									(
+										select runningDeptCode as key_1, sum(cnt) as totalCnt
+										from (
+											select runningDeptCode, count(runningDeptCode) as cnt
+											from project p
+											where p.projectState = '3'
+											and p.businessTypeCode = 'BTA'
+											group by runningDeptCode
+										) res
+										where 1=1
+										and runningDeptCode not like '907_'
+										group by runningDeptCode
+									) total 
+									left outer join
+									(
+										select 	runningDeptCode as key_1, sum(cnt) as costOverCnt
+										from (
+											select  runningDeptCode, count(projectCode) as cnt		
+											from project p
+											where p.projectState = '3'
+											AND p.payCostOver = 'Y'
+											AND p.businessTypeCode = 'BTA'
+											group by runningDeptCode
+										) res
+										where 1=1
+										and runningDeptCode not like '907_'
+										group by runningDeptCode
+									) payCost on total.key_1 = payCost.key_1
+									left outer join
+									(
+										select runningDeptCode as key_1, sum(cnt) as costOverCnt
+										from (
+											select  runningDeptCode, count(projectCode) as cnt			
+											from project p
+											where p.projectState = '3'
+											AND p.etcCostOver = 'Y'
+											AND p.businessTypeCode = 'BTA'
+											group by runningDeptCode
+										) res
+										where 1=1
+										and runningDeptCode not like '907_'
+										group by runningDeptCode
+									) etcCost on total.key_1 = etcCost.key_1
+								) total
+								GROUP BY total.key_1
+								WITH rollup
+								ORDER BY seq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataForCostOverWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="emergencyGadgetForBoardMember">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	key_1, data_1,
+											SUM(scheduleDelayCnt) scheduleDelayCnt,
+											SUM(evalDelayCnt) evalDelayCnt,
+											SUM(reviewDelayCnt) reviewDelayCnt
+									FROM
+									(
+										SELECT	total.key_1, total.data_1,
+												isNull(delay.delayCnt, 0) as scheduleDelayCnt,
+												isNull(evalDelay.totalCnt, 0) as evalDelayCnt,
+												isNull(reviewDelay.totalCnt, 0) as reviewDelayCnt
+										FROM 
+										(
+											SELECT	DATA_6 as key_1, DATA_7 as data_1
+											  FROM	CMTABLEDATA
+											 WHERE	TABLE_NAME = 'BUSINESS_TYPE_CODE'												
+											   AND	DATA_5 = 'Y'
+											 GROUP BY DATA_6, DATA_7
+										) total
+										left outer join 
+										(
+											select businessTypeCode key_1, count(delay) as delayCnt
+											from 
+											(
+												select	p.projectCode,
+														(	select DATA_6 from cmtabledata 
+															where TABLE_NAME = 'BUSINESS_TYPE_CODE' and KEY_1=p.businessTypeCode
+														) as businessTypeCode,
+														(case	when (endDate >= (select convert(varchar, getDate(), 112)) and m.realEndDate = '') then 'B' else 'R' end) as delay
+												from	projectScheduleM m with(nolock), project p with(nolock)
+												where	m.projectCode = p.projectCode
+												and		workSeq = 
+														( 
+															select	isNull(min(workSeq), 
+																	(select min(workSeq) from projectScheduleM where projectCode= p.projectcode )) 
+															from	projectScheduleM s with(nolock)
+															where	s.projectCode = p.projectcode
+															and	(s.realEndDate = ''  OR s.realEndDate is null )
+														) 
+												and	projectState = '3'
+												and runningDivCode <> '7150'
+											) res
+											where delay = 'R'
+											group by res.businessTypeCode
+										) delay on total.key_1 = delay.key_1
+										left outer join
+										(
+											select 	c.data_6 as key_1, count(c.data_6) as totalCnt 
+											 from	project p, cmtabledata c
+											where	p.businessTypeCode = c.key_1
+											  and	projectState = '4'
+											  and	c.table_name = 'BUSINESS_TYPE_CODE'
+											  and	c.data_5 = 'Y'
+											  and	datediff(day, convert(smalldatetime, p.realEndDate), getDate()) > 30
+											  and	p.runningDivCode <> '7150'
+											group by c.data_6
+										) evalDelay on total.key_1 = evalDelay.key_1
+										left outer join
+										(
+											select 	c.data_6 as key_1, count(c.data_6) as totalCnt 
+											 from	project p, cmtabledata c
+											where	p.businessTypeCode = c.key_1
+											  and	p.projectState = '5'
+											  and	c.table_name = 'BUSINESS_TYPE_CODE'
+											  and	c.data_5 = 'Y'
+											  and	datediff(day, convert(smalldatetime, p.realEndDate), getDate()) > 50											  
+											  and	p.runningDivCode <> '7150'
+											group by c.data_6
+										) reviewDelay on total.key_1 = reviewDelay.key_1
+									) M
+									GROUP BY key_1, data_1
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataGadgetForBoardMemberWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+								
+				<entry key="emergencyGadgetForGeneralManager">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 
+										key_1 , 
+										data_1 , 
+										isNull(delayCnt, 0) as scheduleDelayCnt, 
+										isNull(evalTotal, 0) as evalDelayCnt, 
+										isNull(reviewTotal, 0) as reviewDelayCnt
+									FROM (
+										select
+												delay.key_1, delay.data_1,
+												(select 	count(*) as totalCnt 
+												from project
+												where	businessTypeCode = delay.key_1
+												  and	projectState = 4
+										  /~dept: and	runningDivCode = {dept}~/
+												  and	datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30
+												  and	left(runningDivCode,2) <> '20'
+												  and	runningDivCode <> '2180' and runningDivCode <> '2190' and runningDivCode <> '7150'
+												  and	runningDivCode <> '2900' and runningDivCode <> '2380' and runningDivCode <> '2390'
+												group by businessTypeCode) evalTotal,
+												(select 	(case when count(*) is null then '0' else count(*) end)
+												from project
+												where	businessTypeCode = delay.key_1
+												  and	projectState = 5
+										  /~dept: and	runningDivCode = {dept}~/
+												  and	datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50
+												  and	left(runningDivCode,2) <> '20'
+												  and	runningDivCode <> '2180' and runningDivCode <> '2190' and runningDivCode <> '7150'
+												  and	runningDivCode <> '2900' and runningDivCode <> '2380' and runningDivCode <> '2390'
+												group by businessTypeCode) reviewTotal,
+												isNull(delay.delayCnt, '0') as delayCnt, delay.seq
+										from 
+										(
+											select key_1, data_1, delayCnt, seq  from 
+											(
+												select	key_1, data_1, seq
+												from	cmTableData
+												where	table_name = 'BUSINESS_TYPE_CODE'
+												and		DATA_5 = 'Y'
+											) a
+											left outer join
+											(
+												select businessTypeCode, count(delay) as delayCnt
+												from 
+												(
+													select	p.projectCode, p.businessTypeCode, 
+															(case when (endDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end) as delay
+													from	projectScheduleM m, project p
+													where	m.projectCode = p.projectCode
+													and	workSeq = 
+															( 
+																select	isNull(min(workSeq), (select min(workSeq) from projectScheduleM where projectCode=p.projectCode)) 
+																from	projectScheduleM s
+																where	s.projectCode = p.projectcode
+																and	(s.realEndDate = ''  OR s.realEndDate is null )
+															) 
+													and	p.projectState = '3'
+													and	left(runningDivCode,2) <> '20'
+												  	and	runningDivCode <> '2180' and runningDivCode <> '2190' and runningDivCode <> '7150'
+												  	and	runningDivCode <> '2900' and runningDivCode <> '2380' and runningDivCode <> '2390'
+											/~dept: and	p.runningDivCode = {dept}~/
+												) res
+												where delay = 'R'
+												group by res.businessTypeCode
+											) b
+											on a.key_1 = b.businessTypeCode   
+										) delay
+										where 1=1
+										and	delay.key_1 not in ('BTH', 'BTI', 'BTG')
+									) Emergency
+									ORDER BY seq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataGadgetForBoardMemberWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="emergencyGadgetForMember">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT a.scheduleDelayCnt, b.evalDelayCnt, c.reviewDelayCnt
+									FROM
+									(
+										select	'delay' as key_1, count(projectCode) as scheduleDelayCnt
+										from (
+											select	p.projectCode
+											from	projectScheduleM m, project p, projectMember b
+											where	m.projectCode = p.projectCode
+											  and	p.projectCode = b.projectCode
+											  and	b.trainingYN = 'Y'
+				  					/~userId: and	b.ssn = {userId}~/
+											  and	workSeq = 
+													( 
+														select	isNull(min(workSeq), (select min(workSeq) from projectScheduleM where projectCode=p.projectCode)) 
+														from	projectScheduleM s
+														where	s.projectCode = p.projectcode
+														and	(s.realEndDate = ''  OR s.realEndDate is null )
+													) 
+											  and	projectState = '3'
+											  and	left(runningDivCode,2) <> '20'
+											  and	runningDivCode <> '2180' and runningDivCode <> '2190' and runningDivCode <> '7150'
+											  and	runningDivCode <> '2900' and runningDivCode <> '2380' and runningDivCode <> '2390'
+											  and	endDate < (select convert(varchar, getDate(), 112))
+											group by p.projectCode
+										) res
+									) a,
+									(
+										select 	'delay' as key_1, count(projectCode) as evalDelayCnt
+										from (
+											select	p.projectCode
+											from	project p, projectMember m
+											where	p.projectCode = m.projectCode
+											  and	p.projectState = '4'
+											  and	datediff(day, convert(smalldatetime, p.realEndDate), getDate()) > 30
+											  and	m.trainingYN = 'Y'
+							  		/~userId: and	m.ssn = {userId}~/
+							  				  and	left(runningDivCode,2) <> '20'
+											  and	runningDivCode <> '2180' and runningDivCode <> '2190' and runningDivCode <> '7150'
+											  and	runningDivCode <> '2900' and runningDivCode <> '2380' and runningDivCode <> '2390'
+							  				group by p.projectCode
+							  			) res
+									) b,
+									(
+										select 	'delay' as key_1, count(projectCode) as reviewDelayCnt
+										from (
+											select	p.projectCode
+											from	project p, projectMember m
+											where	p.projectCode = m.projectCode
+											  and	p.projectState = '5'
+											  and	datediff(day, convert(smalldatetime, p.realEndDate), getDate()) > 50
+											  and	m.trainingYN = 'Y'
+						  			/~userId: and	m.ssn = {userId}~/
+						  					  and	left(runningDivCode,2) <> '20'
+											  and	runningDivCode <> '2180' and runningDivCode <> '2190' and runningDivCode <> '7150'
+											  and	runningDivCode <> '2900' and runningDivCode <> '2380' and runningDivCode <> '2390'
+						  					group by p.projectCode
+						  				) res 
+									) c
+									WHERE 1=1
+									AND a.key_1 = b.key_1
+									AND b.key_1 = c.key_1
+									AND c.key_1 = a.key_1
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="chartDataGadgetForMemberWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+								
+
+			</map>
+		</property>
+	</bean> 
+	
+	<bean id="chartDataGadgetForBoardMemberWrapper" class="kr.co.kmac.pms.project.statistics.vl.ChartDataGadgetForBoardMemberWrapper" />
+	<bean id="chartDataGadgetForMemberWrapper" class="kr.co.kmac.pms.project.statistics.vl.ChartDataGadgetForMemberWrapper" />
+	<bean id="chartDataWrapper" class="kr.co.kmac.pms.project.statistics.vl.ChartDataWrapper" />
+	<bean id="chartDataForCostOverWrapper" class="kr.co.kmac.pms.project.statistics.vl.ChartDataForCostOverWrapper" />
+</beans>

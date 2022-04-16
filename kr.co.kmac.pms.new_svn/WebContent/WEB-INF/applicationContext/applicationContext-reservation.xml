@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="reservationManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.reservation.manager.impl.ReservationManagerImpl">
+				<property name="reservationDao" ref="reservationDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="parkingReservationManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.reservation.manager.impl.ParkingReservationManagerImpl">
+				<property name="parkingReservationDao" ref="parkingReservationDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="bizSchoolReservationManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.reservation.manager.impl.BizSchoolReservationManagerImpl">
+				<property name="bizSchoolReservationDao" ref="bizSchoolReservationDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="reservationDao" class="kr.co.kmac.pms.reservation.dao.impl.ReservationDaoImpl">
+		<property name="hhDevDataSource" ref="hhDevDataSource" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="parkingReservationDao" class="kr.co.kmac.pms.reservation.dao.impl.ParkingReservationDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="bizSchoolReservationDao" class="kr.co.kmac.pms.reservation.dao.impl.BizSchoolReservationDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:system.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="commonCodeManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.code.manager.impl.CommonCodeManagerImpl">
+				<property name="codeEntityDao" ref="codeEntityDao" />
+				<property name="codeDefinitionDao" ref="codeDefinitionDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="worklistManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.worklist.manager.impl.WorklistManagerImpl">
+				<property name="workDao" ref="workDao" />
+				<property name="workTypeDao" ref="workTypeDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="menuMyManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.menuMy.manager.impl.MenuMyManagerImpl">
+				<property name="menuMyDao" ref="menuMyDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="codeEntityDao" class="kr.co.kmac.pms.common.code.dao.impl.CodeEntityDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="codeDefinitionDao" class="kr.co.kmac.pms.common.code.dao.impl.CodeDefinitionDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="workDao" class="kr.co.kmac.pms.common.worklist.dao.impl.WorkDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>	
+	<bean id="workTypeDao" class="kr.co.kmac.pms.common.worklist.dao.impl.WorkTypeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>	
+	<bean id="menuMyDao" class="kr.co.kmac.pms.common.menuMy.dao.impl.MenuMyDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>	
+</beans>

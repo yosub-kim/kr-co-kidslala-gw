@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="valueListHandler" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="user">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								select u.* from SMUser u
+								/~profile:, SMUserProfile up~/
+								where u.id is not null
+								/~name: and u.name like {name}~/
+								/~email: and u.email like {email}~/
+								/~position: and u.pos like {position}~/
+								/~ssn: and u.ssn like {ssn}~/
+								/~profile: and u.id = up.userId~/
+								/~pfd1: and up.profileDefId={pfd1} and up.value like {value1}~/
+								/~pfd2: and up.profileDefId={pfd2} and up.value like {value2}~/
+								/~pfd3: and up.profileDefId={pfd3} and up.value like {value3}~/
+								/~pfd4: and up.profileDefId={pfd4} and up.value like {value4}~/
+								/~pfd5: and up.profileDefId={pfd5} and up.value like {value5}~/
+								/~sortColumn: ORDER BY u.[sortColumn] [sortDirection]~/
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="userWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>
+				<entry key="group">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value><![CDATA[
+								select g.* from SMGroup g
+								/~profile:, SMGroupProfile gp~/
+								where g.id is not null
+								/~name: and g.name like {name}~/
+								/~groupType: and g.groupType >= {groupType} and g.groupType < {groupTypeStep}~/
+								/~path : and path like {path}~/
+								/~profile: and g.id = gp.groupId~/
+								/~pfd1: and gp.profileDefId={pfd1} and gp.value like {value1}~/
+								/~pfd2: and gp.profileDefId={pfd2} and gp.value like {value2}~/
+								/~pfd3: and gp.profileDefId={pfd3} and gp.value like {value3}~/
+								/~pfd4: and gp.profileDefId={pfd4} and gp.value like {value4}~/
+								/~pfd5: and gp.profileDefId={pfd5} and gp.value like {value5}~/
+								/~sortColumn: ORDER BY g.[sortColumn] [sortDirection]~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="groupWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="role">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								select r.* from SMRole r
+								where r.id is not null
+								/~name: and r.name like {name}~/
+								/~sortColumn: ORDER BY r.[sortColumn] [sortDirection]~/
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="roleWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="userWrapper" class="kr.co.kmac.pms.common.org.vl.UserWrapper"/>
+	<bean id="groupWrapper" class="kr.co.kmac.pms.common.org.vl.GroupWrapper"/>
+	<bean id="roleWrapper" class="kr.co.kmac.pms.common.org.vl.RoleWrapper"/>
+</beans>

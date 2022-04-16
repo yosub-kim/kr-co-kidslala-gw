@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<!-- expertPool beans-->
+	<bean id="expertPoolManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.expertpool.impl.ExpertPoolManagerImpl">
+				<property name="expertPoolDao" ref="expertPoolDao" />
+				<property name="expertPoolCareerHstDao" ref="expertPoolCareerHstDao" />
+				<property name="expertPoolSchoolHstDao" ref="expertPoolSchoolHstDao" />
+				<property name="expertPoolSpecialFieldDao" ref="expertPoolSpecialFieldDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- dao -->
+	<bean id="expertPoolDao" class="kr.co.kmac.pms.expertpool.dao.impl.ExpertPoolDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+		<property name="expertPoolSchoolHstDao" ref="expertPoolSchoolHstDao" />
+		<property name="expertPoolCareerHstDao" ref="expertPoolCareerHstDao" />
+		<property name="expertPoolSpecialFieldDao" ref="expertPoolSpecialFieldDao" />
+	</bean>
+	<bean id="expertPoolSchoolHstDao" class="kr.co.kmac.pms.expertpool.dao.impl.ExpertPoolSchoolHstDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expertPoolCareerHstDao" class="kr.co.kmac.pms.expertpool.dao.impl.ExpertPoolCareerHstDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="expertPoolSpecialFieldDao" class="kr.co.kmac.pms.expertpool.dao.impl.ExpertPoolSpecialFieldDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+</beans>

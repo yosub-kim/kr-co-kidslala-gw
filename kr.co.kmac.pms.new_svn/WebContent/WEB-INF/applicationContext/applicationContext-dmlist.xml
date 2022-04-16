@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="DmList" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="getProjectDmSearchList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="intranetDataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>projectName</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								
+								select * from pinfoall 
+								where p_name not like '%퇴사%' 
+								/~search_Gubun1:	and	 p_name like {search_Gubun1}~/				
+								/~search_Gubun2:	and	 p_company like {search_Gubun2}~/				
+								order by idx desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="ProjectDmSearchWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>	
+	
+	<bean id="ProjectDmSearchWrapper" class="kr.co.kmac.pms.project.dmlist.vl.ProjectDmSearchWrapper" />
+</beans>

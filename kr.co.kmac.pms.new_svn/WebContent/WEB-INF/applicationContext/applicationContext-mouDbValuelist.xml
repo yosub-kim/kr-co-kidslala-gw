@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="mouDbValueList" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="mouDbSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT
+									A.idx, A.writer, A.writer_id, convert(varchar, A.regdate, 23) as regdate, convert(varchar, A.updatedate, 23) as updatedate, 
+									A.com_name, A.com_boss, A.country, A.com_addr, A.homepage, A.com_tel, A.com_special_quality, A.com_expert, A.com_cooperation, A.relation_level, A.join_project_result
+									FROM mou_Board2 A
+									LEFT JOIN
+									(
+										SELECT * FROM mou_person
+									)B on A.idx = B.idx 
+									WHERE 1=1 
+			/~com_name: 			AND A.com_name 			 like {com_name} ~/
+			/~country:				AND A.country 			 like {country} ~/
+			/~com_expert:			AND A.com_expert 		 like {com_expert} ~/
+			/~com_cooperation:		AND A.com_cooperation 	 like {com_cooperation} ~/
+			/~writer:				AND A.writer			 like {writer} ~/
+									ORDER BY A.idx DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchMoudbListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="searchMoudbListWrapper" class="kr.co.kmac.pms.moudb.vl.SearchMoudbListWrapper" />
+</beans>

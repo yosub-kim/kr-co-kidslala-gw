@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="scheduleManagerSelectListBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="scheduleManagerSelectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>name</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+							<![CDATA[							
+												select * from (
+					SELECT	e.ssn, name, 
+										replace(deptName,'전문가그룹','') deptName, 
+										replace(companyPositionName,' 컨설턴트','') position,
+										isNull(draft4Cnt,0) draft4Cnt,
+										isNull(dayOffCnt,0) dayOffCnt,
+										isNull(eduCnt,0) eduCnt,
+										(case when e.dept = '6201' then '9035' 
+										when e.dept = '9090' then '8000' else e.dept end) as dept,
+										e.companyposition, e.jobClass
+								FROM expertPool e
+								left outer join
+								(
+									SELECT COUNT(registerSsn) draft4Cnt, registerSsn as ssn
+									FROM SanctionDoc
+									WHERE approvalType = 'draft4'
+									AND state = 'SANCTION_STATE_COMPLETE' 
+						/~from:		AND registerDate >= {from}~/
+						/~to:		AND registerDate < {to}~/
+									GROUP BY registerSsn
+								) d
+								on e.ssn = d.ssn
+								left outer join
+								(
+									SELECT count(ssn) dayOffCnt, ssn
+									FROM schedule
+									WHERE type in ('휴가','개인휴무')
+						/~year:		AND year = {year}~/
+						/~month:	AND month = {month}~/
+									GROUP BY ssn
+								) s1
+								on e.ssn = s1.ssn
+								left outer join
+								(
+									SELECT count(ssn) eduCnt, ssn
+									FROM schedule
+									WHERE type='교육참석'
+						/~year:		AND year = {year}~/
+						/~month:	AND month = {month}~/
+									GROUP BY ssn
+								) s2
+								on e.ssn = s2.ssn
+								WHERE 1=1
+								and e.enable = '1'
+					/~name:		and e.name like {name}~/
+				/~jobClass:		and e.jobClass like {jobClass}~/
+								and e.jobClass not in ('C','D','E','F','G','I','K','L','M')
+			   /~sanctionY:		and draft4Cnt > 0 ~/
+			  /~sanctionN:		and draft4Cnt = 0 ~/
+			)q
+				order by jobClass, dept, companyposition, position
+							]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="scheduleManagerSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="scheduleManagerSelectListWrapper" class="kr.co.kmac.pms.schedule.vl.ScheduleManagerSelectListWrapper" />
+
+</beans>

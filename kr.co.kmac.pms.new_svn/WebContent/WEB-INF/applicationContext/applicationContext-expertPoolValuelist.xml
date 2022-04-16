@@ -1,0 +1,2063 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="expertPoolList" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="getExpertPoolList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>NAME</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	e.ssn, e.name, e.gender, e.company, 
+											'' as projectName, '' as projectMemberCount, '' as endRate, '' as realStartDate, 
+											e.modifiedDate, e.createrId, e.indField, e.jobClass, e.funcField,  
+											s.specialNameStr as consultingMajor, e.photo, e.dept,
+											e.email, e.mobileNo
+									from expertPool e 
+									left outer join (
+										select * 
+										from (
+											select ssn, 
+											 REPLACE(RTRIM((SELECT CAST(specialName AS VARCHAR(MAX)) + ', ' FROM ExpertPoolSpecialField 
+															WHERE (ssn = e.ssn) FOR XML PATH (''))),' ',' ') AS specialNameStr
+											from ExpertPoolSpecialField e
+											group by ssn
+										) d
+									) s
+									on e.ssn = s.ssn								 
+									where 1=1
+					/~name: 		AND	name like {name}~/ 	
+					/~company:		AND	company like {company}~/ 	
+					/~createrid: 	AND	createrid like {createrid}~/ 
+					/~indField:		AND	indField like {indField}~/ 	
+					/~jobClass:		AND	jobClass = {jobClass}~/ 	
+					/~funcField:	AND	funcField like {funcField}~/ 
+					/~specialField:	AND	e.ssn in (select distinct ssn from ExpertPoolSpecialField 
+													where specialId in ( {specialField} ))~/
+					/~miblie:		and e.restrictUser <> 'Y'~/
+									ORDER BY  name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getRestrictExpertPoolList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>NAME</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	ROW_NUMBER() OVER(ORDER BY jobClass, dept, companyPosition, name) AS rank,
+											name, left(SecureDB.DBSEC.DECRYPT_AES(uid),7) birth, ssn,
+											dbo.getCmTableDataValue(jobClass,'EMP_WORKING_TYPE') jobClassName, company,
+											deptName, companyPositionName, mobileNo, restrictContents
+									FROM expertPool
+									WHERE 1 = 1
+									AND	ssn != 'A000142'
+					/~restrictUser: AND restrictUser = {restrictUser}~/
+							/~name: AND name LIKE {name}~/
+							 /~ssn: AND ssn = {ssn}~/
+						 /~absence: AND absence = {absence}~/
+						/~jobClass: AND jobClass in ({jobClass}, 'B')~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'J' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'H' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'N' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'C' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'D' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'E' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'F' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'G' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'I' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'L' then 'B' else '' end)~/
+						/~jobClass:	and jobclass not in (case {jobClass} when 'M' then 'B' else '' end)~/   
+									ORDER BY jobClass, dept, companyPosition, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="restrictExpertPoolListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getRestrictExpertPoolListToExcel">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>NAME</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	ROW_NUMBER() OVER(ORDER BY jobClass, dept, companyPosition, name) AS rank,
+											name, left(SecureDB.DBSEC.DECRYPT_AES(uid),6)+'-'+right(SecureDB.DBSEC.DECRYPT_AES(uid),7) birth, ssn,
+											dbo.getCmTableDataValue(jobClass,'EMP_WORKING_TYPE') jobClassName, company,
+											deptName, companyPositionName, mobileNo, restrictContents
+									FROM expertPool
+									WHERE 1 = 1
+					/~restrictUser: AND restrictUser = {restrictUser}~/
+							/~name: AND name LIKE {name}~/
+							 /~ssn: AND ssn = {ssn}~/
+						 /~absence: AND absence = {absence}~/
+						/~jobClass: AND jobClass = {jobClass}~/
+									ORDER BY jobClass, dept, companyPosition, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="restrictExpertPoolListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getExpertPoolListToExcel">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>NAME</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	ROW_NUMBER() OVER(ORDER BY jobClass, dept, companyPosition, name) AS rank,
+											name, userid, left(SecureDB.DBSEC.DECRYPT_AES(uid),6)+'-'+right(SecureDB.DBSEC.DECRYPT_AES(uid),7) birth, ssn, 
+											dbo.getCmTableDataValue(jobClass,'EMP_WORKING_TYPE') jobClassName, company,
+											deptName, companyPositionName, mobileNo, createdDate, modifiedDate, address1, email,
+											isNull(dbo.getExpertPoolName(createrId),'') createrId
+									FROM expertPool
+									WHERE 1 = 1
+					/~restrictUser: AND restrictUser = {restrictUser}~/
+							/~name: AND name LIKE {name}~/
+							 /~ssn: AND ssn = {ssn}~/
+						 /~absence: AND absence = {absence}~/
+						/~jobClass: AND jobClass = {jobClass}~/
+									ORDER BY jobClass, dept, companyPosition, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolListForManagerWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getSearchExpertPoolList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>NAME</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT ssn
+										  ,uid
+										  ,userId
+										  ,password
+									      ,name
+									      ,enable
+									      ,absence
+									      ,gender
+									      ,nationality
+									      ,telNo
+									      ,mobileNo
+									      ,zipCode
+									      ,address1
+									      ,address2
+									      ,company
+									      ,dept
+									      ,deptName
+									      ,companyPosition
+									      ,companyPositionName
+									      ,jobClass
+									      ,companyZipcode
+									      ,companyAddress1
+									      ,companyAddress2
+									      ,companyTelNo
+									      ,companyFaxNo
+									      ,email
+									      ,indField
+									      ,funcField
+									      ,consultingMajor
+									      ,consultingMinor
+									      ,consultingDetail     
+									      ,rate
+									      ,rank
+									      ,Role
+									      ,extRole
+									      ,resume
+									      ,companyId
+									      ,SEQ
+									      ,d.*
+									FROM ExpertPool
+									left outer join DW_view_CP_Amt d
+									on ExpertPool.rate = d.cp_code									
+									WHERE (1 = 1)
+							   		AND restrictUser <> 'Y'
+							/~name: AND (name LIKE {name})~/
+							/~ssn:  AND (ssn = {ssn})~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="SearchExpertWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getSearchExpertPoolListForProjectMember">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>NAME</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select * from (
+									SELECT ExpertPool.*
+									      ,d.*
+									FROM ExpertPool
+									left outer join DW_view_CP_Amt d
+									on ExpertPool.rate = d.cp_code									
+									WHERE 1 = 1
+									and ExpertPool.jobclass <> 'C'
+									
+									union all
+									
+									SELECT ExpertPool.*
+									      ,d.*
+									FROM ExpertPool
+									inner join (
+										select EMPNO from DW_EXP_REQ_DTL 
+										where cnfmkind = 'C'
+						/~projectCode:	and projid = {projectCode}~/
+									) R
+									on ExpertPool.ssn = R.EMPNO 
+									left outer join DW_view_CP_Amt d
+									on ExpertPool.rate = d.cp_code									
+								) res									
+								where 1=1
+								/~name: AND name LIKE {name}~/
+								/~ssn:  AND ssn = {ssn}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="SearchExpertWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getExpertPoolWorkPeriodList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+					SELECT *, restday_1 - useday restday FROM(
+                        SELECT *,count(deptName) over (partition by deptName) deptCnt,  isnull(occur,0) + isnull(occur1,0) + addoccur2 restday_1, mm + jointuse useday  FROM (
+                           SELECT b.name, b.userid, (case when b.dept = '6201' then '9035' else b.dept end) as dept, b.ssn, b.jobclass ,b.companyPositionName,b.deptName, b.acctBegindate, b.acctExpiredate, datediff(mm,acctbegindate,getdate())occur, case when cast(right(acctbegindate,2) as int)> cast(right(convert(varchar(10),getdate(),112),2) as int) then -1 else 0 end occur1, wv.mm, isnull(wf.addoccur2,0)addoccur2, isnull(wf.jointuse,0)jointuse  
+                              FROM expertpool b  
+                              INNER JOIN(
+                                 SELECT (isnull(sum(mm1),0) + isnull(sum(mm2),0) + isnull(sum(mm3),0) + isnull(sum(mm4),0) + isnull(sum(mm5),0) + isnull(sum(mm6),0) + isnull(sum(mm7),0) + isnull(sum(mm8),0) + isnull(sum(mm9),0) + isnull(sum(mm10),0) + isnull(sum(mm11),0) + isnull(sum(mm12),0)) mm, userid
+                                 FROM welfare_vacation
+                                 GROUP BY userid
+                              ) wv
+                              on wv.userid = b.userid
+                        
+                              left outer JOIN(
+                                 SELECT sum(jointuse) jointuse, sum(addOccur2) addOccur2, userid
+                                 FROM welfare
+                                 group by userid
+                              )wf
+                              on wf.userid = b.userid      
+                           
+                              WHERE enable = 1                                                                                                            
+                                 AND b.userid <> ''                                                                                                                
+            /~companyPosition:   AND b.companyPosition = {companyPosition}~/
+                 /~notInclude:   AND b.companyPosition NOT IN ('64GT')~/                                                                                                                                                               
+                             GROUP BY uid, b.name, b.userid, b.dept, b.ssn, b.deptname,b.acctbegindate, b.acctexpiredate, b.jobclass,b.companypositionname, acctbegindate, wv.mm, wf.addoccur2, wf.jointuse
+                          )A   
+			/~jobClass:	   WHERE JOBCLASS = {jobClass}~/  
+                       )B
+                    ORDER BY dept
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_ra">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT *, restday_1 - useday as restday FROM(
+			                        SELECT *,count(deptName) over (partition by deptName) deptCnt,  isnull(occur,0) + isnull(occur1,0) + addoccur2 as restday_1, mm + jointuse as useday  FROM (
+			                           SELECT b.name, a.userid, (case when b.dept = '6201' then '9035' else b.dept end) as dept, year, b.ssn, b.jobclass ,b.companyPositionName,b.deptName, b.acctBegindate, b.acctExpiredate, datediff(mm,acctbegindate,getdate())occur, case when cast(right(acctbegindate,2) as int)> cast(right(convert(varchar(10),getdate(),112),2) as int) then -1 else 0 end occur1, wv.mm, isnull(wf.addoccur2,0)addoccur2, isnull(wf.jointuse,0)jointuse                                                                                  
+			                              FROM depthistory a,                                                                                                                                      
+			                                 expertpool b  
+			                              INNER JOIN(
+			                                 SELECT (isnull(sum(mm1),0) + isnull(sum(mm2),0) + isnull(sum(mm3),0) + isnull(sum(mm4),0) + isnull(sum(mm5),0) + isnull(sum(mm6),0) + isnull(sum(mm7),0) + isnull(sum(mm8),0) + isnull(sum(mm9),0) + isnull(sum(mm10),0) + isnull(sum(mm11),0) + isnull(sum(mm12),0)) mm, userid
+			                                 FROM welfare_vacation
+			                                 GROUP BY userid
+			                              ) wv
+			                              on wv.userid = b.userid
+			                        
+			                              left outer JOIN(
+			                                 SELECT sum(jointuse) jointuse, sum(addOccur2) addOccur2, userid
+			                                 FROM welfare
+			                                 where year = DATENAME(YEAR, GETDATE())   
+			                                 group by userid
+			                              )wf
+			                              on wf.userid = b.userid      
+			                 
+			                              WHERE a.userid = b.userid                                                                                                     
+			                                 AND enable = 1                                                                                                            
+			                                 AND year = DATENAME(YEAR, GETDATE())                                                                                                                                
+			                                 AND a.userid <> ''
+								     /~ssn:	 AND b.ssn = {ssn} ~/                                                                                                                                                                                                                                                             
+			                             GROUP BY uid, b.name, a.userid, b.dept, year,b.ssn, b.deptname,b.acctbegindate, b.acctexpiredate, b.jobclass,b.companypositionname, acctbegindate, wv.mm, wf.addoccur2, wf.jointuse
+			                          )A   
+									 WHERE JOBCLASS in ('N','H')
+								   )B
+			                    ORDER BY dept
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_ra" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_exp">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT * FROM 
+									(
+										SELECT e.deptname, e.ssn, e.name, p.projectName, p.projectTypeCode, p.realStartDate, p.realEndDate, d.projectManager, sm.seq, sm.smid, sm.des, count(smid) over (partition by smid) ssnCnt
+										, count(e.ssn) over (partition by des, e.ssn) ssnnCnt,		
+											(
+												select count(a.ssn) from 
+												(
+													select distinct p.runningdeptcode, e.name, e.ssn  
+													from project p 			
+													join projectmember m 
+													on p.projectcode = m.projectcode 
+													join expertpool e 
+													on m.ssn = e.ssn 
+													where p.projectState = '3' and p.realEndDate > getdate() and m.trainingYN = 'Y' and e.jobClass = 'C' 
+												) a where a.runningDeptCode = p.runningDeptCode
+											) as expertcnt 
+										FROM expertPool e 
+										LEFT JOIN 
+										(
+											SELECT projectname, m.ssn, realStartDate, realEndDate, projectTypeCode, p.projectCode, p.runningDeptCode
+											FROM project p, projectMember m
+											WHERE p.projectcode = m.projectcode 
+											AND p.projectState = '3' 
+											AND realEndDate > getdate() 
+											AND m.trainingYN = 'Y'
+											--AND p.projectTypeCode != 'ED'
+										) p
+										ON e.ssn = p.ssn
+									
+										LEFT JOIN 
+										(
+											SELECT m.projectCode, m.ssn ssning
+											FROM projectMember m
+											WHERE m.role='PM'
+											AND m.trainingYN = 'Y' 
+										) s 	 	  	
+										ON p.projectCode = s.projectCode
+									
+										LEFT JOIN 
+										(
+											SELECT ex.ssn, ex.name projectManager, ex.dept dept
+											FROM expertPool ex
+										) d 	 	  	
+										ON ssning = d.ssn
+									
+										LEFT JOIN
+										(
+											SELECT seq seq, id smid, description des
+											FROM smgroup
+											where enabled='1'
+										) sm
+										ON smid = p.runningDeptCode
+									
+										WHERE e.jobClass = 'C' and p.projectName is not null
+									) res 
+									ORDER BY seq, smid ,ssn desc, name, projectName, realStartDate ASC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_exp" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_vac">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT *, restday_1 - useday restday FROM(
+									SELECT *,count(deptName) over (partition by deptName) deptCnt,  isnull(occur,0) + isnull(occur1,0) + addoccur2 restday_1, mm + jointuse useday  FROM (
+										SELECT b.name, a.userid, (case when b.dept = '6201' then '9035' else b.dept end) as dept, year, b.ssn, b.jobclass,b.companyPosition ,b.companyPositionName ,b.deptName, b.acctBegindate, b.acctExpiredate, datediff(mm,acctbegindate,getdate())occur, case when cast(right(acctbegindate,2) as int)> cast(right(convert(varchar(10),getdate(),112),2) as int) then -1 else 0 end occur1, wv.mm, isnull(wf.addoccur2,0)addoccur2, isnull(wf.jointuse,0)jointuse               							  												       
+											FROM depthistory a,                                                                                                         									  
+												expertpool b  
+											INNER JOIN(
+												SELECT (isnull(sum(mm1),0) + isnull(sum(mm2),0) + isnull(sum(mm3),0) + isnull(sum(mm4),0) + isnull(sum(mm5),0) + isnull(sum(mm6),0) + isnull(sum(mm7),0) + isnull(sum(mm8),0) + isnull(sum(mm9),0) + isnull(sum(mm10),0) + isnull(sum(mm11),0) + isnull(sum(mm12),0)) mm, userid
+												FROM welfare_vacation
+												GROUP BY userid
+											) wv
+											on wv.userid = b.userid
+								
+											left outer JOIN(
+												SELECT sum(jointuse) jointuse, sum(addOccur2) addOccur2, userid
+												FROM welfare
+												GROUP BY jointuse, addOccur2, userid
+											)wf
+											on wf.userid = b.userid		
+										
+											WHERE a.userid = b.userid                                                                                                     
+											AND enable = 1                                                                                                            
+											AND year = DATENAME(YEAR, GETDATE())                                          																												  
+											AND b.userid <> ''                                                                                                 	         																																													  
+											AND b.jobClass IN ('H', 'N')																									                                                      
+											GROUP BY uid, b.name, a.userid, b.dept, year,b.ssn, b.deptname,b.acctbegindate, b.acctexpiredate, a.jobclass, b.companyPosition, b.companyPositionName, acctbegindate, wv.mm, wf.addoccur2, wf.jointuse
+									)A      
+								)B
+								WHERE
+			/~notInclude:		companyPosition NOT IN ('64GT') ~/
+			/~dept:				AND DEPT LIKE (CASE {dept} WHEN '9010' THEN '901%' WHEN '9020' THEN '902%' WHEN '9030' THEN '903%' WHEN '9040' THEN '904%' WHEN '9050' THEN '905%' ELSE {dept} END) ~/
+								ORDER BY dept
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_vac" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_exp2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select '엑스퍼트' as deptName, q1.projectCode, q1.projectName, q1.runningDeptCode, q1.ssn, dbo.getexpertpoolname(q1.ssn) as name,
+								convert(varchar, LEFT(SecureDB.DBSEC.DECRYPT_AES(uid), 6)) + '-' + convert(varchar, RIGHT(SecureDB.DBSEC.DECRYPT_AES(uid), 7)) uid, 
+								case when q2.position is null then q1.position else q2.position end as resultPosition, realStartDate, realEndDate, dbo.getexpertpoolname(q3.ssn) as projectManager
+								From (
+									select p.projectCode, p.projectName, p.runningdeptcode, m.ssn, m.position, e.uid, p.realStartDate, p.realEndDate
+									from project p 			
+									join projectmember m 
+									on p.projectcode = m.projectcode 
+									join expertpool e 
+									on m.ssn = e.ssn 
+									where p.projectState = '3' and m.trainingYN = 'Y' and e.jobClass = 'C' 
+								)q1
+								left join
+								(
+									select * From projectMemberAddChange
+								)q2
+								on q1.projectCode = q2.projectCode and q1.ssn = q2.ssn
+								LEFT JOIN 
+								(
+									SELECT projectCode, ssn
+									FROM projectMember m
+									WHERE role='PM'
+									AND trainingYN = 'Y' 
+								)q3	
+								ON q1.projectCode = q3.projectCode
+								where q1.position like '4%' or q1.position like '엑스%'
+								order by projectCode desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_exp2" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_exp3">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select e.ssn, e.name, substring(SecureDB.DBSEC.DECRYPT_AES(uid), 1, 7) + '-' + substring(SecureDB.DBSEC.DECRYPT_AES(uid), 7, 7) as uid, e.birthDay, e.gubun, isnull(pm.projectCode, '-') as projectCode, isnull(pm.projectName, '-') as projectName, 
+									isnull(dbo.getExpertPoolDept(pm.runningDeptCode), '-') as deptName,isnull(dbo.getexpertPoolName(t.ssn), '-') as pm, count(e.ssn) over (partition by e.ssn) as ssnCnt
+									From (
+										select ssn, name, left(SecureDB.DBSEC.DECRYPT_AES(uid), 6) as birthDay, dbo.getexpertpoolname(createrId) as creater,
+										substring(SecureDB.DBSEC.DECRYPT_AES(uid), 7, 1) as gubun, left(SecureDB.DBSEC.DECRYPT_AES(uid), 2) as birthDay2, uid
+										From expertpool where jobclass='C' and nationality = 'KOR'  
+									)e
+									left join
+									(
+										select projectname, m.ssn, realStartDate, realEndDate, projectTypeCode, p.projectCode, p.runningDeptCode, m.position
+										from project p, projectMember m
+										where p.projectcode = m.projectcode 
+										and p.projectState = '3' 
+										and m.trainingYN = 'Y'
+									)pm
+									on e.ssn = pm.ssn
+									left join 
+									(
+										select projectname, m.ssn, realStartDate, realEndDate, projectTypeCode, p.projectCode, p.runningDeptCode, m.position
+										from project p, projectMember m
+										where p.projectcode = m.projectcode 
+										and p.projectState = '3' 
+										and m.trainingYN = 'Y'
+										and m.role='PM'
+									)t  	
+									on pm.projectCode = t.projectCode
+									where e.birthDay2 > 89
+									order by birthDay asc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_exp3" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_schedule">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT *, count(q.groupid) over (partition by q.groupid) groupcount , count(q.ssn) over (partition by q.ssn) usercount
+							, count(q.ssn+convert(varchar,filterdate,126)) over (partition by q.ssn+convert(varchar,filterdate,126)) datecnt FROM (
+								SELECT v.ssn, isNull(v.groupName,'기타') groupName, isNull(v.groupParentId, '') groupParentld, v.groupId, v.userName name , replace(isNull(v.posName,'기타'),'CCO','KMAC') AS posName,			         	
+										 CASE left(v.posName,3)               	   					
+											WHEN 'CEO'		THEN 'CEO'			   
+											WHEN 'CBO'		THEN 'CBO'			   
+											WHEN 'CCO'		THEN 'CCO'			    	
+											WHEN '자문위'		THEN 'Advisor'		   
+											WHEN '엑스퍼'		THEN '엑스퍼트'		   
+											WHEN '비서'		THEN '비서실'			   
+										  	ELSE                             	   
+												CASE IsNull(v.groupParentId,'')	   
+													WHEN '2000' THEN 'CBO'  	   
+													ELSE replace(replace(replace(LTrim(v.groupName),'센터',''),'본부',''),'기획실','기획')    	   
+												END                          	   
+										   END  AS labelName                  	   
+										, CASE IsNull(v.groupParentId,'')      	   
+											WHEN '' THEN 0                   	   
+											WHEN '2030' THEN 1               	    
+											WHEN '2000' THEN 2               	   
+											WHEN '7080' THEN 2               	   
+											WHEN '2720' THEN 3               	   
+											ELSE                             	   
+												CASE v.posName					   
+													WHEN 'IM' THEN 4			   
+													ELSE 5						   
+												END                            	   
+										 END  AS OrdSeq , sch.year, sch.month, sch.day, convert(datetime, date) as filterdate , sch.startHour, sch.startmin, sch.endhour, sch.endmin, sch.content , sch.place  ,v.groupSeq , v.poscode , sch.workType, sch.relationUser, sch.customerName, ep.emplno                    		   
+									FROM    vUserInfo    v    
+									join
+									(
+										select (year+month+day) as date, * from schedule
+									) sch
+									on v.ssn = sch.ssn     
+									join
+									(
+										select ssn, emplno from expertpool where enable='1' and jobclass in ('A','H','B','N')
+									)ep
+									on v.ssn = ep.ssn       	   
+									WHERE (enabled = '1') AND (jobclass in ('A','H','B','N'))   	   
+									AND userId IS NOT NULL     					   					
+									AND v.ssn NOT IN ('E000817', 'A001559')
+									AND year=year(getdate())
+									) q
+								 	/~startDate:WHERE q.filterdate >= {startDate}~/
+									/~endDate:	AND q.filterdate <= {endDate}~/
+									ORDER BY q.OrdSeq, q.groupSeq, q.groupId, q.posCode, q.posName,q.name, q.month, q.day, q.startHour
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_schedule" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_time">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							select userId, ssn, groupName, groupSeq, posCode, groupId, userName, posName, labelName, OrdSeq, count(labelName) over (partition by labelName) groupcount,
+							isnull(convert(varchar, M01), '-') as M01,isnull(convert(varchar, M02), '-') as M02,isnull(convert(varchar, M03), '-') as M03,isnull(convert(varchar, M04), '-') as M04,isnull(convert(varchar, M05), '-') as M05,
+							isnull(convert(varchar, M06), '-') as M06,isnull(convert(varchar, M07), '-') as M07,isnull(convert(varchar, M08), '-') as M08,isnull(convert(varchar, M09), '-') as M09,isnull(convert(varchar, M10), '-') as M10,
+							isnull(convert(varchar, M11), '-') as M11,isnull(convert(varchar, M12), '-') as M12,isnull(convert(varchar, M13), '-') as M13,isnull(convert(varchar, M14), '-') as M14,isnull(convert(varchar, M15), '-') as M15,
+							isnull(convert(varchar, M16), '-') as M16,isnull(convert(varchar, M17), '-') as M17,isnull(convert(varchar, M18), '-') as M18,isnull(convert(varchar, M19), '-') as M19,isnull(convert(varchar, M20), '-') as M20,
+							isnull(convert(varchar, M21), '-') as M21,isnull(convert(varchar, M22), '-') as M22,isnull(convert(varchar, M23), '-') as M23,
+							isnull(convert(varchar, M24), '-') as M24,isnull(convert(varchar, M25), '-') as M25,isnull(convert(varchar, M26), '-') as M26,isnull(convert(varchar, M27), '-') as M27,isnull(convert(varchar, M28), '-') as M28,
+							isnull(convert(varchar, M29), '-') as M29,isnull(convert(varchar, M30), '-') as M30,isnull(convert(varchar, M31), '-') as M31
+							from (
+								select * from (
+									SELECT  ln.userId, ln.ssn, isNull(ln.groupName,'기타') groupName,ln.groupSeq, ln.posCode   	   
+					 			, ln.groupId, ln.userName, replace(isNull(ln.posName,'기타'),'CCO','KMAC') AS posName				         	
+					 			, CASE left(ln.posName,3)              	   					
+					 				WHEN 'CEO'		THEN 'CEO'			   
+					 				WHEN 'CBO'		THEN '부문장'			   
+					 				WHEN 'CCO'		THEN 'CCO'
+									WHEN 'CSO'		THEN 'CSO'
+					 				WHEN '자문위'		THEN 'Advisor'		   
+					 				WHEN '엑스퍼'		THEN '엑스퍼트'		   
+					 				WHEN '비서'		THEN '비서실'		
+									WHEN '고문컨'	THEN 'Advisor'		   
+					 	  			ELSE                             	   
+					 					CASE IsNull(ln.groupParentId,'')	   
+					 						WHEN '2000' THEN 'CBO'  	   
+					 						ELSE replace(replace(replace(LTrim(ln.groupName),'센터',''),'본부',''),'기획실','기획')    	   
+					 					END                          	   
+				 	 			  END  AS labelName                 	   
+					 			, CASE IsNull(ln.groupParentId,'')      	   
+					 				WHEN '' THEN 0                   	   
+					 				WHEN '2030' THEN 1               	    
+					 				WHEN '2000' THEN 2               	   
+					 				WHEN '7080' THEN 2               	   
+					 				WHEN '2720' THEN 3               	   
+					 				ELSE                             	   
+					 					CASE ln.posName					   
+					 						WHEN 'IM' THEN 4			   
+					 						ELSE 5						   
+					 					END                            	   
+				 	 			 END  AS OrdSeq, co2.date, co2.time2                		   
+						  FROM    vUserInfo ln
+						  LEFT JOIN
+						  (	
+							select * from(
+							select ssn, convert(datetime, (year+month+day)) as filterdate, 'M'+day as date, (starthour+':'+startmin) as time2 
+							from(
+									select *
+									from schedule_time
+									where approvalYN='Y'
+								)co
+							)co3
+		/~startDate:		where  co3.filterdate >= {startDate}~/
+			/~endDate:		and co3.filterdate <= {endDate}~/
+						  )co2 
+						  on ln.ssn = co2.ssn       	   
+						  WHERE (enabled = '1') AND (jobclass in ('A','B','H'))   	   
+					 		AND ln.userId IS NOT NULL     					   					
+					 		AND ln.ssn NOT IN ('E000817', 'A001559')
+							and ln.groupid not in ('9076', '9090')	
+							)q
+							pivot (max(q.time2) for q.date in (M01,M02,M03,M04,M05,M06,M07,M08,M09,M10,M11,M12,M13,M14,M15,M16,M17,M18,M19,M20,M21,M22,M23,M24,M25,M26,M27,M28,M29,M30,M31)) as pvt
+							)qs   
+					 ORDER BY OrdSeq,groupSeq,groupId,posCode,posName,userName	
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_time" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_customer">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								
+
+
+select labelname, userName, posName, ssnResult, cusResult, result, groupSeq, ssn, posCode, count(labelName) over (partition by groupid) as groupcount, groupname from (
+	select *,count(q.labelName) over (partition by q.groupid) groupcount , count(q.ssn) over (partition by q.ssn) usercount, round((convert(float, cusresult) / convert(float, ssnresult)), 2) as result 
+								From (
+									SELECT *,  sum(ssncount) over (partition by ssn) as ssnresult, sum(cuscount) over (partition by ssn) as cusresult  FROM (
+										SELECT v.userId, v.ssn, isNull(v.groupName,'기타') groupName, v.groupParentId	 
+								 						, v.groupId, v.userName, replace(isNull(v.posName,'기타'),'CCO','CCO') AS posName				       	
+								 						, CASE left(v.posName,3)                 	 					
+								 							WHEN 'CEO'		THEN 'CEO'			 
+								 							WHEN 'CBO'		THEN 'CBO'			 
+								 							WHEN 'CCO'		THEN 'CCO'			  	
+								 							WHEN '자문위'		THEN 'Advisor'		 
+								 							WHEN '엑스퍼'		THEN '엑스퍼트'		 
+								 							WHEN '비서'		THEN '비서실'			 
+								 	  						ELSE                             	 
+								 								CASE IsNull(v.groupParentId,'')	 
+								 									WHEN '2000' THEN 'CBO'  	 
+								 									ELSE replace(replace(replace(replace(LTrim(v.groupName),'센터',''),'본부',''),'(상임)',''),'기획실','기획')     	 
+								 								END                          	 
+							 	 						  END  AS labelName                  	 
+								 						, CASE IsNull(v.groupParentId,'')      	 
+								 							WHEN '' THEN 0                   	 
+								 							WHEN '2030' THEN 1               	  
+								 							WHEN '2000' THEN 2               	 
+								 							WHEN '7080' THEN 2               	 
+								 							WHEN '2720' THEN 3               	 
+								 							ELSE                             	 
+								 								CASE v.posName					 
+								 									WHEN 'IM' THEN 4			 
+								 									ELSE 5						 
+								 								END                            	 
+							 	 						 END  AS OrdSeq, sch.year, sch.month, sch.day
+														 ,convert(datetime, sch.date) as filterdate, sch.workType, sch.googleSyncId, count(v.ssn) as ssncount, isnull(cus.cuscount, 0) as cuscount, v.groupSeq, v.poscode
+												  FROM    vUserInfo v
+												  left join
+												  (
+														select * from(
+															select (year+month+day) as date,(year+'-'+month+'-'+day) as date2, * from schedule where workType='E' and googleSyncId = 'Y'
+														)time   
+											/~startDate:		 where date >=  {startDate} ~/
+									/~endDate: 			 and date <= {endDate} ~/
+												  )sch
+												  on v.ssn = sch.ssn
+												  left join
+												  (
+														select convert(varchar(10), info_date, 112) as info_date, picker_ssn, count(picker_ssn) as cuscount  from customer_pickers
+										/~startDate:		WHERE convert(varchar(10),info_date,112) >=  {startDate} ~/
+									/~endDate: 	AND convert(varchar(10),info_date,112) <=  {endDate} ~/
+														AND embbsmethod='1'
+														group by convert(varchar(10), info_date, 112), picker_ssn
+												  )cus
+												  on v.ssn = cus.picker_ssn and convert(datetime, date) = convert(varchar(10), info_date, 112)
+												  WHERE (enabled = '1') AND (v.jobclass in ('A', 'B'))      	 
+								 					AND v.userId IS NOT NULL     					 					
+								 					AND v.ssn NOT IN ('E000817', 'A001559', 'G003279')		 
+													AND v.groupId not in ('9076','9077')
+													group by  v.userId, v.ssn, v.groupName, v.groupParentId, v.groupId, v.userName, v.posName, sch.year, sch.month, sch.day, sch.date, sch.workType, sch.googleSyncId, cus.cuscount, v.groupSeq, v.poscode
+											)w
+										)q
+						/~startDate:	WHERE q.filterdate >=  {startDate} ~/
+						/~endDate: 	AND q.filterdate <= {endDate} ~/
+							)w
+							group by w.labelname, w.userName, w.posName, w.ssnResult, w.cusResult, w.result, w.groupSeq, w.groupid, w.posname, w.ssn, w.posCode, w.groupcount, w.groupname
+							ORDER BY w.groupSeq, w.groupId, w.posCode, w.ssn, w.posName
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_customer" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_customer2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select dbo.getexpertpoolname(ssn) as username, * from(
+									select (year+month+day) as date,(year+'-'+month+'-'+day) as date2, * from schedule where workType='E' and googleSyncId = 'Y'
+								)time   
+						/~startDate: where date >=  {startDate}~/
+						/~endDate:	and date <= {endDate}~/
+						/~ssn:		and ssn = {ssn}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_customer2" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_HR">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select *,  count(labelName) over (partition by groupid) groupcount from(
+											SELECT v.userId, v.ssn, isNull(v.groupName,'기타') groupName, v.groupParentId	 
+								 						, v.groupId, v.userName, replace(isNull(v.posName,'기타'),'CCO','CCO') AS posName				       	
+								 						, CASE left(v.posName,3)                 	 					
+								 							WHEN 'CEO'		THEN 'CEO'			 
+								 							WHEN 'CBO'		THEN 'CBO'			 
+								 							WHEN 'CCO'		THEN 'CCO'			  	
+								 							WHEN '자문위'		THEN 'Advisor'		 
+								 							WHEN '엑스퍼'		THEN '엑스퍼트'		 
+								 							WHEN '비서'		THEN '비서실'			 
+								 	  						ELSE                             	 
+								 								CASE IsNull(v.groupParentId,'')	 
+								 									WHEN '2000' THEN 'CBO'  	 
+								 									ELSE replace(replace(replace(replace(LTrim(v.groupName),'센터',''),'본부',''),'(상임)',''),'기획실','기획')     	 
+								 								END                          	 
+							 	 						  END  AS labelName                  	 
+								 						, CASE IsNull(v.groupParentId,'')      	 
+								 							WHEN '' THEN 0                   	 
+								 							WHEN '2030' THEN 1               	  
+								 							WHEN '2000' THEN 2               	 
+								 							WHEN '7080' THEN 2               	 
+								 							WHEN '2720' THEN 3               	 
+								 							ELSE                             	 
+								 								CASE v.posName					 
+								 									WHEN 'IM' THEN 4			 
+								 									ELSE 5						 
+								 								END                            	 
+							 	 						 END  AS OrdSeq, e.role
+														 FROM    vUserInfo v
+														 LEFT JOIN
+														 (
+															SELECT SSN, ROLE FROM EXPERTPOOL
+														 )E
+														 ON V.SSN = E.SSN
+														 where e.role = 'ROLE17404E902CA'
+												 )q
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_HR" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_workDay">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+ 				SELECT  q.userId, q.ssn, isNull(q.groupName,'기타') groupName, q.groupParentId, q.groupSeq, q.posCode	   
+					 		, q.groupId, q.userName, replace(isNull(q.posName,'기타'),'CCO','KMAC') AS posName				         	
+					 		, CASE left(q.posName,3)                 	   					
+					 			WHEN 'CEO'		THEN 'CEO'			   
+					 			WHEN 'CBO'		THEN '부문장'			   
+					 			WHEN 'CCO'		THEN 'CCO'			    	
+					 			WHEN '자문위'		THEN 'Advisor'		   
+					 			WHEN '엑스퍼'		THEN '엑스퍼트'		   
+					 			WHEN '비서'		THEN '비서실'			   
+					 	  		ELSE                             	   
+					 				CASE IsNull(q.groupParentId,'')	   
+					 					WHEN '2000' THEN '부문장'  	    
+					 					ELSE replace(replace(replace(replace(replace(LTrim(q.groupName),'센터',''),'본부',''),' (상임)',''),'(상임)',''),'기획실','기획')     	   
+					 				END                          	   
+				 	 		  END  AS labelName                  	   
+					 		, CASE IsNull(q.groupParentId,'')      	   
+					 			WHEN '' THEN 0                   	   
+					 			WHEN '2030' THEN 1               	    
+					 			WHEN '2000' THEN 2               	   
+					 			WHEN '7080' THEN 2               	   
+					 			WHEN '2720' THEN 3               	   
+					 			ELSE                             	   
+					 				CASE posName					   
+					 					WHEN 'IM' THEN 4			   
+					 					ELSE 5						   
+					 				END                            	   
+				 	 		 END  AS OrdSeq, isnull(((left(w1.workDate2, 2)+'시 '+ substring(w1.workDate2, 4, 2) + '분 ')), '-') as workOn, isnull(((left(w2.workDate2, 2)+'시 '+ substring(w2.workDate2, 4, 2) + '분 ')), '-') as workOff, case w3.type when 'Up-day' then '재택근무' else '-' end as type                		   
+					  		,count(groupId) over (partition by groupId) as groupcount, resultDate, jobClass
+					  FROM    vUserInfo q      
+					   LEFT JOIN
+					  (
+							select ssn, (year+month+day) as date2, type, (year+'.'+month+'.'+day) as resultDate From schedule where type = 'Up-day' 
+			/~startDate:	and (year+month+day) >= {startDate}~/
+			/~endDate:		and (year+month+day) <= {endDate}~/
+					  )w3
+					  on q.ssn = w3.ssn
+					  LEFT JOIN
+					  (
+							select CONVERT(CHAR(8), workDate, 112) AS workDate, CONVERT(CHAR(8),workDate,108) as workDate2, ssn from workday where worktype='ON' 
+			/~startDate:	and CONVERT(char(10), workdate, 112) >= {startDate}~/
+			/~endDate:		and CONVERT(char(10), workdate, 112) <= {endDate}~/
+					  )w1
+					  on q.ssn = w1.ssn and w3.date2 = w1.workDate
+					  LEFT JOIN
+					  (
+							select CONVERT(CHAR(8), workDate, 112) AS workDate, CONVERT(CHAR(8),workDate,108) as workDate2, ssn from workday where worktype='OFF' 
+			/~startDate:	and CONVERT(char(10), workdate, 112) >= {startDate}~/
+			/~endDate:		and CONVERT(char(10), workdate, 112) <= {endDate}~/
+					  )w2
+					  on q.ssn = w2.ssn and w3.date2 = w2.workDate
+					 WHERE (q.enabled = '1') 
+					  AND w3.type = 'Up-day'	   
+					  AND q.userId IS NOT NULL 					   					
+					  AND q.ssn NOT IN ('E000817', 'A001559', 'G003279')   
+/~runningDeptCode:    AND q.groupId like {runningDeptCode} ~/
+		/~jobClass:	  AND q.jobClass = {jobClass} ~/
+					  ORDER BY OrdSeq,groupSeq,groupId,posCode,posName,userName
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_workDay" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_workDay2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+ 			 				SELECT  q.userId, q.ssn, isNull(q.groupName,'기타') groupName, q.groupParentId, q.groupSeq, q.posCode	   
+					 		, q.groupId, q.userName, replace(isNull(q.posName,'기타'),'CCO','KMAC') AS posName				         	
+					 		, CASE left(q.posName,3)                 	   					
+					 			WHEN 'CEO'		THEN 'CEO'			   
+					 			WHEN 'CBO'		THEN 'CBO'			   
+					 			WHEN 'CCO'		THEN 'CCO'			    	
+					 			WHEN '자문위'		THEN 'Advisor'		   
+					 			WHEN '엑스퍼'		THEN '엑스퍼트'		   
+					 			WHEN '비서'		THEN '비서실'			   
+					 	  		ELSE                             	   
+					 				CASE IsNull(q.groupParentId,'')	   
+					 					WHEN '2000' THEN 'CBO'  	   
+					 					ELSE replace(replace(replace(replace(replace(LTrim(q.groupName),'센터',''),'본부',''),' (상임)',''),'(상임)',''),'기획실','기획')     	   
+					 				END                          	   
+				 	 		  END  AS labelName                  	   
+					 		, CASE IsNull(q.groupParentId,'')      	   
+					 			WHEN '' THEN 0                   	   
+					 			WHEN '2030' THEN 1               	    
+					 			WHEN '2000' THEN 2               	   
+					 			WHEN '7080' THEN 2               	   
+					 			WHEN '2720' THEN 3               	   
+					 			ELSE                             	   
+					 				CASE posName					   
+					 					WHEN 'IM' THEN 4			   
+					 					ELSE 5						   
+					 				END                            	   
+				 	 		 END  AS OrdSeq, isnull(((left(w1.workDate2, 2)+'시 '+ substring(w1.workDate2, 4, 2) + '분 ')), '-') as workOn, isnull(((left(w2.workDate2, 2)+'시 '+ substring(w2.workDate2, 4, 2) + '분 ')), '-') as workOff, case w3.type when 'Up-day' then '재택근무' else '-' end as type                		   
+					  		,count(groupId) over (partition by groupId) as groupcount, resultDate
+					  FROM    vUserInfo q      
+					   LEFT JOIN
+					  (
+							select ssn, (year+month+day) as date2, type, (year+'.'+month+'.'+day) as resultDate From schedule where type = 'Up-day' 
+			/~startDate:	and (year+month+day) >= {startDate}~/
+			/~endDate:		and (year+month+day) <= {endDate}~/
+					  )w3
+					  on q.ssn = w3.ssn
+					  LEFT JOIN
+					  (
+							select CONVERT(CHAR(8), workDate, 112) AS workDate, CONVERT(CHAR(8),workDate,108) as workDate2, ssn from workday where worktype='ON' 
+			/~startDate:	and CONVERT(char(10), workdate, 112) >= {startDate}~/
+			/~endDate:		and CONVERT(char(10), workdate, 112) <= {endDate}~/
+					  )w1
+					  on q.ssn = w1.ssn and w3.date2 = w1.workDate
+					  LEFT JOIN
+					  (
+							select CONVERT(CHAR(8), workDate, 112) AS workDate, CONVERT(CHAR(8),workDate,108) as workDate2, ssn from workday where worktype='OFF' 
+			/~startDate:	and CONVERT(char(10), workdate, 112) >= {startDate}~/
+			/~endDate:		and CONVERT(char(10), workdate, 112) <= {endDate}~/
+					  )w2
+					  on q.ssn = w2.ssn and w3.date2 = w2.workDate
+					  WHERE (q.enabled = '1') 
+					  AND w3.type = 'Up-day'	   
+					  AND q.userId IS NOT NULL 					   					
+					  AND q.ssn NOT IN ('E000817', 'A001559', 'G003279')   
+			/~div:	  AND q.groupParentId like {div} ~/
+			/~dept:	  AND (q.groupId = {dept} ~/
+			/~dept:   or q.groupId in (case when {dept} = '9333' then '9335' else {dept} end)) ~/
+					  ORDER BY OrdSeq,groupSeq,groupId,posCode,posName,userName
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_workDay2" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_budget">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>3000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select * from (
+				select s.projectcode, p.projectName, left(convert(char(8), s.registerdate, 112), 4) + '.' + substring(convert(char(8), s.registerdate, 112), 5, 2) as registerDate, dtl1.amt as sum, (dtl2.amt  + dtl3.amt) as detailSum, (dtl1.amt - (dtl2.amt+dtl3.amt)) as detailBen, p.runningdeptcode, convert(char(10), convert(datetime, p.realstartdate), 23) as realStartDate,  convert(char(10), convert(datetime, p.realenddate), 23) as realenddate, sm.aliasName, isnull(bv.checkYN, 'N') as checkYN From sanctiondoc s 
+							left join
+							(
+								select * From project	
+							)p
+							on s.projectcode = p.projectcode
+							left join
+							(
+								select * From projectmember
+								where role='PM'
+							)m
+							on s.projectcode = m.projectcode
+							left join
+							(
+								select * from (select entno, projid, pjtname, ROW_NUMBER() OVER (PARTITION BY projid ORDER BY inputDate DESC) as rn from DWPM.DBO.DW_PROJECTMST)a where rn='1'
+							)mst
+							on s.projectcode = mst.projid
+							left join
+							(
+								select entno, acct_codename, acct_code,  FLOOR(ROUND(isnull(amt, 0) / 1000000, 0)) as amt From DWPM.DBO.DW_PROJECTDTL where acct_code in ('4001009') 
+							)dtl1
+							on mst.entno = dtl1.entno
+							left join
+							(
+								select entno, acct_codename, acct_code,  FLOOR(ROUND(isnull(amt, 0) / 1000000, 0)) as amt From DWPM.DBO.DW_PROJECTDTL where acct_code in ('5030008') 
+							)dtl2
+							on mst.entno = dtl2.entno
+							left join
+							(
+								select entno, acct_codename, acct_code,  FLOOR(ROUND(isnull(amt, 0) / 1000000, 0)) as amt From DWPM.DBO.DW_PROJECTDTL where acct_code in ('5009998') 
+							)dtl3
+							on mst.entno = dtl3.entno
+							left join
+							(
+								select * From smgroup
+							)sm
+							on p.runningDeptCode = sm.id
+							left join
+							(
+								select projectCode, checkYN From projectBudgetView
+							)bv
+							on s.projectCode = bv.projectCode
+							where s.approvaltype = 'A' and s.state = 'SANCTION_STATE_COMPLETE' 
+			/~startDate: 	and s.registerdate >= {startDate} ~/
+			/~endDate: 		and s.registerDate <= {endDate} ~/
+							and p.runningdeptcode not in ('9261')
+	/~runningDeptCode:		AND p.runningdeptcode LIKE (CASE WHEN {runningDeptCode} = '' THEN '%%' ELSE {runningDeptCode} END) ~/	
+							)q
+			/~checkYN:		where q.checkYN like {checkYN} ~/
+							order by registerdate asc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_budget" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_taxbill">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+										
+								select writeDate, readDate, checkValue, companyNum, businessName, sumMoney, taxResult from (
+								select h.writeDate, h.readDate, h.checkValue, h.companyNum, h.businessName, h.sumMoney, p.taxResult, ROW_NUMBER() OVER (PARTITION BY checkValue ORDER BY writeDate DESC) AS RN from homeTaxCheck h
+								left join
+								(
+									select left(right (attachFileName, 30), 26) as taxResult from projecttaskformattachdata where taskid like 'tax%'
+								)p
+								on h.checkValue = p.taxResult
+								where taxResult is null
+								)q where rn = '1'
+								
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_taxbill" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_project">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[		
+								select e.ssn, e.name, e.projectCode, e.projectName, e.role, e.resultDate, e.dept, e.entno, e.stateChk,  e.gubunChk,  count(e.ssn) over (partition by e.ssn) as ssnCnt, 
+									replace(convert(varchar, convert(money, floor(convert(float, isnull(ptf3.cost, 0)) / 10000)), 1), '.00', '') + ' (' +
+									replace(convert(varchar, convert(money, floor(convert(float, isnull(ptf.monthlyAmount, 0)) / 10000 + convert(float, isnull(ptf2.monthlyAmount, 0)) / 10000)), 1), '.00', '') + ')' as monthlyAmount, 
+									e.prj_Amount as prj_Amount,  count(e.ssn) over (partition by e.gubunChk) as progressCnt
+									from (	
+											select e.ssn, e.name, p.projectCode, p.projectName, p.role, 
+											left(p.realStartDate, 4) + '.' + substring(p.realStartDate, 5, 2) + ' ~ ' + left(p.realEndDate, 4) + '.' + substring(p.realEndDate, 5, 2) as resultDate, 
+											dbo.getExpertPoolDept(p.runningDeptCode) as dept,pr.entno, 'Y' as stateChk,(e.ssn + '_Y') as gubunChk, '' as prj_Amount
+											from expertpool e
+											left join
+											(
+												select a.projectcode, a.projectName, a.realStartDate, a.realEndDate, a.runningDeptCode, b.ssn, b.role  
+												from Project a
+												left join
+												(
+													select * From projectmember
+												)b
+												on a.projectcode = b.projectCode
+												where a.projectstate='3' and a.businessTypeCode != 'BTE'
+											)p
+											on e.ssn = p.ssn
+											left join
+											(
+												select * from (select projid, entno, ROW_NUMBER() OVER (PARTITION BY projid ORDER BY inputDate ASC) as rn from dwpm.dbo.DW_PROJECTMST)p where p.rn='1' 
+											)pr
+											on pr.projid = p.projectCode
+											where e.enable='1' and e.companyPosition='16DJR' and entno is not null and e.dept = '9220'
+									
+											union
+									
+											select b.PL_ssn as ssn, dbo.getexpertpoolName(b.PL_ssn) as name, '' as projectCode, b.prj_name as projectName, '' as role,
+											b.prj_startdate as resultDate, dbo.getExpertPoolDept(b.deptCode) as dept, '' as entno, 'N' as stateChk, (b.PL_ssn + '_N') as gubunCnt,
+											(replace(convert(varchar, convert(money, convert(float, isnull(b.prj_Amount, 0)) / 10000), 1), '.00', '') + ' (예상)' ) as prj_Amount
+											from project_shareboard b
+											where prj_status in ('1','2')
+									)e
+									left join
+									(
+											select projectcode, chargeSsn, sum(convert(float, amount)) as monthlyAmount
+											from projectTeachingFeeMDetail
+											group by projectCode, chargeSsn
+									)ptf
+									on ptf.projectCode = e.projectCode and ptf.chargeSsn = e.ssn
+									left join
+									(
+											select projectcode, chargeSsn, sum(convert(float, amount)) as monthlyAmount
+											from ProjectTeachingRestFeeDetail
+											group by projectCode, chargeSsn
+									)ptf2
+									on ptf2.projectCode = e.projectCode and ptf2.chargeSsn = e.ssn
+									left join
+									(
+											select projectcode, ssn, cost
+											from projectmember
+									)ptf3
+									on ptf3.projectCode = e.projectCode and ptf3.ssn = e.ssn
+									where 1=1 
+					/~userName:		and e.name like {userName} ~/
+					/~projectName: 	and e.projectname like {projectName} ~/
+									and e.name != ''
+									order by e.name asc, stateChk desc, convert(float, isnull(ptf3.cost, 0)) desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_project" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_performance">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[	
+								select p.year, p.ssn, e.companyPositionname, p.name, p.role, p.eval, pe.evalContent, p.grade, p.contents, count(p.ssn) over (partition by p.ssn) ssnCnt 
+								from performanceResult p
+								left join
+								(
+									select * from performanceEvalType
+								)pe
+								on p.eval = pe.evalType
+								left join
+								(
+									select * From expertpool where enable='1'
+								)e
+								on p.ssn = e.ssn
+						/~ssn:	where p.ssn = {ssn}~/
+								order by eval
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_performance" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_performance_admin">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[	
+								select	ssn, enable, replace(replace(dept,'CCO','CCO'),'스마트팩토리/PI센터','스마트팩토리<br>/PI센터') AS dept, replace(companyPosition,' 컨설턴트', '') companyPosition, name, email, 
+										companyTelNo, mobileNo, jobClass, address1 + ' ' + address2 as address1, deptId, companyPositionId, seq,
+										count(deptid) over(partition by deptid) as ssnCnt 
+								from 
+								(
+									select ssn, enable, dept, (case r.name when 'AAⅢ' then 'AA' when 'AAⅡ' then 'AA' when 'AAⅠ' then 'AA' else r.name end) as companyPosition, M.name, email, companyTelNo, mobileNo, jobClass, 
+										   address1, address2, deptId, companyPosition as companyPositionId, M.seq, M.companyPositionName
+									from
+									(
+										select ssn, g.description as dept, companyPosition, e.name, email,companyTelNo, mobileNo, jobClass, address1, address2,  dept as deptId, g.seq, e.companyPositionName
+										from expertPool e
+										LEFT OUTER JOIN
+										smgroup g
+										on e.dept=g.id
+										where e.enable='1' and e.restrictUser <> 'Y'
+										and e.companyposition <> '64GT'
+									) M
+									LEFT OUTER JOIN
+									smrole r
+									on M.companyPosition=r.id
+								) Ma
+								where jobClass in ('A','B')
+								and companyposition not in ('CEO','자문위원','고문컨설턴트')
+			/~runningDeptCode:  and deptId like {runningDeptCode} ~/
+			/~name:				and name like {name} ~/
+								order by seq, deptId, companyPositionId, companyPositionName, name
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_performance_admin" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_awarding">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[	
+									select at.year, at.evalContent, ar.contents
+									from awardingType at
+									left join
+									(
+										select * From awardingResult
+									)ar
+									on at.year = ar.year and at.evalType = ar.eval
+						/~year: 	where at.year= {year} ~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_awarding" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_awardingDetail">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[	
+									select *, count(month) over (partition by year, month) as 'monthCnt',  count(type) over (partition by year, month, type) as 'typeCnt' 
+									From awardingDetail 
+							/~year:	where year = {year} ~/
+									order by ref 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_awardingDetail" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolWorkPeriodList_score">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[		
+								select top 4 year, ssn, name, grade
+								from performanceScoreSum 
+						/~ssn:	where ssn = {ssn} ~/
+								order by year asc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolWorkPeriodListWrapper_score" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpertPoolRatio">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select a.ssn, a.name, a.dept, a. deptName, a.consultingFunction, a.consultingMajor,  b.runningRatio 
+									from (
+										select	e.ssn, e.name, e.dept, replace(g.name, ' ', '') deptName, 
+												isNull(specialFunctionNameStr, '') as consultingFunction,
+												isNull(s.specialNameStr, '') as consultingMajor, e.companyPosition
+										from expertPool e 
+										left outer join (
+											select * 
+											from (
+												select ssn,
+												 REPLACE(RTRIM((SELECT distinct CAST(specialFunctionName AS VARCHAR(MAX)) + ', ' FROM V_ExpertPoolSpecialField 
+																WHERE (ssn = re.ssn) FOR XML PATH (''))),' ',' ') AS specialFunctionNameStr,
+												 REPLACE(RTRIM((SELECT CAST(specialName AS VARCHAR(MAX)) + ', ' FROM V_ExpertPoolSpecialField 
+																WHERE (ssn = re.ssn) FOR XML PATH (''))),' ',' ') AS specialNameStr
+												from V_ExpertPoolSpecialField re
+												group by ssn
+											) d
+										) s
+										on e.ssn = s.ssn								 
+										inner join SmGroup g
+										on e.dept = g.id
+										where jobClass = 'J'
+									) a
+									left outer join (
+										SELECT		ssn, 	 		
+													round((convert(real, totWorkCount) / convert(real, runningDay)) * 100, 2) as runningRatio
+										FROM 											 	
+										(                                                                                                                
+											SELECT		c.ssn, c.runningDay, totWorkCount                                                 
+											FROM	
+											(                                                                                                
+												SELECT	
+															ssn ,                                                                                    
+															(select sum(convert(int, day)) day from commonWorkDay 
+															  where 1=1
+											    /~dateFrom:	  AND  year+month >= {dateFrom}~/ 	
+											    /~dateTo:	  AND  year+month <= {dateTo}~/
+															) as runningDay,             
+															totWorkCount                                            
+												FROM 	
+												(                                                                                        
+													SELECT	projectReportHistoryInfo.writerSsn as ssn,                                 	             
+																(SELECT count( distinct(fv.assignDate)) FROM projectReportContent fv                                                      
+																  WHERE 1=1
+													/~dateFrom:   AND substring(fv.assignDate,1,6) >= {dateFrom}~/
+													/~dateTo: 	  AND substring(fv.assignDate,1,6) <= {dateTo}~/
+																  AND fv.writerssn = projectReportHistoryInfo.writerSsn AND fv.state='complete') AS totWorkCount
+													FROM	ProjectReportHistoryInfo projectReportHistoryInfo
+													WHERE	1=1                                                                  
+										/~dateFrom: AND	projectReportHistoryInfo.yearMonth  >= {dateFrom}~/
+										/~dateTo: 	AND projectReportHistoryInfo.yearMonth  <= {dateTo}~/
+													AND	projectReportHistoryInfo.approveDate <> ''                                                                                  
+													AND	projectReportHistoryInfo.assignDate >= '20060801'
+													GROUP BY	projectReportHistoryInfo.writerSsn,                                                                                      
+																	projectReportHistoryInfo.name                              
+												) cc																	                            
+											) c                                                                                                              
+										) d                 
+									) b
+									on a.ssn = b.ssn
+									where 1=1
+					/~ratioType1:	and runningRatio >= 81~/
+					/~ratioType2:	and runningRatio >= 51 and runningRatio < 81~/
+					/~ratioType3:	and runningRatio < 51~/
+									ORDER BY dept, companyPosition	
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertPoolRatioListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>					
+				<entry key="getThxExpertPoolList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT a.*
+									from (  
+										select 'KMAC' as Gubun, b.id, ltrim(b.name) as dept, 
+												a.name, a.userid, a.companyposition, a.companypositionname, 
+												a.email, a.createddate, b.seq  
+										from expertpool a, smgroup b 
+										where b.id = a.dept 
+										and a.enable=1 and a.jobclass in ('A','J','H') 
+										and isnull(a.userid,'')<> ''  
+										union   
+										select 'KCR' as Gubun, '9000' as id, '' as dept, a.user_name, a.user_account as userid, 
+												'' as companyposition, '' as companypositionname,  a.user_account as email, 
+												a.create_time as createddate, a.user_sn as seq 
+										from ThxBBSWebMailList a  
+										union   
+										select company as Gubun, '7153' as id, '경영기획3팀' as dept, a.name, a.userid, '' as companyposition, 
+												'' as companypositionname,  a.email, a.createddate, '25' as seq 
+										from expertpool a where ssn in ('7404081232916','9012121056614')  
+									) a 
+						/~name:		where a.name  like {name}~/  
+									ORDER BY seq, id, companyposition, createddate
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="thxExpertPoolListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>					
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="expoertPoolCategory" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	p.projectCode,
+											(CASE WHEN p.processTypeCode in ('N1','N2') THEN '-' ELSE customerName END) customerName, 
+											projectName, b.data_1 as bussinessTypeName,  
+											r.data_1 as runningDivName, realStartDate, realEndDate
+									from 
+									project p, projectMember m,
+									(
+										select key_1, data_1 from cmtableData
+										where table_name='BUSINESS_TYPE_CODE'
+									) b,
+									(
+										select key_1, data_1 from cmtableData
+										where table_name='RUNNING_DIV_CODE'
+									) r
+									where p.projectCode = m.projectCode
+									and   p.businessTypeCode = b.key_1
+									and   p.runningDivCode = r.key_1
+									and	  p.projectState between '3' and '6'
+									and	  m.role in ('PL', 'PM', 'MB', 'QM', 'AR')
+									and	  m.trainingYN = 'Y'
+							 /~ssn: and	  m.ssn = {ssn}~/
+									group by p.projectCode, customerName, processTypeCode, projectName, b.data_1, r.data_1, realStartDate, realEndDate
+									order by realStartDate DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expoertForProjectInfoListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="select2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select	p.projectCode,
+											(CASE WHEN p.processTypeCode in ('N1','N2') THEN '-' ELSE customerName END) customerName, 
+											projectName, b.data_1 as bussinessTypeName,  
+											r.data_1 as runningDivName, realStartDate, realEndDate
+									from 
+									project p, projectMember m,
+									(
+										select key_1, data_1 from cmtableData
+										where table_name='BUSINESS_TYPE_CODE'
+									) b,
+									(
+										select key_1, data_1 from cmtableData
+										where table_name='RUNNING_DIV_CODE'
+									) r
+									where p.projectCode = m.projectCode
+									and   p.businessTypeCode = b.key_1
+									and   p.runningDivCode = r.key_1
+									and	  p.projectState between '3' and '6'
+									and	  m.role in ('PL', 'PM', 'MB')
+									and	  m.trainingYN = 'Y'
+							 /~ssn: and	  m.ssn = {ssn}~/
+									group by p.projectCode, customerName, processTypeCode, projectName, b.data_1, r.data_1, realStartDate, realEndDate
+									order by realStartDate DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expoertForProjectInfoListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="runningDivCodeForExpertPool">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	table_name, key_1, data_1, data_4, ''
+									FROM  CMTableData
+									WHERE	table_name = 'RUNNING_DIV_CODE'
+											AND	KEY_1 NOT IN ('2000', '2010', '2020', '2030', '2060', '2300', '2320', '2360', '2370', '5000', '5100', '5200', '5300', '5400', '5500', '5600', '5700', '8000')
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertCategoryCodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+				<entry key="expertCategoryCode">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	table_name, key_1, data_1, data_2, '' 
+								  FROM  CMTableData
+								 WHERE	table_name = 'EXPERT_CATEGORY_CODE'
+			   /~level1Key: AND  data_2 = {level1Key}~/ 	
+							  ORDER BY  key_1 ASC 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertCategoryCodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="expertCategoryDetailCode">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	table_name, key_1, data_1, data_2, data_3
+								  FROM  CMTableData
+								 WHERE	table_name = 'EXPERT_CATEGORY_DETAIL_CODE'
+			   /~level1Key: AND  data_2 = {level1Key}~/ 	
+			   /~level2Key: AND  data_3 = {level2Key}~/ 	
+							  ORDER BY  key_1 ASC 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expertCategoryCodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+	
+
+	
+	<bean id="expoertPoolZipcode" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="getRoadZipCodeSidoList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="intranetEduDataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select distinct sido, gugun from zipcode2012
+						/~sido: where sidoAlias = {sido}~/
+								order by 1, 2
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expoertPoolZipcodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>				
+				<entry key="getRoadZipCodeRoadList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="intranetEduDataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select * from zipcode2012
+							/~sido: where sidoAlias = {sido}~/ 
+						   /~gugun: and gugun = {gugun}~/
+						/~roadName: and roadname like {roadName}~/
+									order by 1, 2, 3
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expoertPoolZipcodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+	
+
+	<bean id="expertPoolListWrapper" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolListWrapper" />
+	<bean id="expertPoolListForManagerWrapper" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolListForManagerWrapper" />
+	<bean id="expertPoolRatioListWrapper" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolRatioListWrapper" />
+	<bean id="restrictExpertPoolListWrapper" class="kr.co.kmac.pms.expertpool.vl.RestrictExpertPoolListWrapper" />
+	<bean id="SearchExpertWrapper" class="kr.co.kmac.pms.expertpool.vl.SearchExpertWrapper" />
+	<bean id="expoertForProjectInfoListWrapper" class="kr.co.kmac.pms.expertpool.vl.ExpoertForProjectInfoListWrapper" />
+	<bean id="expoertPoolZipcodeListWrapper" class="kr.co.kmac.pms.expertpool.vl.ExpoertPoolZipcodeListWrapper" />
+	<bean id="expertCategoryCodeListWrapper" class="kr.co.kmac.pms.common.code.vl.ExpertCategoryCodeListWrapper" />
+	<bean id="thxExpertPoolListWrapper" class="kr.co.kmac.pms.expertpool.vl.ThxExpertPoolListWrapper" />
+	<bean id="expertPoolWorkPeriodListWrapper" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper" />
+	<bean id="expertPoolWorkPeriodListWrapper_ra" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_ra" />
+	<bean id="expertPoolWorkPeriodListWrapper_exp" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_exp" />
+	<bean id="expertPoolWorkPeriodListWrapper_vac" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_vac" />
+	<bean id="expertPoolWorkPeriodListWrapper_exp2" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_exp2" />
+	<bean id="expertPoolWorkPeriodListWrapper_exp3" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_exp3" />
+	<bean id="expertPoolWorkPeriodListWrapper_schedule" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_schedule" />
+	<bean id="expertPoolWorkPeriodListWrapper_time" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_time" />
+	<bean id="expertPoolWorkPeriodListWrapper_customer" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_customer" />
+	<bean id="expertPoolWorkPeriodListWrapper_customer2" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_customer2" />
+	<bean id="expertPoolWorkPeriodListWrapper_HR" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_HR" />
+	<bean id="expertPoolWorkPeriodListWrapper_workDay" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_workDay" />
+	<bean id="expertPoolWorkPeriodListWrapper_workDay2" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_workDay2" />
+	<bean id="expertPoolWorkPeriodListWrapper_budget" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_budget" />
+	<bean id="expertPoolWorkPeriodListWrapper_taxbill" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_taxbill" />
+	<bean id="expertPoolWorkPeriodListWrapper_project" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_project" />
+	<bean id="expertPoolWorkPeriodListWrapper_performance" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_performance" />
+	<bean id="expertPoolWorkPeriodListWrapper_performance_admin" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_performance_admin" />
+	<bean id="expertPoolWorkPeriodListWrapper_score" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_score" />
+	<bean id="expertPoolWorkPeriodListWrapper_awarding" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_awarding" />
+	<bean id="expertPoolWorkPeriodListWrapper_awardingDetail" class="kr.co.kmac.pms.expertpool.vl.ExpertPoolWorkPeriodListWrapper_awardingDetail" />
+</beans>

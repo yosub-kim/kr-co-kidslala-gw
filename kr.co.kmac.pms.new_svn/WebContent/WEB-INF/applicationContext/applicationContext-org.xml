@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="entityManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.org.manager.impl.EntityManagerImpl">
+				<property name="groupDao"><ref local="groupDao"/></property>
+				<property name="roleDao"><ref local="roleDao"/></property>
+				<property name="userDao"><ref local="userDao"/></property>
+			</bean>
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="store*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="clear*">PROPAGATION_REQUIRED</prop>
+				<prop key="import*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="orgUnitManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.org.manager.impl.OrgUnitManagerImpl">
+				<property name="groupDao"><ref local="groupDao"/></property>
+			</bean>
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="move*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="userGroupManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.org.manager.impl.UserGroupManagerImpl">
+				<property name="groupDao"><ref local="groupDao"/></property>
+			</bean>
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="roleManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.org.manager.impl.RoleManagerImpl">
+				<property name="userRoleDao"><ref local="userRoleDao"/></property>
+			</bean>
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="assign*">PROPAGATION_REQUIRED</prop>
+				<prop key="unassign*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="entityNameProvider" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target">
+			<bean class="kr.co.kmac.pms.common.org.manager.impl.EntityNameProviderImpl">
+				<property name="groupDao"><ref local="groupDao"/></property>
+				<property name="roleDao"><ref local="roleDao"/></property>
+				<property name="userDao"><ref local="userDao"/></property>
+			</bean>
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
+			</props>
+		</property>
+	</bean> 
+	
+	<!-- DAOs -->
+	<bean id="userDao" class="kr.co.kmac.pms.common.org.dao.impl.UserDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="userRoleDao" class="kr.co.kmac.pms.common.org.dao.impl.UserRoleDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="groupDao" class="kr.co.kmac.pms.common.org.dao.impl.GroupDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="roleDao" class="kr.co.kmac.pms.common.org.dao.impl.RoleDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>

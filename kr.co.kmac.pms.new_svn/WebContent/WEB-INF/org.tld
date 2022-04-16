@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0.1</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>org</shortname>
+	<uri>http://kmac.co.kr/pms/org</uri>
+	<info>
+		The Security custom tag library contains tags which can be used to handle
+		security data related functions.
+</info>
+	<tag>
+		<name>group</name>
+		<tagclass>kr.co.kmac.pms.common.tag.org.GroupTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>role</name>
+		<tagclass>kr.co.kmac.pms.common.tag.org.RoleTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>user-org</name>
+		<tagclass>kr.co.kmac.pms.common.tag.org.UserOrgTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>group</name>
+			<required>no</required>
+			<rtexprvalue>no</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>admin</name>
+		<tagclass>kr.co.kmac.pms.common.tag.org.AdminTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>html</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>divList</name>
+		<tag-class>kr.co.kmac.pms.common.tag.org.DivListTag</tag-class>
+		<description></description>
+		<attribute>
+			<name>depth</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<name>enabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<name>divType</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>2 or 6 or if All then blank</description>
+		</attribute>
+		<attribute>
+			<name>all</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Y일 경우 전체 포함</description>
+		</attribute>
+		<attribute>
+			<name>attribute</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>select 박스일 경우 필요 attribute 세팅</description>
+		</attribute>
+		<attribute>
+			<name>selectedInfo</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>select 박스일 경우 select 되는 값</description>
+		</attribute>
+		<attribute>
+			<name>isSelectBox</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Y일 경우 select 박스 아닐 경우 json</description>
+		</attribute>
+	</tag>
+</taglib>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

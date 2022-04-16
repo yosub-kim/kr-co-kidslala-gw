@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=1600">
+		<title>KMAC 통합 인트라넷</title>
+
+		<link rel="stylesheet" href="../resources/css/common.css" type="text/css" />
+		<link rel="stylesheet" href="../resources/css/board.css" type="text/css" /><!-- 서브페이지에서만 사용 -->	
+
+		<script type="text/javascript" src="../resources/js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" src="../resources/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="../resources/js/common.js"></script>
+
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../resources/js/html5shiv.js"></script>
+		<![endif]-->
+ 
+	</head>
+	<body>	
+
+		<div class="wrap">
+
+			<div class="container">
+
+				<div class="link_area">
+					<div>
+						<ul>
+							<li><a href="javascript:;" title="HOME"><i class="mdi mdi-home"></i><p>HOME</p></a></li>
+							<li><a href="javascript:;" title="마이페이지"><i class="mdi mdi-card-account-details"></i><p>마이페이지</p></a></li>
+							<li><a href="javascript:;" title="로그아웃"><i class="mdi mdi-lock-open"></i><p>로그아웃</p></a></li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li><a href="javascript:;" title="즐겨찾기"><i class="mdi mdi-star"></i><p>즐겨찾기</p></a></li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li><a href="javascript:;" title="개인 일정"><i class="mdi mdi-calendar-month"></i><p>개인 일정</p></a></li>
+							<li><a href="javascript:;" title="비상연락망"><i class="mdi mdi-contacts"></i><p>비상연락망</p></a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- // link_area -->
+
+				<div class="status_area">
+					<div class="logo"><img src="../resources/img/logo.png" alt="KMAC 한국능률협회컨설팅" /></div>
+					<div class="profile"><img src="../resources/img/photo_none.png" alt="프로필 이미지" /></div>
+					<p class="name">홍길동</p>
+					<p class="position">Employment</p>
+					<div class="today_date"><p>2021년 06월 29일 오전 11시 00분</p></div>
+
+					<div class="commute">
+						<ul>
+							<li class="on">
+								<a href="javascript:;">
+									<p>출근</p>
+									<span>08:30</span>
+									<span>AM</span>
+								</a>
+							</li>
+							<li class="off">
+								<a href="javascript:;">
+									<p>퇴근</p>
+									<span>06:00</span>
+									<span>PM</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+					
+					<div class="data_box">
+						<div>
+							<i class="mdi mdi-email"></i><p>메일</p>
+						</div>
+						<div>
+							<ul>
+								<li><span class="c-ing"><a href="javascript:;">35</a></span>건</li>
+							</ul>
+						</div>
+					</div>
+					<div class="data_box">
+						<div>
+							<i class="mdi mdi-draw"></i><p>전자결제</p>
+						</div>
+						<div>
+							<ul>
+								<li><span class="c-new"><a href="javascript:;">1</a></span>건 /</li>
+								<li><span class="c-ing"><a href="javascript:;">35</a></span>건 /</li>
+								<li><span class="c-finish"><a href="javascript:;">75</a></span>건</li>
+							</ul>
+						</div>
+					</div>
+
+					<ul class="dropdown depth_menu"><!-- 2뎁스 메뉴에 필요 .depth_menu -->
+						<li class="on"><!-- 2뎁스 메뉴에 필요 .on -->
+							<div class="drop_title"><i class="mdi mdi-bulletin-board"></i><a href="javascript:;" title="메뉴 보이기/숨기기">게시판</a></div>
+							<div class="drop_data sc">
+								<ul>
+									<li class="current"><a href="javascript:;">공지사항</a></li><!-- 현재 위치한 메뉴 .current -->
+									<li><a href="javascript:;">기준지침</a></li>
+									<li><a href="javascript:;">경영정보</a></li>
+									<li><a href="javascript:;">제안하기</a></li>
+									<li><a href="javascript:;">전자입찰계정관리</a></li>
+									<li><a href="javascript:;">두빛나눔</a></li>
+									<li><a href="javascript:;">열린세상</a></li>
+									<li><a href="javascript:;">시스템Q&amp;A</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+
+					<ul class="dropdown">
+						<li>
+							<div class="drop_title"><i class="mdi mdi-format-list-checks"></i><a href="javascript:;" title="오늘의 일정 보이기/숨기기">오늘의 일정<span>(2)</span></a></div>
+							<div class="drop_data sc">
+								<ul>
+									<li>
+										<p class="time">plan과 schedule</p>
+										<p class="schedule">A사와 Zoom 미팅 예정</p>
+									</li>
+									<li>
+										<p class="time">plan과 schedule</p>
+										<p class="schedule">A사와 Zoom 미팅 예정</p>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+
+					<ul class="dropdown">
+						<li>
+							<div class="drop_title"><i class="mdi mdi-format-list-checks"></i><a href="javascript:;" title="내일의 일정 보이기/숨기기">내일의 일정<span>(2)</span></a></div>
+							<div class="drop_data sc">
+								<ul>
+									<li>
+										일정이 없습니다.
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+					
+				</div>
+				<!-- // status_area -->
+
+				<div class="contents_area">
+
+					<div class="header">
+
+						<div class="gnb">
+							<ul>
+								<li>
+									<a href="javascript:;">게시판</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li><a href="javascript:;">공지사항</a></li>
+											<li><a href="javascript:;">기준지침</a></li>
+											<li><a href="javascript:;">회의자료</a></li>
+											<li><a href="javascript:;">제안하기</a></li>
+											<li><a href="javascript:;">전자입찰계정관리</a></li>
+											<li><a href="javascript:;">두빛나눔</a></li>
+											<li><a href="javascript:;">블라인드 소통 채널</a></li>
+											<li><a href="javascript:;">열린세상</a></li>
+											<li><a href="javascript:;">시스템 Q&amp;A</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">고객정보</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li><a href="javascript:;">고객정보등록</a></li>
+											<li><a href="javascript:;">나라장터 사전규격</a></li>
+											<li><a href="javascript:;">나라장터 입찰정보</a></li>
+											<li><a href="javascript:;">고객정보현황(개인)</a></li>
+											<li><a href="javascript:;">고객정보현황(조직)</a></li>
+											<li><a href="javascript:;">고객정보현황(주간)</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">스케줄관리</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li><a href="javascript:;">개인일정</a></li>
+											<li><a href="javascript:;">일정관리</a></li>
+											<li><a href="javascript:;">간방문기업</a></li>
+											<li><a href="javascript:;">전사주요행사</a></li>
+											<li><a href="javascript:;">세미나/컨퍼런스</a></li>
+											<li><a href="javascript:;">일정관리(관리자)</a></li>
+											<li><a href="javascript:;">개인근무시간</a></li>
+											<li><a href="javascript:;">근무시간관리</a></li>
+											<li><a href="javascript:;">근무시간관리(관리자)</a></li>
+											<li><a href="javascript:;">재택근무 출/퇴근 현황</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">전자결재</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li><a href="javascript:;">내결재함</a></li>
+											<li><a href="javascript:;">기안하기</a></li>
+											<li><a href="javascript:;">결재현황보기</a></li>
+											<li><a href="javascript:;">PJ변동현황보기</a></li>
+											<li><a href="javascript:;">성과급품의하기</a></li>
+											<li><a href="javascript:;">내참조함</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">PMS</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li>
+												<a href="javascript:;">프로젝트관리</a>
+												<ul>										
+													<li><a href="javascript:;">MY PROJECT</a></li>
+													<li><a href="javascript:;">예산등록</a></li>
+													<li><a href="javascript:;">프로젝트등록</a></li>
+													<li><a href="javascript:;">성과급관리(프로젝트별)</a></li>
+													<li><a href="javascript:;">성과급관리(컨설턴트별)</a></li>
+													<li><a href="javascript:;">실시간성과급(본부/센터)</a></li>
+													<li><a href="javascript:;">실시간성과급(프로젝트)</a></li>
+													<li><a href="javascript:;">출장비관리(PJ)</a></li>
+													<li><a href="javascript:;">고객만족도관리</a></li>
+													<li><a href="javascript:;">인건비원가관리</a></li>									
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">프로젝트현황</a>
+												<ul>										
+													<li><a href="javascript:;">프로젝트전체현황</a></li>
+													<li><a href="javascript:;">Emergency PJ현황</a></li>
+													<li><a href="javascript:;">VOC현황</a></li>
+													<li><a href="javascript:;">고객만족도현황</a></li>
+													<li><a href="javascript:;">컨설턴트평가현황</a></li>
+													<li><a href="javascript:;">고객만족도진행현황</a></li>
+													<li><a href="javascript:;">인건비원가현황</a></li>
+													<li><a href="javascript:;">VOC현황(관리자)</a></li>									
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">기획사업현황</a>
+												<ul>										
+													<li><a href="javascript:;">공개사업현황</a></li>
+													<li><a href="javascript:;">단기공개교육현황</a></li>									
+												</ul>
+											</li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">업무지원</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li>
+												<a href="javascript:;">업무지원</a>
+												<ul>										
+													<li><a href="javascript:;">담당자 안내</a></li>
+													<li><a href="javascript:;">시스템 개발현황</a></li>									
+												</ul>
+											</li>									
+										</ul>
+										<ul>										
+											<li>
+												<a href="javascript:;">신청하기</a>
+												<ul>										
+													<li><a href="javascript:;">TCS119</a></li>
+													<li><a href="javascript:;">세금계산서신청</a></li>
+													<li><a href="javascript:;">세금계산서 발행내역</a></li>
+													<li><a href="javascript:;">증명서신청</a></li>
+													<li><a href="javascript:;">문서발급</a></li>
+													<li><a href="javascript:;">명함신청</a></li>
+													<li><a href="javascript:;">출장비신청</a></li>
+													<li><a href="javascript:;">경조사/주차비 신청</a></li>
+													<li><a href="javascript:;">장비렌탈신청</a></li>
+													<li><a href="javascript:;">EMBBS 발송신청</a></li>
+													<li><a href="javascript:;">양식모음</a></li>									
+												</ul>
+											</li>									
+										</ul>
+										<ul>										
+											<li>
+												<a href="javascript:;">예약하기</a>
+												<ul>										
+													<li><a href="javascript:;">TCS119</a></li>
+													<li><a href="javascript:;">장비예약</a></li>
+													<li><a href="javascript:;">회의실예약</a></li>
+													<li><a href="javascript:;">비즈니스스쿨예약</a></li>									
+												</ul>
+											</li>									
+										</ul>
+										<ul>										
+											<li>
+												<a href="javascript:;">내역보기</a>
+												<ul>										
+													<li><a href="javascript:;">TCS119</a></li>
+													<li><a href="javascript:;">입금내역</a></li>
+													<li><a href="javascript:;">급여내역</a></li>
+													<li><a href="javascript:;">성과급지급내역</a></li>
+													<li><a href="javascript:;">성과급예상내역</a></li>
+													<li><a href="javascript:;">출장비관리</a></li>
+													<li><a href="javascript:;">출장비정산</a></li>
+													<li><a href="javascript:;">선택적복지제도 등</a></li>
+													<li><a href="javascript:;">연차현황</a></li>
+													<li><a href="javascript:;">선택적복지제도(관)</a></li>
+													<li><a href="javascript:;">급여내역(관)</a></li>
+													<li><a href="javascript:;">차량운행(관)</a></li>									
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</li>
+								<li>
+									<a href="javascript:;">KDB</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li><a href="javascript:;">KDB</a></li>
+										</ul>
+									</div>
+								</li>
+								<li>
+									<a href="javascript:;">네트워크</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li>
+												<a href="javascript:;">내명함관리</a>
+												<ul>										
+													<li><a href="javascript:;">내명함</a></li>
+													<li><a href="javascript:;">나만의DM관리</a></li>							
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">DM관리</a>
+												<ul>										
+													<li><a href="javascript:;">DM정보수정</a></li>	
+													<li><a href="javascript:;">EMBBS발송내역</a></li>							
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">INFRA관리</a>
+												<ul>										
+													<li><a href="javascript:;">혁신리더스클럽</a></li>	
+													<li><a href="javascript:;">업무제휴기관(MOU)</a></li>
+													<li><a href="javascript:;">협력사 등록관리</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">경영관리</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li>
+												<a href="javascript:;">사업관리</a>
+												<ul>										
+													<li><a href="javascript:;"> 전체현황</a></li>
+													<li><a href="javascript:;">3개월예상</a></li>
+													<li><a href="javascript:;">조직단위별 현황</a></li>
+													<li><a href="javascript:;">기능별현황</a></li>
+													<li><a href="javascript:;">세부사업유형현황</a></li>
+													<li><a href="javascript:;">수주현황</a></li>
+													<li><a href="javascript:;">미수전체현황</a></li>
+													<li><a href="javascript:;">CE구독현황</a></li>
+													<li><a href="javascript:;">사업현황등록(본부/센터)</a></li>
+												</ul>
+											</li>
+										</ul>
+
+										<ul>
+											<li>
+												<a href="javascript:;">인력관리</a>
+												<ul>										
+													<li><a href="javascript:;">인력POOL
+													<li><a href="javascript:;">투입제한인력POOL</a></li>
+													<li><a href="javascript:;">성과급 안내메일 관리</a></li>
+													<li><a href="javascript:;">인적현황</a></li>
+													<li><a href="javascript:;">(상임)성과급지급현황
+													<li><a href="javascript:;">월별성과급현황(전체)</a></li>
+													<li><a href="javascript:;">채용관리</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+							</ul>
+						</div>
+						<!-- // gnb -->
+						
+						<div class="navbar">
+							<div class="overlay"></div>
+							<div class="conts_box">
+								<div class="in_box">
+									<section>
+										<div class="scroll_box sc">
+											<div class="navbar_menu">
+												<p class="home"><a href="javascript:;"><i class="mdi mdi-home"></i>HOME</a></p>										
+												<ul>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-bulletin-board"></i>게시판</a>	
+														<ul class="noDepth"><!-- 3뎁스가 없을 경우 .noDepth -->															
+															<li><a href="javascript:;">공지사항</a></li>
+															<li><a href="javascript:;">기준지침</a></li>
+															<li><a href="javascript:;">회의자료</a></li>
+															<li><a href="javascript:;">제안하기</a></li>
+															<li><a href="javascript:;">전자입찰계정관리</a></li>
+															<li><a href="javascript:;">두빛나눔</a></li>
+															<li><a href="javascript:;">블라인드 소통 채널</a></li>
+															<li><a href="javascript:;">열린세상</a></li>
+															<li><a href="javascript:;">시스템Q&A</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-account-group-outline"></i>고객정보</a>
+														<ul class="noDepth">													
+															<li><a href="javascript:;">고객정보등록</a></li>
+															<li><a href="javascript:;">나라장터 게시판</a></li>
+															<li><a href="javascript:;">고객정보현황(개인)</a></li>
+															<li><a href="javascript:;">고객정보현황(조직)</a></li>
+															<li><a href="javascript:;">고객정보현황(주간)</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-calendar-month"></i>스케줄관리</a>
+														<ul class="noDepth">													
+															<li><a href="javascript:;">개인일정</a></li>
+															<li><a href="javascript:;">일정관리</a></li>
+															<li><a href="javascript:;">주간방문기업</a></li>
+															<li><a href="javascript:;">전사주요행사</a></li>
+															<li><a href="javascript:;">세미나/컨퍼런스</a></li>
+															<li><a href="javascript:;">개인근무시간</a></li>
+															<li><a href="javascript:;">근무시간관리</a></li>
+															<li><a href="javascript:;">재택근무 출/퇴근 현황</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-stamper"></i>전자결재</a>
+														<ul class="noDepth">													
+															<li><a href="javascript:;">내결재함</a></li>
+															<li><a href="javascript:;">기안하기</a></li>
+															<li><a href="javascript:;">결재현황보기</a></li>
+															<li><a href="javascript:;">PJ변동현황보기</a></li>
+															<li><a href="javascript:;">성과급품의하기</a></li>
+															<li><a href="javascript:;">인센티브품의하기</a></li>
+															<li><a href="javascript:;">내참조함</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-projector-screen-outline"></i>PMS</a>
+														<ul>
+															<li>
+																<a href="javascript:;">프로젝트관리</a>
+																<ul>
+																	<li><a href="javascript:;">MY PROJECT</a></li>
+																	<li><a href="javascript:;">예산등록</a></li>
+																	<li><a href="javascript:;">프로젝트등록</a></li>
+																	<li><a href="javascript:;">성과급관리(프로젝트별)</a></li>
+																	<li><a href="javascript:;">성과급관리(컨설턴트별)</a></li>
+																	<li><a href="javascript:;">실시간성과급(본부/센터)</a></li>
+																	<li><a href="javascript:;">실시간성과급(프로젝트)</a></li>
+																	<li><a href="javascript:;">출장비관리(PJ)</a></li>
+																	<li><a href="javascript:;">고객만족도관리</a></li>
+																	<li><a href="javascript:;">인건비원가관리</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">프로젝트현황</a>
+																<ul>
+																	<li><a href="javascript:;">프로젝트전체현황</a></li>
+																	<li><a href="javascript:;">Emergency PJ현황</a></li>
+																	<li><a href="javascript:;">VOC현황</a></li>
+																	<li><a href="javascript:;">고객만족도현황</a></li>
+																	<li><a href="javascript:;">컨설턴트평가현황</a></li>
+																	<li><a href="javascript:;">고객만족도진행현황</a></li>
+																	<li><a href="javascript:;">인건비원가현황</a></li>
+																	<li><a href="javascript:;">VOC현황(관리자)</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">기획사업현황</a>
+																<ul>
+																	<li><a href="javascript:;">공개사업현황</a></li>
+																	<li><a href="javascript:;">단기공개교육현황</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-handshake"></i>업무지원</a>
+														<ul>
+															<li>
+																<a href="javascript:;">업무지원</a>
+																<ul>
+																	<li><a href="javascript:;">담당자 안내</a></li>
+																	<li><a href="javascript:;">시스템 개발현황</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">신청하기</a>
+																<ul>
+																	<li><a href="javascript:;">TCS119</a></li>
+																	<li><a href="javascript:;">세금계산서신청</a></li>
+																	<li><a href="javascript:;">세금계산서 발행내역</a></li>
+																	<li><a href="javascript:;">증명서신청</a></li>
+																	<li><a href="javascript:;">문서발급</a></li>
+																	<li><a href="javascript:;">명함신청</a></li>
+																	<li><a href="javascript:;">출장비신청</a></li>
+																	<li><a href="javascript:;">경조사/주차비 신청</a></li>
+																	<li><a href="javascript:;">장비렌탈신청</a></li>
+																	<li><a href="javascript:;">EMBBS 발송신청</a></li>
+																	<li><a href="javascript:;">양식모음</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">예약하기</a>
+																<ul>
+																	<li><a href="javascript:;">장비예약</a></li>
+																	<li><a href="javascript:;">회의실예약</a></li>
+																	<li><a href="javascript:;">비즈니스스쿨예약</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">내역보기</a>
+																<ul>
+																	<li><a href="javascript:;">입금내역</a></li>
+																	<li><a href="javascript:;">급여내역</a></li>
+																	<li><a href="javascript:;">성과급지급내역</a></li>
+																	<li><a href="javascript:;">성과급예상내역</a></li>
+																	<li><a href="javascript:;">출장비관리</a></li>
+																	<li><a href="javascript:;">출장비정산</a></li>
+																	<li><a href="javascript:;">선택적복지제도 등</a></li>
+																	<li><a href="javascript:;">연차현황</a></li>
+																	<li><a href="javascript:;">선택적복지제도(관)</a></li>
+																	<li><a href="javascript:;">급여내역(관)</a></li>
+																	<li><a href="javascript:;">차량운행(관)</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-server-network"></i>KDB</a>
+														<ul class="noDepth">
+															<li><a href="javascript:;">KDB</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-access-point-network"></i>네트워크</a>
+														<ul>
+															<li>
+																<a href="javascript:;">내명함관리</a>
+																<ul>
+																	<li><a href="javascript:;">내명함</a></li>
+																	<li><a href="javascript:;">나만의DM관리</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">DM관리</a>
+																<ul>
+																	<li><a href="javascript:;">DM정보수정</a></li>
+																	<li><a href="javascript:;">EMBBS발송내역</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">INFRA관리</a>
+																<ul>
+																	<li><a href="javascript:;">혁신리더스클럽</a></li>
+																	<li><a href="javascript:;">업무제휴기관(MOU)</a></li>
+																	<li><a href="javascript:;">협력사 등록관리</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-folder-open-outline"></i>경영관리</a>
+														<ul>
+															<li>
+																<a href="javascript:;">사업관리</a>
+																<ul>
+																	<li><a href="javascript:;">전체현황</a></li>
+																	<li><a href="javascript:;">3개월예상</a></li>
+																	<li><a href="javascript:;">조직단위별 현황</a></li>
+																	<li><a href="javascript:;">기능별현황</a></li>
+																	<li><a href="javascript:;">세부사업유형현황</a></li>
+																	<li><a href="javascript:;">수주현황</a></li>
+																	<li><a href="javascript:;">미수전체현황</a></li>
+																	<li><a href="javascript:;">CE구독현황</a></li>
+																	<li><a href="javascript:;">사업현황등록(본부/센터)</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">인력관리</a>
+																<ul>
+																	<li><a href="javascript:;">인력POOL
+																	<li><a href="javascript:;">투입제한인력POOL</a></li>
+																	<li><a href="javascript:;">성과급 안내메일 관리</a></li>
+																	<li><a href="javascript:;">인적현황</a></li>
+																	<li><a href="javascript:;">(상임)성과급지급현황</a></li>
+																	<li><a href="javascript:;">월별성과급현황(전체)</a></li>
+																	<li><a href="javascript:;">채용관리</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>													
+												</ul>
+											</div>
+										</div>
+									</section>
+								</div>
+							</div>
+							<a class="btn_close" href="javascript:;"><span class="blind">창닫기</span></a>
+						</div>						
+						<!-- // navbar -->
+
+					</div>
+					<!-- // header -->
+
+					<div class="location">
+						<p class="menu_title">시스템 Q&A (활용문의)</p>
+						<ul>
+							<li class="home">HOME</li>
+							<li>게시판</li>
+							<li>시스템 Q&A (활용문의)</li>
+						</ul>
+					</div>
+					<!-- // location -->
+
+					<div class="contents sub"><!-- 서브 페이지 .sub -->
+
+						<div class="fixed_box">
+							<div class="title a-l">
+								<div class="h1_area">
+									<p class="h1"><i class="mdi mdi-file-document-outline"></i>일정관리</p>
+								</div>
+							</div>
+							<div class="schedule_status">
+								<ul>
+									<li class="total"><a href="javascript:;" class="current">전체(30)</a></li><!-- 선택 값 .current -->
+									<li class="ico ico-1"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_common_view');">사업관리(3)</a></li>
+									<li class="ico ico-2"><a href="javascript:;">교육참석(2)</a></li>
+									<li class="ico ico-3"><a href="javascript:;">재택근무(4)</a></li>
+									<li class="ico ico-4"><a href="javascript:;">프로젝트 투입(5)</a></li>
+									<li class="ico ico-5"><a href="javascript:;">휴가(5)</a></li>
+								</ul>
+								<ul>
+									<li><a href="javascript:;">현장출근(30)</a></li>
+									<li><a href="javascript:;">현장퇴근(5)</a></li>
+									<li><a href="javascript:;">현장출/퇴근(6)</a></li>
+								</ul>
+								<ul>
+									<li><a href="javascript:;">외근(30)</a></li>
+									<li><a href="javascript:;">고객정보 등록(5)</a></li>
+								</ul>
+							</div>	
+							<div class="fixed_contents schedule_view sc"><!-- 스케줄 관리 컨텐츠 요소 .schedule_view -->
+
+								<!-- 전사 스케줄 관리 -->
+								<div class="board_box schedule">
+									
+									<div class="board_contents">
+
+										<div class="schedule_head">
+											<div class="month_select">
+												<button type="button" onclick="location.href='javascript:;'"><i class="mdi mdi-chevron-left"></i></button>
+												<div class="select_area">
+													<select class="select">
+														<option value="2021">2021</option>
+														<option value="2020">2020</option>
+													</select>
+													<select class="select">
+														<option value="01">01</option>
+														<option value="02">02</option>
+													</select>															
+												</div>
+												<button type="button" onclick="location.href='javascript:;'"><i class="mdi mdi-chevron-right"></i></button>
+											</div>
+											<div class="search_input">
+												<label for="search"></label>
+												<input type="text" name="search" id="search" placeholder="검색어를 입력하세요." title="검색어를 입력하세요." />
+												<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">검색</button>									
+											</div>
+										</div>										
+
+										<div class="gantt_box myschedule"><!-- 개인 스케줄 관리 .myschedule -->											
+											<div class="view month_box">	
+												
+												<div class="week">
+													<div class="sun">일요일</div>
+													<div class="mon">월요일</div>
+													<div class="tue">화요일</div>
+													<div class="wed">수요일</div>
+													<div class="thu">목요일</div>
+													<div class="fri">금요일</div>
+													<div class="sat">토요일</div>
+												</div>
+												
+												<div class="month">
+													<div class="sun">														
+														<p><span class="day"></span><span>3</span></p>
+														<ul></ul>												
+													</div>													
+													<div class="mon">
+														<p><span class="day"></span><span>1</span></p>
+														<ul>
+															<a href="javascript:;" onclick="javascript:layer_open(this,'pop_register');"></a><!-- 일정 등록 팝업 -->
+														</ul>
+													</div>
+													<div class="tue">
+														<p><span class="day"></span><span>3</span></p>
+														<ul></ul>
+													</div>
+													<div class="wed">
+														<p><span class="day"></span><span>4</span></p>
+														<ul></ul>
+													</div>
+													<div class="thu">
+														<p><span class="day"></span><span>5</span></p>
+														<ul></ul>
+													</div>
+													<div class="fri">
+														<p><span class="day"></span><span>6</span></p>
+														<ul>
+															<li class="ico-6"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">통합 인트라넷 개편</a></li>
+															<li class="ico-7"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">통합 인트라넷 개편</a></li>
+														</ul>
+													</div>
+													<div class="sat">
+														<p><span class="day"></span><span>7</span></p>
+														<ul></ul>
+													</div>
+												</div>
+
+												<div class="month">
+													<div class="sun">
+														<p><span class="day"></span><span>8</span></p>
+														<ul></ul>
+													</div>													
+													<div class="mon">
+														<p><span class="day"></span><span>9</span></p>
+														<ul></ul>
+													</div>
+													<div class="tue">
+														<p><span class="day"></span><span>10</span></p>
+														<ul></ul>
+													</div>
+													<div class="wed">
+														<p><span class="day"></span><span>11</span></p>
+														<ul></ul>
+													</div>
+													<div class="thu">
+														<p><span class="day"></span><span>12</span></p>
+														<ul></ul>
+													</div>
+													<div class="fri">
+														<p><span class="day"></span><span>13</span></p>
+														<ul></ul>
+													</div>
+													<div class="sat">
+														<p><span class="day"></span><span>14</span></p>
+														<ul></ul>
+													</div>
+												</div>
+
+												<div class="month">
+													<div class="sun">
+														<p><span class="day"></span><span>15</span></p>
+														<ul>
+															<li class="ico-6"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">통합 인트라넷 개편</a></li>
+															<li class="ico-7"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">통합 인트라넷 개편</a></li>
+														</ul>
+													</div>													
+													<div class="mon">
+														<p class="day_off"><span class="day">공휴일</span><span>16</span></p>
+														<ul></ul>
+													</div>
+													<div class="tue today"><!-- 22.01.24 오늘 일자 .today -->
+														<p><span class="day"></span><span>17</span></p>
+														<ul>
+															<li class="ico-2"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">통합 인트라넷 개편통합 인트라넷 개편통합 인트라넷 개편</a></li>
+															<li class="ico-1"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">통합 인트라넷 개편</a></li>
+															<li class="ico-3"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">재택근무</a></li>
+															<button type="button" class="btn_more">+5</button>
+															<span>
+																<li class="ico-1"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">사업관리</a></li>
+																<li class="ico-2"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">교육참석</a></li>
+																<li class="ico-3"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">재택근무</a></li>
+																<li class="ico-4"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">프로젝트 투입</a></li>
+																<li class="ico-5"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">휴가</a></li>
+															</span>
+														</ul>
+													</div>
+													<div class="wed">
+														<p><span class="day"></span><span>18</span></p>
+														<ul>
+															<li class="ico-3"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">재택근무</a></li>
+														</ul>
+													</div>
+													<div class="thu today"><!-- 22.01.24 오늘 일자 .today -->
+														<p><span class="day"></span><span>19</span></p>
+														<ul>
+															<li class="ico-4"><a href="javascript:;" onclick="javascript:layer_open(this,'pop_register_edit');">프로젝트 투입</a></li>
+														</ul>
+													</div>
+													<div class="fri">
+														<p><span class="day"></span><span>20</span></p>
+														<ul></ul>
+													</div>
+													<div class="sat">
+														<p><span class="day"></span><span>21</span></p>
+														<ul></ul>
+													</div>
+												</div>
+												
+												<div class="month">
+													<div class="sun">
+														<p><span class="day"></span><span>22</span></p>
+														<ul></ul>
+													</div>													
+													<div class="mon">
+														<p class="day_off"><span class="day"></span><span>23</span></p>
+														<ul></ul>
+													</div>
+													<div class="tue">
+														<p><span class="day"></span><span>24</span></p>
+														<ul></ul>
+													</div>
+													<div class="wed">
+														<p><span class="day"></span><span>25</span></p>
+														<ul></ul>
+													</div>
+													<div class="thu">
+														<p><span class="day"></span><span>26</span></p>
+														<ul></ul>
+													</div>
+													<div class="fri">
+														<p><span class="day"></span><span>27</span></p>
+														<ul></ul>
+													</div>
+													<div class="sat">
+														<p><span class="day"></span><span>28</span></p>
+														<ul></ul>
+													</div>
+												</div>
+
+												<div class="month">
+													<div class="sun">
+														<p><span class="day"></span><span>29</span></p>
+														<ul></ul>
+													</div>													
+													<div class="mon">
+														<p class="day_off"><span class="day">공휴일</span><span>30</span></p>
+														<ul></ul>
+													</div>
+													<div class="tue">
+														<p><span class="day"></span><span>31</span></p>
+														<ul></ul>
+													</div>
+													<div class="disable">
+														<p><span class="day"></span><span>1</span></p>
+														<ul></ul>
+													</div>
+													<div class="disable">
+														<p><span class="day"></span><span>2</span></p>
+														<ul></ul>
+													</div>
+													<div class="disable">
+														<p><span class="day"></span><span>3</span></p>
+														<ul></ul>
+													</div>
+													<div class="disable">
+														<p><span class="day"></span><span>4</span></p>
+														<ul></ul>
+													</div>
+												</div>
+
+											</div>
+										</div>													
+										<!-- // gantt_box -->
+
+									</div>
+									<!-- // board_contents-->
+								</div>
+								<!-- // 전사 스케줄 관리 -->				
+								
+							</div>	
+							<!-- // fixed_contents -->
+						</div>
+						<!-- // fixed_box -->
+
+
+						<!--  공통 수정 팝업 -->
+						<div id="pop_register_edit" class="popup_layer pop_register common">
+							<div class="popup_bg"></div>
+							<div class="popup_inner">
+								<div class="a-both">
+									<p class="h1">일정<span class="lock"><i class="mdi mdi-lock-open-outline"></i></span></p>									
+									<div class="btn_area icon">
+										<button type="button" class="btn-pop edit" onclick="javascript:layer_open(this,'pop_register');"><p>수정</p></button>
+										<button type="button" class="btn-pop del" onclick="location.href='javascript:;'"><p>삭제</p></button>
+										<button type="button" class="btn-close" onclick="javascript:layer_close('pop_register_edit');" title="닫기"><i class="mdi mdi-close"></i></button>
+									</div>	
+								</div>								
+								<div class="popup_contents">									
+									<p class="dot_tit ico-1">사업관리<span class="detail">유지보수 계약</span></p><!-- 사업관리 .ico-1 -->
+									<p class="dot_tit ico-2">교육참석</p><!-- 교육참석 .ico-2 -->
+									<p class="dot_tit ico-3">재택근무</p><!-- 재택근무 .ico-3 -->
+									<p class="dot_tit ico-4">프로젝트 투입</p><!-- 프로젝트 투입 .ico-4 -->
+									<p class="dot_tit ico-5">휴가</p><!-- 휴가 .ico-5 -->
+									<ul class="register_view">
+										<li><i class="mdi mdi-card-account-details-outline"></i><p>KT Bizworks (등록 N)</p></li>
+										<li><i class="mdi mdi-alarm-check"></i><p>2021년 8월 5일 10시 30분 ~ 11시 30분</p></li>
+										<li><i class="mdi mdi-map-marker-radius-outline"></i><p>(외근) 서울 종로</p></li>										
+										<li><i class="mdi mdi-train-car"></i><p>현장 출근/ 현장 퇴근</p></li>										
+									</ul>		
+								</div>
+							</div>
+						</div>
+						<!-- // 공통 수정 팝업 -->		
+
+						<!-- 일정등록 팝업 -->
+						<!-- <div id="pop_register" class="popup_layer pop_register">
+							<div class="popup_bg"></div>
+							<div class="popup_inner myschedule">개인 스케쥴관리 .myschedule
+								<div class="a-both">
+									<p class="h1">일정등록</p>						
+									<button type="button" class="btn-close" onclick="javascript:layer_close('pop_register');" title="닫기"><i class="mdi mdi-close"></i></button>
+								</div>								
+								<div class="popup_contents">
+									<div class="a-both title">
+										<input type="text" title="업무내용 입력" placeholder="업무내용 입력" />
+										<select class="select">
+											<option value="내부일정">내부일정</option>
+											<option value="옵션">옵션 옵션 옵션</option>
+											<option value="옵션">옵션</option>
+										</select>
+									</div>
+									<div class="w-100">width 100% 로 할 경우
+										<input type="text" title="업무내용 입력" placeholder="업무내용 입력" />
+									</div>									
+									<div class="a-both">
+										<input type="text" title="고객사 입력" placeholder="고객사 입력" />
+										<ul class="chek_ui">
+											<li>
+												<p class="label">등록대상</p>
+												<input type="radio" id="choose_yes" name="choose_1" class="btn_radio" checked  />
+												<label for="choose_yes"><p>Y</p></label> 
+												<input type="radio" id="choose_no" name="choose_1" class="btn_radio" />
+												<label for="choose_no"><p>N</p></label>      
+											</li>
+										</ul>
+									</div>									
+									<ul class="chek_ui mb-10">
+										<li>																					
+											<input type="checkbox" name="check_day" id="check_day" class="btn_check" checked />
+											<label for="check_day"><p>하루 종일</p></label>
+										</li>																		
+									</ul>
+									<div class="a-both">
+										<div class="input_date">
+											<input type="text" title="시작일" placeholder="시작일" />
+											<button type="button" class="btn_datepicker" title="캘린더오픈"></button>
+										</div>
+										<select class="select">
+											<option value="오전">오전</option>
+											<option value="오후">오후</option>
+										</select>
+										<input type="text" title="" placeholder="12:00" class="time" />
+									</div>
+									<div class="a-both">
+										<div class="input_date">
+											<input type="text" title="종료일" placeholder="종료일" />
+											<button type="button" class="btn_datepicker" title="캘린더오픈"></button>
+										</div>
+										<select class="select">
+											<option value="오전">오전</option>
+											<option value="오후">오후</option>
+										</select>
+										<input type="text" title="" placeholder="12:00" class="time" />
+									</div>
+									<ul class="chek_ui">
+										<li>
+											<p class="label">외/내근 유형</p>
+											<input type="radio" id="choose_out" name="choose_2" class="btn_radio" checked  />
+											<label for="choose_out"><p>외근</p></label> 
+											<input type="radio" id="choose_in" name="choose_2" class="btn_radio" />
+											<label for="choose_in"><p>내근</p></label>      
+										</li>
+									</ul>	
+									<ul class="chek_ui">
+										<li>																					
+											<input type="checkbox" name="check_on" id="check_on" class="btn_check" />
+											<label for="check_on"><p>현장 “출근”</p></label>
+										</li>
+										<li>																					
+											<input type="checkbox" name="check_off" id="check_off" class="btn_check" />
+											<label for="check_off"><p>현장 “퇴근”</p></label>
+										</li>																		
+									</ul>
+									<div class="a-c">
+										<ul class="chek_ui">
+											<li>																					
+												<input type="checkbox" name="check_private" id="check_private" class="btn_check" />
+												<label for="check_private"><p>비공개로 설정시 체크해 주세요.</p></label>
+											</li>
+										</ul>
+									</div>
+									<div class="btn_area">
+										<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">등록</button>
+										<button type="button" class="btn btn_grey" onclick="location.href='javascript:;'">취소</button>
+									</div>									
+								</div>
+							</div>
+						</div> -->
+						<!-- // 일정등록 팝업 -->
+
+						<!-- 일정등록 팝업 -->
+						<div id="pop_register" class="popup_layer pop_register">
+							<div class="popup_bg"></div>
+							<div class="popup_inner myschedule">
+								<div class="a-both">
+									<p class="h1">일정등록</p>						
+									<button type="button" class="btn-close" onclick="javascript:layer_close('pop_register');" title="닫기"><i class="mdi mdi-close"></i></button>
+								</div>								
+								<div class="popup_contents">
+									<div class="a-both title">										
+										<select class="select">
+											<option value="내부일정">내부일정</option>
+											<option value="옵션">옵션 옵션 옵션</option>
+											<option value="옵션">옵션</option>
+										</select>
+										<input type="text" title="업무내용 입력" placeholder="업무내용 입력" />
+									</div>
+									<div class="w-100">
+										<input type="text" title="업무내용 입력" placeholder="업무내용 입력" />
+									</div>									
+									<div class="a-both">
+										<input type="text" title="고객사 입력" placeholder="고객사 입력" />
+										<ul class="chek_ui">
+											<li>
+												<p class="label">등록대상</p>
+												<input type="radio" id="choose_yes" name="choose_1" class="btn_radio" checked  />
+												<label for="choose_yes"><p>Y</p></label> 
+												<input type="radio" id="choose_no" name="choose_1" class="btn_radio" />
+												<label for="choose_no"><p>N</p></label>      
+											</li>
+										</ul>
+									</div>									
+									<ul class="chek_ui mb-10">
+										<li>																					
+											<input type="checkbox" name="check_day" id="check_day" class="btn_check" checked />
+											<label for="check_day"><p>하루 종일</p></label>
+										</li>																		
+									</ul>
+									<div class="a-both">
+										<div class="input_date">
+											<input type="text" title="시작일" placeholder="시작일" />
+											<button type="button" class="btn_datepicker" title="캘린더오픈"></button>
+										</div>
+										<select class="select">
+											<option value="오전">오전</option>
+											<option value="오후">오후</option>
+										</select>
+										<input type="text" title="" placeholder="12:00" class="time" />
+									</div>
+									<div class="a-both">
+										<div class="input_date">
+											<input type="text" title="종료일" placeholder="종료일" />
+											<button type="button" class="btn_datepicker" title="캘린더오픈"></button>
+										</div>
+										<select class="select">
+											<option value="오전">오전</option>
+											<option value="오후">오후</option>
+										</select>
+										<input type="text" title="" placeholder="12:00" class="time" />
+									</div>
+									<ul class="chek_ui">
+										<li>
+											<p class="label">외/내근 유형</p>
+											<input type="radio" id="choose_out" name="choose_2" class="btn_radio" checked  />
+											<label for="choose_out"><p>외근</p></label> 
+											<input type="radio" id="choose_in" name="choose_2" class="btn_radio" />
+											<label for="choose_in"><p>내근</p></label>      
+										</li>
+									</ul>	
+									<ul class="chek_ui">
+										<li>																					
+											<input type="checkbox" name="check_on" id="check_on" class="btn_check" />
+											<label for="check_on"><p>현장 “출근”</p></label>
+										</li>
+										<li>																					
+											<input type="checkbox" name="check_off" id="check_off" class="btn_check" />
+											<label for="check_off"><p>현장 “퇴근”</p></label>
+										</li>																		
+									</ul>
+									<div class="a-c">
+										<ul class="chek_ui">
+											<li>																					
+												<input type="checkbox" name="check_private" id="check_private" class="btn_check" />
+												<label for="check_private"><p>비공개로 설정시 체크해 주세요.</p></label>
+											</li>
+										</ul>
+									</div>
+									<div class="btn_area">
+										<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">등록</button>
+										<button type="button" class="btn btn_grey" onclick="location.href='javascript:;'">취소</button>
+									</div>									
+								</div>
+							</div>
+						</div>
+						<!-- // 일정등록 팝업 -->
+
+						<!--  공통 상세 팝업 -->
+						<div id="pop_common_view" class="popup_layer pop_register common">
+							<div class="popup_bg"></div>
+							<div class="popup_inner">
+								<div class="a-both">
+									<p class="h1">일정상세</p>									
+									<div class="btn_area icon">
+										<button type="button" class="btn-close" onclick="javascript:layer_close('pop_common_view');" title="닫기"><i class="mdi mdi-close"></i></button>
+									</div>
+								</div>								
+								<div class="popup_contents">									
+									<p class="dot_tit ico-1">사업관리</p><!-- 사업관리 .ico-1 -->
+									<p class="dot_tit ico-2">교육참석</p><!-- 교육참석 .ico-2 -->
+									<p class="dot_tit ico-3">재택근무</p><!-- 재택근무 .ico-3 -->
+									<p class="dot_tit ico-4">프로젝트 투입</p><!-- 프로젝트 투입 .ico-4 -->
+									<p class="dot_tit ico-5">휴가</p><!-- 휴가 .ico-5 -->
+									<ul class="register_view">
+										<li><i class="mdi mdi-account-supervisor"></i><p>김요섭(Associate), 고두균(Associate), 김희철(Associate)</p></li>
+										<li><i class="mdi mdi-alarm-check"></i><p>2021년 8월 5일</p></li>
+									</ul>
+									<ul class="register_view">
+										<li><i class="mdi mdi-account-supervisor"></i><p>김요섭(Associate), 고두균(Associate), 김희철(Associate)</p></li>
+										<li><i class="mdi mdi-alarm-check"></i><p>2021년 8월 5일</p></li>
+									</ul>
+									<ul class="register_view">
+										<li><i class="mdi mdi-account-supervisor"></i><p>김요섭(Associate), 고두균(Associate), 김희철(Associate)</p></li>
+										<li><i class="mdi mdi-alarm-check"></i><p>2021년 8월 5일</p></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- // 공통 상세 팝업 -->
+
+					</div>
+					<!-- // contents -->
+														
+					<div class="footer">
+						<p>Copyright  ⓒ 2021 KMAC. All rights reserved</p>
+					</div>
+					<!-- // footer -->		
+
+				</div>
+				<!-- // contents_area -->
+
+			</div>
+			<!-- // container -->				
+
+		</div>
+		<!-- // wrap -->
+
+	</body>
+</html>

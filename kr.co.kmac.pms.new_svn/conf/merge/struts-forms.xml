@@ -1,0 +1,3 @@
+   <form-bean name="fileForm" type="org.apache.struts.action.DynaActionForm">
+       <form-property name="fileForm" type="org.apache.struts.upload.FormFile"/>
+   </form-bean>

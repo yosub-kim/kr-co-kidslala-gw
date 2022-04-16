@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+        "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>expertPool</short-name>
+	<uri>http://kmac.co.kr/pms/expertPool</uri>
+	<description>
+		KMAC PMS Systems expertPool Tag Library
+		$Id: expertPool.tld,v 1.1 2009/09/19 11:15:29 cvs3 Exp $
+	</description>
+
+	<tag>
+		<name>exportmajor</name>
+		<tag-class>kr.co.kmac.pms.common.tag.expertpool.ExportMajorFieldTag</tag-class>
+		<description></description>
+		<attribute>
+			<name>code</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>exportname</name>
+		<tag-class>kr.co.kmac.pms.common.tag.expertpool.ExportNameTag</tag-class>
+		<description></description>
+		<attribute>
+			<name>ssn</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+	</tag>
+
+</taglib>

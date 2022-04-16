@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- expertPool beans-->
+	<!-- <bean id="issueManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.support.issue.manager.impl.IssueManagerImpl">
+				<property name="issueDao" ref="issueDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="namecardManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.support.namecard.manager.impl.NamecardManagerImpl">
+				<property name="namecardDao" ref="namecardDao" />
+			</bean>
+		</property>
+	</bean> -->
+	<bean id="certificateManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.support.certificate.manager.impl.CertificateManagerImpl">
+				<property name="certificateDao" ref="certificateDao" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="taxWorkManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.support.taxWork.manager.impl.TaxWorkManagerImpl">
+				<property name="taxWorkDao" ref="taxWorkDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- dao -->
+	<!-- <bean id="issueDao" class="kr.co.kmac.pms.support.issue.dao.impl.IssueDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="namecardDao" class="kr.co.kmac.pms.support.namecard.dao.impl.NamecardDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+	<bean id="certificateDao" class="kr.co.kmac.pms.support.certificate.dao.impl.CertificateDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>	
+	<bean id="taxWorkDao" class="kr.co.kmac.pms.support.taxWork.dao.impl.TaxWorkDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="erpDataSource" ref="erpDataSource" />
+	</bean>
+</beans>

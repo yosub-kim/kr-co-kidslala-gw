@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<!-- 첨부파일 다운로드 리스트 -->
+	<bean id="downloadLogReport" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="getDownloadLogReport">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select * from (
+									select 	a.ssn, a.name, a.company, b.cnt, '' as date,
+										case 	when (select description from smgroup where id = a.dept) is null 
+													then a.dept else (select description from smgroup where id = a.dept)  
+												end as dept,
+										case 	when (select description from smrole where id = a.companyPosition) is null
+									 				then a.companyPosition else (select description from smrole where id = a.companyPosition)  
+												end as position,
+										(select data_1 from cmtabledata where table_name='EMP_WORKING_TYPE' and key_1=jobClass) as jobclass,
+										(select count(ssn) from dailyDownloadLimit where ssn = a.ssn and isLimit='Y') isDailyDownloadLimit
+									from  expertpool a, 
+									  (
+										select ssn, count(ssn) as cnt  from DownloadLog
+										where 1=1
+					/~from:		  		and 	downloadTime >= {from}~/ 
+					/~to: 		 		and 	downloadTime < {to}~/ 
+										group by ssn
+									  )b
+									where 	a.ssn = b.ssn
+					/~name:			and 	name like {name}~/
+								) res
+								where 1=1
+					/~limit:	and	isDailyDownloadLimit > 0~/
+					/~unLimit:	and	isDailyDownloadLimit < 1~/
+								order 	by cnt desc 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="downLoadLogWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getDownloadLogReportDetail">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>2147483647</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT 	fileId, fileName, ssn, 
+									substring(downloadTime, 1, 4) +'-'+ substring(downloadTime, 5, 2) +'-'+ substring(downloadTime, 7, 2) +' '+ substring(downloadTime, 10,8) as downloadTime, 
+									ip, uploadUserId ,
+									isnull((select name from expertPool where ssn = uploadUserId),'') as uploadUserName
+							FROM  	DownloadLog
+		/~ssn:				where  	ssn = {ssn}~/
+		/~from:		  		and 	downloadTime >= {from}~/ 
+		/~to: 		 		and 	downloadTime < {to}~/ 
+							order	by downloadTime desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="downLoadLogDetailWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>				
+	<!-- LIST OF SYSTEM LOG -->
+	<bean id="systemLogReport" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>				
+				<entry key="getLoginLogReport">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	(select data_1 from cmtabledata where table_name='EMP_WORKING_TYPE' and key_1=E.jobClass) as jobclass,
+											e.deptName, e.companyPositionName, 
+											e.ssn, e.name, l.cnt
+									FROM expertPool e, 
+									(
+										SELECT  id, count(id) as cnt FROM LoginLog
+										 WHERE	1=1
+							/~from:		   AND	createdtime >= {from}~/
+							/~to:		   AND	createdtime < {to}~/
+							/~name:		   AND	name LIKE {name}~/
+										 GROUP BY id
+									) l
+									WHERE e.ssn = l.id
+									ORDER BY l.cnt DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="loginLogWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getLoginLogTimeOrderReport">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	(select data_1 from cmtabledata where table_name='EMP_WORKING_TYPE' and key_1=E.jobClass) as jobclass,
+											e.deptName, e.companyPositionName, 
+											e.ssn, e.name, IP, convert(date,loginTime) as loginTime, deviceType
+									FROM expertPool e, 
+									(
+										SELECT  id, remoteIpAddress as IP, name, createdTime as loginTime, deviceType FROM LoginLog
+										 WHERE	1=1
+							/~from:		   AND	createdtime >= {from}~/
+							/~to:		   AND	createdtime < {to}~/
+							/~name:		   AND	name LIKE {name}~/
+									) l
+									WHERE e.ssn = l.id
+									ORDER BY loginTime DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="loginLogTimeOrderWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getLoginLogReportDetail">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000000</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	ROW_NUMBER() OVER(ORDER BY l.createdtime) AS seq,
+											e.jobClass, e.deptName, e.companyPositionName, e.ssn, e.name, l.createdtime as loginDate, 
+											l.remoteIpAddress as ip, isNull(l.deviceType,'-') deviceType
+									  FROM	LoginLog l, expertPool e
+									 WHERE	l.id = e.ssn
+						/~from:		   AND	l.createdtime >= {from}~/
+						/~to:		   AND	l.createdtime < {to}~/
+						/~ssn:		   AND	e.ssn = {ssn}~/
+								  	 ORDER BY 1 desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="loginLogDetailWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getAccountHistoryList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	ah.seq, 
+											(case when ah.type = 'C' then '생성' when ah.type = 'U' then '변경' when ah.type='D' then '말소' end) as type,
+											e.ssn, ah.userId, ah.name, ah.jobClassName, replace(ah.deptName,' 전문가그룹','') as deptName, 
+											ah.companyPositionName, ah.menuRoleName, convert(varchar, convert(date, ah.date), 120) as date, 
+											(case when ah.etc = '' then '-' else ah.etc end) etc
+									FROM	AccountHistory ah, ExpertPool e
+									WHERE 1=1
+									AND ah.userid = e.userid
+						/~from:		AND	ah.date >= {from}~/
+						  /~to:		AND	ah.date < {to}~/
+				  /~accessType:		AND	ah.type = {accessType}~/
+						/~name:		AND	ah.name like {name}~/
+				 	/~deptCode:		AND e.dept = {deptCode}~/
+				 	/~jobClass:		AND e.jobClass = {jobClass}~/
+				 					ORDER BY date desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="accounttHistoryWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+	
+	<!-- 비즈플레이 인터페이스 리스트 -->
+	<bean id="bizplayLog" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="bizplayLogList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+										select * from BizplayInfoSendHistory
+										where 1=1
+					/~from:		  		and 	CONVERT(CHAR(8), createdTime, 112) >= {from}~/ 
+					/~to: 		 		and 	CONVERT(CHAR(8), createdTime, 112) <= {to}~/ 
+					/~endPoint:			and 	endPoint = {endPoint}~/
+								order 	by createdTime desc 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="bizplayLogListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>	
+	
+	<bean id="downLoadLogDetailWrapper" 	class="kr.co.kmac.pms.system.downloadlog.vl.DownloadLogDetailWrapper" />
+	<bean id="downLoadLogWrapper" 			class="kr.co.kmac.pms.system.downloadlog.vl.DownloadLogWrapper" />
+	<bean id="loginLogWrapper" 				class="kr.co.kmac.pms.system.accesslog.vl.LoginLogWrapper" />
+	<bean id="loginLogTimeOrderWrapper" 	class="kr.co.kmac.pms.system.accesslog.vl.LoginLogTimeOrderWrapper" />
+	<bean id="loginLogDetailWrapper" 		class="kr.co.kmac.pms.system.accesslog.vl.LoginLogDetailWrapper" />
+	<bean id="accounttHistoryWrapper" 		class="kr.co.kmac.pms.system.accesslog.vl.AccountHistoryListWrapper" />
+	<bean id="bizplayLogListWrapper" 		class="kr.co.kmac.pms.system.bizplaylog.vl.BizplayLogListWrapper" />
+</beans>

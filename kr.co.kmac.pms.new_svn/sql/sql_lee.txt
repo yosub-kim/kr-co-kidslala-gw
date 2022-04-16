@@ -1,0 +1,725 @@
+
+ALTER TABLE CMTABLEDATA ADD  SEQ VARCHAR(10)
+
+ALTER TABLE SMROLE ADD  SEQ VARCHAR(10)
+
+ALTER TABLE SMGROUP  ADD  SEQ VARCHAR(10)
+
+ALTER TABLE ExpertPool  ADD  SEQ VARCHAR(10)
+
+ALTER VIEW dbo.SMUser
+AS
+SELECT	ssn AS id,
+		userId as loginId, 
+		password, 
+		enable AS enabled, 
+		name, 
+		email, 
+		companyPosition AS pos, 
+		'' AS ssn, 
+		remark AS description,
+		seq 
+FROM      KmacPms.dbo.ExpertPool
+
+drop table SanctionDoc
+
+drop table dbo.SanctionDocConfirm
+
+drop table dbo.SanctionDocConfirmDef
+
+drop table dbo.SanctionDocTypeDef
+
+
+CREATE TABLE dbo.SanctionTemplate(
+	approvalType varchar(8) NOT NULL,
+	approvalName varchar(100) NOT NULL,
+	hasRefMember bit NOT NULL,
+	hasAssitMember bit NOT NULL,
+	hasCeo bit NOT NULL,
+	ceoName varchar(50) NULL,
+	ceoDept varchar(50) NULL,
+	ceoSsn varchar(13) NULL,
+	hasSptTeamMng bit NOT NULL,
+	sptTeamMngName varchar(50) NULL,
+	sptTeamMngDept varchar(50) NULL,
+	sptTeamMngSsn varchar(13) NULL,
+	hasWholeApprove bit NOT NULL,
+	hasAttach bit NOT NULL,
+	templateText text NULL,
+	useYn bit NOT NULL,
+	createdDate datetime NULL,
+	createUser varchar(50) NULL,
+	updatedDate datetime NULL,
+	updateUser varchar(50) NULL,
+ CONSTRAINT PK_SanctionTemplate PRIMARY KEY CLUSTERED 
+(
+	approvalType ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON PRIMARY
+) ON PRIMARY TEXTIMAGE_ON PRIMARY
+
+
+CREATE TABLE dbo.Work(
+	id varchar(50) NOT NULL,
+	title varchar(256) NOT NULL,
+	assigneeId varchar(50) NOT NULL,
+	assignerId varchar(50) NULL,
+	state int  NOT NULL,
+	type varchar(50) NOT NULL,
+	refWorkId varchar(50) NOT NULL,
+	document text NULL,
+	createDate datetime NULL,
+	openDate datetime NULL,
+	executeDate datetime NULL,
+ CONSTRAINT PK_Work PRIMARY KEY CLUSTERED 
+(
+	id ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON PRIMARY
+) ON PRIMARY TEXTIMAGE_ON PRIMARY
+
+
+
+
+
+CREATE TABLE [dbo].[SanctionDoc](
+	[seq] [int] NOT NULL,	[projectCode] [varchar](7) NOT NULL,	[approvalType] [varchar](8) NOT NULL,	[registerSsn] [varchar](13) NULL,
+	[registerDept] [varchar](10) NULL,	[registerDate] [datetime] NULL,
+	[teamManagerSsn] [varchar](13) NULL,	[teamManagerDept] [varchar](10) NULL,	[teamManagerDate] [datetime] NULL,	[cfoSsn] [varchar](13) NULL,
+	[cfoDept] [varchar](10) NULL,	[cfoDate] [datetime] NULL,	[ceoSsn] [varchar](13) NULL,
+	[ceoDept] [varchar](10) NULL,	[ceoDate] [datetime] NULL,	[assistant1Ssn] [varchar](13) NULL,
+	[assistant1Dept] [varchar](10) NULL,	[assistant1Date] [datetime] NULL,	[assistant2Ssn] [varchar](13) NULL,	[assistant2Dept] [varchar](10) NULL,
+	[assistant2Date] [datetime] NULL,	[assistant3Ssn] [varchar](13) NULL,	[assistant3Dept] [varchar](10) NULL,	[assistant3Date] [datetime] NULL,
+	[assistant4Ssn] [varchar](13) NULL,	[assistant4Dept] [varchar](10) NULL,
+	[assistant4Date] [datetime] NULL,	[subject] [varchar](500) NULL,	[content] [text] NULL,	[rejectReason] [text] NULL,	[isWholeApproval] [varchar](10) NULL,
+	[state] [varchar](50) NULL,	[reject] [varchar](10) NULL,
+	[registerName] [varchar](64) NULL,	[teamManagerName] [varchar](64) NULL,	[cfoName] [varchar](64) NULL,	[ceoName] [varchar](64) NULL,
+	[assistant1Name] [varchar](64) NULL,	[assistant2Name] [varchar](64) NULL,	[assistant3Name] [varchar](64) NULL,	[assistant4Name] [varchar](64) NULL,
+	[workType] [varchar](64) NULL,
+	CONSTRAINT [PK_SanctionDoc_1] PRIMARY KEY CLUSTERED 
+(
+	[seq] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+
+
+
+
+CREATE TABLE [dbo].[SanctionDocCC](
+	[seq] [int] NOT NULL,
+	[refMemberSsn] [varchar](13) NOT NULL,
+	[refMemberName] [varchar](32) NULL,
+	[draftRefMailSended] [bit] NULL,
+	[approveRefMailSended] [bit] NULL,
+	[approveCheckedDate] [datetime] NULL,
+ CONSTRAINT [PK_SanctionDocCC] PRIMARY KEY CLUSTERED 
+(
+	[seq] ASC,
+	[refMemberSsn] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+ALTER TABLE [dbo].[SanctionDocCC]  WITH CHECK ADD  CONSTRAINT [FK_SanctionDocCC_SanctionDoc] FOREIGN KEY([seq])
+REFERENCES [dbo].[SanctionDoc] ([seq])
+GO
+ALTER TABLE [dbo].[SanctionDocCC] CHECK CONSTRAINT [FK_SanctionDocCC_SanctionDoc]
+
+
+
+
+INSERT INTO SanctionDoc
+SELECT seq, projectCode, approvalType
+      ,registerSsn, NULL as registerDept, registerDate
+      ,teamManagerSsn, NULL as teamManagerDept, teamManagerDate
+      ,cfoSsn, NULL as cfoDept, cfoDate
+      ,ceoSsn, NULL as ceoDept, ceoDate
+      ,assistant1Ssn, (select dept from expertpool where ssn = assistant1Ssn) assistant1Dept, assistant1Date
+      ,assistant2Ssn, (select dept from expertpool where ssn = assistant2Ssn) assistant2Dept, assistant2Date
+      ,assistant3Ssn, (select dept from expertpool where ssn = assistant3Ssn) assistant3Dept, assistant3Date
+      ,assistant4Ssn, (select dept from expertpool where ssn = assistant4Ssn) assistant4Dept, assistant4Date
+      ,subject ,content ,rejectReason ,isWholeApproval ,state ,reject
+	  ,(select name from expertpool where ssn = registerSsn) registerName
+	  ,(select name from expertpool where ssn = teamManagerSsn) teamManagerName
+	  ,(select name from expertpool where ssn = cfoSsn) cfoName
+	  ,(select name from expertpool where ssn = ceoSsn) ceoName
+	  ,(select name from expertpool where ssn = assistant1Ssn) assistant1Name
+	  ,(select name from expertpool where ssn = assistant2Ssn) assistant2Name
+	  ,(select name from expertpool where ssn = assistant3Ssn) assistant3Name
+	  ,(select name from expertpool where ssn = assistant4Ssn) assistant4Name
+	  ,'S018809e0a4c4436010a4ead57e4001f' as workType
+  FROM KmacPms.dbo.ProjectApprovalHeaderDoc a
+
+
+
+--update sanctionDoc set workType = 'S018809e0a4c4436010a4ead57e4001f'
+UPDATE sanctionDoc SET workType = 'S028809e0a4c4436010a4ead57e4001f' WHERE approvalType IN ('A', 'PA')--실행
+UPDATE sanctionDoc SET workType = 'S038809e0a4c4436010a4ead57e4001f' WHERE approvalType LIKE 'B%'--운영
+UPDATE sanctionDoc SET workType = 'S048809e0a4c4436010a4ead57e4001f' WHERE approvalType LIKE 'S%'--일정
+UPDATE sanctionDoc SET workType = 'S058809e0a4c4436010a4ead57e4001f' WHERE approvalType LIKE 'M%'--인력
+
+
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_COMPLETE'	WHERE [state] = 'APPROVAL_COMPLETE'	-- 종료
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_COMPLETE'	WHERE right([state],1) = '3'	-- 종료
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_APPROVE'	WHERE right([state],1) = '2'	-- 승인
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_REVIEW'	WHERE right([state],1) = '1'	-- 검토
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_DRAFT'	WHERE right([state],1) = '0'	-- 기안
+
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_DRAFT'	WHERE [state] = '4028809e0a4c4436010a4eab4b7a0019'	-- 기안
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_REVIEW'	WHERE [state] = '4028809e0a4c4436010a4eabc54e001a'	-- 검토
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_APPROVE'	WHERE [state] = '4028809e0a4c4436010a4eac2753001b'	-- 승인
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_ASSIST1'	WHERE [state] = '4028809e0a4c4436010a4eac9e39001c'	-- 협의1
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_ASSIST2'	WHERE [state] = '4028809e0a4c4436010a4eacf84f001d'	-- 협의2
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_ASSIST3'	WHERE [state] = '4028809e0a4c4436010a4ead57e4001e'	-- 협의3
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_ASSIST4'	WHERE [state] = '4028809e0a4c4436010a4eadb42d001f'	-- 협의4
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_CEO'		WHERE [state] = '4028809e0a4c4436010a4eae1b340020'	-- ceo
+
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_DRAFT'	WHERE [state] = '8028809e0a4c4436010a4eab4b7a0019'	-- 기안
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_REVIEW'	WHERE [state] = '8028809e0a4c4436010a4eabc54e001a'	-- 검토
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_APPROVE'	WHERE [state] = '8028809e0a4c4436010a4eac2753001b'	-- 승인
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_ASSIST1'	WHERE [state] = '8028809e0a4c4436010a4eacf84f001d'	-- 협의1
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_ASSIST2'	WHERE [state] = '8028809e0a4c4436010a4ead57e4001e'	-- 협의2
+UPDATE sanctionDoc	SET [state] = 'SANCTION_STATE_CEO'		WHERE [state] = '8028809e0a4c4436010a4eac9e39001c'	-- ceo
+  
+
+UPDATE sanctionDoc SET registerDate = NULL 		WHERE registerDate = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET teamManagerDate = NULL	WHERE teamManagerDate = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET cfoDate = NULL 			WHERE cfoDate = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET assistant1Date = NULL	WHERE assistant1Date = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET assistant2Date = NULL	WHERE assistant2Date = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET assistant3Date = NULL	WHERE assistant3Date = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET assistant4Date = NULL	WHERE assistant4Date = '1900-01-01 00:00:00.000'
+UPDATE sanctionDoc SET ceoDate = NULL 			WHERE ceoDate = '1900-01-01 00:00:00.000'
+
+
+CREATE TABLE dbo.SanctionLine(
+	id varchar(56) NOT NULL,
+	registerSsn varchar(13), 			
+	registerDept varchar(13), 			
+	registerName varchar(64),				
+	teamManagerSsn varchar(13), 	
+	teamManagerDept varchar(13), 	
+	teamManagerName varchar(64), 	
+	cfoSsn varchar(13), 
+	cfoDept varchar(13), 
+	cfoName varchar(64),		
+	ceoSsn varchar(13),	
+	ceoDept varchar(13),	
+	ceoName varchar(64),		
+	assistant1Ssn varchar(13), 
+	assistant1Dept varchar(13), 
+	assistant1Name varchar(64), 
+	assistant2Ssn varchar(13), 
+	assistant2Dept varchar(13), 
+	assistant2Name varchar(64), 
+	modifyDate dateTime
+	
+	CONSTRAINT PK_SanctionLine PRIMARY KEY CLUSTERED 
+	(
+		id ASC
+	)
+) 
+
+insert into sanctionLine
+select	ssn as id, ssn as registerSsn, dept as registerDept, name as registerName,
+		/*--------------------------------------------------------------------------------------------------------------------------*/
+		isNull(
+		(case companyPosition 
+			when '10TM' then '' when '03AG' then '' when '03AA' then '' when '08CF' then '' when '09CJ' then '' when '07CC' then '' 
+		 else
+			(select ssn from expertPool where dept = e.dept and companyPosition in ('10TM', '03AG')) 
+		 end), '') as teamManagerSsn,	-- 검토자 ssn
+		isNull(
+		(case companyPosition 
+			when '10TM' then '' when '03AG' then '' when '03AA' then '' when '08CF' then '' when '09CJ' then '' when '07CC' then '' 
+		 else
+			(select dept from expertPool where dept = e.dept and companyPosition in ('10TM', '03AG')) 
+		 end), '') as teamManagerDept,	-- 검토자 부서
+		isNull(
+		(case companyPosition 
+			when '10TM' then '' when '03AG' then '' when '03AA' then '' when '08CF' then '' when '09CJ' then '' when '07CC' then '' 
+		 else
+			(select name from expertPool where dept = e.dept and companyPosition in ('10TM', '03AG')) 
+		 end), '') as teamManagerName,	-- 검토자 이름
+		/*--------------------------------------------------------------------------------------------------------------------------*/
+		isNull(
+		(case companyPosition 
+			when '03AA' then '' when '08CF' then '' when '09CJ' then '' when '07CC' then '' 
+		 else
+			(select ssn from expertPool where left(dept,3) = left(e.dept,3) and companyPosition in ('08CF', '09CJ', '07CC', '03AA')) 
+		 end), '') as cfoSsn,	-- 승인자 ssn
+		isNull(
+		(case companyPosition 
+			when '03AA' then '' when '08CF' then '' when '09CJ' then '' when '07CC' then '' 
+		 else
+			(select dept from expertPool where left(dept,3) = left(e.dept,3) and companyPosition in ('08CF', '09CJ', '07CC', '03AA')) 
+		 end), '') as cfoDept,	-- 승인자 부서
+		isNull(
+		(case companyPosition 
+			when '03AA' then '' when '08CF' then '' when '09CJ' then '' when '07CC' then '' 
+		 else
+			(select name from expertPool where left(dept,3) = left(e.dept,3) and companyPosition in ('08CF', '09CJ', '07CC', '03AA')) 
+		 end), '') as cfoName,	-- 승인자 이름
+		/*--------------------------------------------------------------------------------------------------------------------------*/
+		(select ssn from expertPool where name = '김종립') as ceoSsn,
+		(select dept from expertPool where name = '김종립') as ceoDept,
+		(select name from expertPool where name = '김종립') as ceoName
+		,''[assistant1Ssn]
+		,''[assistant1Dept]
+		,''[assistant1Name]
+		,''[assistant2Ssn]
+		,''[assistant2Dept]
+		,''[assistant2Name]
+		,getDate() as modifyDate
+from expertPool e
+where jobClass in ('A', 'B', 'J') 
+and enable = '1' 
+and companyPosition not in ('40AT', '61DT', '01HC', '05CB')
+order by dept, companyPosition
+
+-- BU 협의1
+-- 경영전략PU
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '6010' and companyPosition = '03AA'),
+	[assistant1Dept] = (select dept from expertPool where dept = '6010' and companyPosition = '03AA'),
+	[assistant1Name] = (select name from expertPool where dept = '6010' and companyPosition = '03AA')
+where left(registerDept, 3) = '211'
+
+-- 인사조직PU
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '6020' and companyPosition = '03AA'),
+	[assistant1Dept] = (select dept from expertPool where dept = '6020' and companyPosition = '03AA'),
+	[assistant1Name] = (select name from expertPool where dept = '6020' and companyPosition = '03AA')
+where left(registerDept, 3) = '231'
+
+-- CS/마케팅 PU
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '6030' and companyPosition = '03AA'),
+	[assistant1Dept] = (select dept from expertPool where dept = '6030' and companyPosition = '03AA'),
+	[assistant1Name] = (select name from expertPool where dept = '6030' and companyPosition = '03AA')
+where left(registerDept, 3) = '212' or left(registerDept, 3) = '213' or left(registerDept, 3) = '237'
+
+-- 경영품질 PU
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '6040' and companyPosition = '03AA'),
+	[assistant1Dept] = (select dept from expertPool where dept = '6040' and companyPosition = '03AA'),
+	[assistant1Name] = (select name from expertPool where dept = '6040' and companyPosition = '03AA')
+where left(registerDept, 3) = '215'
+
+-- 생산혁신 PU
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '6050' and companyPosition = '03AA'),
+	[assistant1Dept] = (select dept from expertPool where dept = '6050' and companyPosition = '03AA'),
+	[assistant1Name] = (select name from expertPool where dept = '6050' and companyPosition = '03AA')
+where left(registerDept, 3) = '216'
+
+-- 변화관리 PU
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '6060' and companyPosition = '03AA'),
+	[assistant1Dept] = (select dept from expertPool where dept = '6060' and companyPosition = '03AA'),
+	[assistant1Name] = (select name from expertPool where dept = '6060' and companyPosition = '03AA')
+where left(registerDept, 3) = '232'
+
+-- R&C
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2033' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2033' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2033' and enable = '1')
+where left(registerDept, 3) = '214'
+
+-- GBC
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2035' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2035' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2035' and enable = '1')
+where left(registerDept, 3) = '236'
+
+-- 미디어
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2035' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2035' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2035' and enable = '1')
+where left(registerDept, 3) = '240'
+
+
+-- BU 협의2
+-- 전략/HR 담당
+update sanctionLine
+set [assistant2Ssn]  = (select ssn  from expertPool where dept = '2032' and enable = '1'),
+	[assistant2Dept] = (select dept from expertPool where dept = '2032' and enable = '1'),
+	[assistant2Name] = (select name from expertPool where dept = '2032' and enable = '1')
+where left(registerDept, 3) = '211' or left(registerDept, 3) = '231'
+
+-- CS/마케팅 담당
+update sanctionLine
+set [assistant2Ssn]  = (select ssn  from expertPool where dept = '2033' and enable = '1'),
+	[assistant2Dept] = (select dept from expertPool where dept = '2033' and enable = '1'),
+	[assistant2Name] = (select name from expertPool where dept = '2033' and enable = '1')
+where left(registerDept, 3) = '212' or left(registerDept, 3) = '213' or left(registerDept, 3) = '237'
+
+-- 품질/생산 담당
+update sanctionLine
+set [assistant2Ssn]  = (select ssn  from expertPool where dept = '2034' and enable = '1'),
+	[assistant2Dept] = (select dept from expertPool where dept = '2034' and enable = '1'),
+	[assistant2Name] = (select name from expertPool where dept = '2034' and enable = '1')
+where left(registerDept, 3) = '215' or left(registerDept, 3) = '216'
+
+-- 인재개발 담당
+update sanctionLine
+set [assistant2Ssn]  = (select ssn  from expertPool where dept = '2035' and enable = '1'),
+	[assistant2Dept] = (select dept from expertPool where dept = '2035' and enable = '1'),
+	[assistant2Name] = (select name from expertPool where dept = '2035' and enable = '1')
+where left(registerDept, 3) = '232'
+
+-- PU 협의 1
+-- 전략/HR 담당
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2032' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2032' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2032' and enable = '1')
+where left(registerDept, 3) = '601' or left(registerDept, 3) = '602'
+
+-- CS/마케팅 담당
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2033' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2033' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2033' and enable = '1')
+where left(registerDept, 3) = '603'
+
+-- 품질/생산 담당
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2034' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2034' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2034' and enable = '1')
+where left(registerDept, 3) = '604' or left(registerDept, 3) = '605'
+
+
+-- 인재개발 담당
+update sanctionLine
+set [assistant1Ssn]  = (select ssn  from expertPool where dept = '2035' and enable = '1'),
+	[assistant1Dept] = (select dept from expertPool where dept = '2035' and enable = '1'),
+	[assistant1Name] = (select name from expertPool where dept = '2035' and enable = '1')
+where left(registerDept, 3) = '606'
+
+update sanctionLine
+set [assistant2Ssn]  = (select ssn  from expertPool where name = '최돈모'),
+	[assistant2Dept] = (select dept from expertPool where name = '최돈모'),
+	[assistant2Name] = (select name from expertPool where name = '최돈모')
+where left(registerDept, 1) = '6'
+  
+CREATE TABLE dbo.ProcessTemplate(
+	processTemplateCode varchar(3) NOT NULL,
+	processTemplateName varchar(200) NOT NULL,
+ CONSTRAINT PK_ProcessTemplate PRIMARY KEY CLUSTERED 
+(
+	processTemplateCode ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON PRIMARY
+) ON PRIMARY
+
+
+insert into ProcessTemplate
+select * from outputTemplate
+
+
+
+
+CREATE TABLE dbo.ProcessTemplateDetail(
+	processTypeCode varchar(3) NOT NULL,
+	workSeq int NOT NULL,
+	activityName varchar(100) NOT NULL,
+	level int NOT NULL,
+	parentWorkSeq int,
+	workType int NOT NULL,
+	idEditable bit NULL,
+	isNecessary bit NULL,
+ CONSTRAINT PK_ProcessTemplateDetail PRIMARY KEY CLUSTERED 
+(
+	processTypeCode ASC,
+	seq ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON PRIMARY
+) ON PRIMARY
+
+ALTER TABLE dbo.projectScheduleM ADD level int
+ALTER TABLE dbo.projectScheduleM ADD contentId varchar(64)
+ALTER TABLE dbo.projectScheduleM ADD workType int
+update projectScheduleM set level = 0
+update projectScheduleM set workType = 0
+ALTER TABLE dbo.projectScheduleM ADD parentWorkSeq int
+
+ALTER TABLE dbo.projectScheduleM ADD level int
+update projectScheduleM set level = 1
+ALTER TABLE dbo.projectScheduleM ADD parentWorkSeq int
+
+update projectScheduleM set orderSeq = workSeq
+
+ALTER TABLE dbo.ProcessTemplateDetail  WITH CHECK ADD  CONSTRAINT FK_ProcessTemplateDetail_ProcessTemplate FOREIGN KEY(processTypeCode)
+REFERENCES dbo.ProcessTemplate (processTypeCode)
+
+ALTER TABLE dbo.ProcessTemplateDetail CHECK CONSTRAINT FK_ProcessTemplateDetail_ProcessTemplate
+
+
+
+insert into processTemplateDetail
+select processTemplateCode, workSeq, workName, 0, '-1', '1', '1', '1' from outputTemplateDetail
+group by processTemplateCode, workSeq, workName
+
+
+
+CREATE TABLE [dbo].[ProcessTemplateAttach](
+	[processTemplateCode] [varchar](5) NOT NULL,
+	[workSeq] [int] NOT NULL,
+	[attachSeq] [int] NOT NULL,
+	[outputName] [varchar](100) NULL,
+	[outputType] [varchar](50) NULL,
+	[bizType] [varchar](50) NULL,
+	[necessary] [varchar](3) NULL,
+ CONSTRAINT [PK_ProcessTemplateAttach] PRIMARY KEY CLUSTERED 
+(
+	[processTemplateCode] ASC,
+	[workSeq] ASC,
+	[attachSeq] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+ALTER TABLE [dbo].[ProcessTemplateAttach]  WITH CHECK ADD  CONSTRAINT [FK_ProcessTemplateAttach_ProcessTemplateDetail] FOREIGN KEY([processTemplateCode], [workSeq])
+REFERENCES [dbo].[ProcessTemplateDetail] ([processTemplateCode], [workSeq])
+GO
+ALTER TABLE [dbo].[ProcessTemplateAttach] CHECK CONSTRAINT [FK_ProcessTemplateAttach_ProcessTemplateDetail]
+
+
+insert into ProcessTemplateAttach
+select	processTypeCode, workSeq, 
+		row_number() over(partition by processTypeCode, workSeq order by processTypeCode, workSeq ) as rowNumber, 
+		outputName, outputType, outputBusType, isEssential from outputTemplateDetail
+where outputName is not null
+
+
+
+
+CREATE FUNCTION [dbo].[getCmTableDataValue]
+(
+ @key1		VARCHAR(64),
+ @tableName VARCHAR(64)
+)
+ RETURNS VARCHAR(64)
+AS
+BEGIN
+  DECLARE @data1 VARCHAR(64)
+  BEGIN
+   SELECT @data1 = data_1
+   FROM cmTableData
+   WHERE table_name = @tableName
+	 AND key_1 = @key1
+   END
+  RETURN @data1
+ END
+
+ 
+ 
+ 
+ CREATE FUNCTION [dbo].[getExpertPoolName]
+(
+ @ssn		VARCHAR(64)
+)
+ RETURNS VARCHAR(64)
+AS
+BEGIN
+  DECLARE @name VARCHAR(64)
+  BEGIN
+   SELECT @name = name
+   FROM expertPool
+   WHERE ssn = @ssn
+   END
+  RETURN @name
+ END
+ 
+ 
+ 
+ 
+CREATE TABLE [dbo].[WorkType](
+	[id] [varchar](128) NOT NULL,
+	[name] [varchar](256) NOT NULL,
+	[formUrl] [varchar](256) NULL,
+	[description] [text] NULL,
+ CONSTRAINT [PK_WorkType] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+
+insert into workType
+select id, name, name from wlmtaskType
+
+
+
+
+
+
+CREATE TABLE [dbo].[projectScheduleChange](
+	[projectCode] [varchar](7) NOT NULL,
+	[changeScheduleSeq] [int] NOT NULL,
+	[preStartDate] [varchar](8) NOT NULL,
+	[preEndDate] [varchar](8) NOT NULL,
+	[realStartDate] [varchar](8) NOT NULL,
+	[realEndDate] [varchar](8) NOT NULL,
+ CONSTRAINT [PK_projectScheduleChange] PRIMARY KEY CLUSTERED 
+(
+	[projectCode] ASC,
+	[changeScheduleSeq] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+
+create PROC [dbo].[sp_kmacPms_projectSalarySum]
+@projectCode	varchar(7)
+as
+declare @SQL nvarchar(4000)
+begin 
+set @SQL = 'SELECT * 
+			FROM (
+					select	--projectCode, 
+							--pm.projectName, 
+							year + ''년 '' + month + ''월''as date, 
+							--p.chargeSsn, 
+							e.name as 이름,
+							convert(bigint, sum(convert(money, amount))) as salarySum
+					 from	ProjectTeachingFeeMDetail p, expertpool e, project pm
+					 where	p.chargeSsn = e.ssn 
+					  and	p.projectCode = pm.projectCode
+					  and	p.projectCode = ''' + @projectCode + '''
+					  and	approvalYn = ''Y''	
+					  and	billSendYn = ''Y''
+					group	by p.projectCode, p.year, p.month, p.chargeSsn, e.name
+				  --order	by 2,3
+			) t
+			PIVOT (sum(salarySum) for date in ('
+
+Declare @Header varchar(200)
+set @Header = ''
+
+DECLARE tnames_cursor CURSOR
+FOR
+	 select year + '년 ' + month + '월'as date
+	 from ProjectTeachingFeeMDetail p
+	where projectCode = @projectCode
+	  and approvalYn = 'Y' 
+	  and billSendYn = 'Y'
+	 group by p.projectCode, p.year, p.month
+OPEN tnames_cursor;
+
+DECLARE @varHeaderDate varchar(12)
+FETCH NEXT FROM tnames_cursor INTO @varHeaderDate
+WHILE (@@FETCH_STATUS = 0)
+
+BEGIN
+ set @Header = @Header + '['+ @varHeaderDate + ']'
+   FETCH NEXT FROM tnames_cursor INTO @varHeaderDate
+END;
+
+CLOSE tnames_cursor;
+DEALLOCATE tnames_cursor;
+set @Header = REPLACE(@Header,'][','],[')
+set @SQL = @SQL + @Header + ')) as pvt'
+print(@sql)
+exec (@SQL)
+
+end
+
+
+
+
+
+
+CREATE TABLE [dbo].[ProjectProgressContents](
+	[contentId] [varchar](50) NOT NULL,
+	[projectCode] [varchar](7) NOT NULL,
+	[taskName] [varchar](256) NULL,
+	[title] [varchar](256) NULL,
+	[content] [varchar](max) NULL,
+	[creatorId] [varchar](50) NULL,
+	[createDate] [datetime] NULL,
+ CONSTRAINT [PK_ProjectProgressContents] PRIMARY KEY CLUSTERED 
+(
+	[contentId] ASC,
+	[projectCode] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+ALTER TABLE Project ADD  runningPuDivCode VARCHAR(10)
+
+ALTER TABLE Project ADD  runningPuDeptCode VARCHAR(10)
+
+
+ALTER TABLE Project ADD  entNo VARCHAR(18)
+
+
+
+
+create FUNCTION [dbo].[getExpertCompanyPosition]
+(	
+	@ssn		VARCHAR(20)
+ )
+ RETURNS VARCHAR(56)
+AS
+BEGIN
+ 
+  DECLARE @position VARCHAR(56)
+
+  BEGIN
+   SELECT @position = position
+   FROM (
+			select isNull(companyPosition, companyPositionname ) as position from expertpool
+			where ssn = @ssn
+   ) F
+  END
+
+  RETURN @position
+ END
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+CREATE TABLE [dbo].[ProjectExpenseTempForSanction](
+	[seq] [varchar](50) NOT NULL,
+	[tempYear] [varchar](4) NOT NULL,
+	[tempMonth] [varchar](2) NOT NULL,
+	[tempName] [varchar](32) NOT NULL,
+	[tempSsn] [varchar](32) NOT NULL,
+	[tempTotalRealTimeSalary] [varchar](10) NULL,
+	[tempProjectCode] [varchar](7) NULL,
+	[tempProjectName] [varchar](128) NULL,
+	[tempPreportCount] [varchar](10) NULL,
+	[tempRealTimeSalaryEachProject] [varchar](10) NULL,
+	[tempRealTimeSalaryEachProjectAddedBasicSalary] [varchar](10) NULL,
+	[tempExecuted] [varchar](10) NULL,
+	[tempPlaned] [varchar](10) NULL,
+	[tempDept] [varchar](10) NULL,
+	[tempSeq] [varchar](256) NULL,
+	[tempIsHolding] [varchar](10) NULL,
+ CONSTRAINT [PK_ProjectExpenseTempForSanction] PRIMARY KEY CLUSTERED 
+(
+	[seq] ASC,
+	[tempYear] ASC,
+	[tempMonth] ASC,
+	[tempName] ASC,
+	[tempSsn] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+ALTER TABLE Project ADD endTaskState VARCHAR(20)

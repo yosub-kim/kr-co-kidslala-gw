@@ -1,0 +1,1157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<bean id="workCabinet" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="myIngWorkList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id
+														,work.title
+														,work.assigneeId, work.assignerId
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														,(select projectName from project where projectCode = work.refWorkId1) as projectName
+														,(case when refWorkId2 is null  
+																then (select name from worktype where worktype.id = work.type) 
+																else  (select approvalName from sanctionTemplate where approvalType = work.refWorkId2)  end) approvalName
+														,document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, smGroup.Name as draftUserDeptName
+														,work.draftDate, work.createDate, work.openDate, work.executeDate
+											FROM Work work  WITH(NOLOCK)
+											left outer join Expertpool
+												on work.draftUserId = Expertpool.ssn
+											left outer join smGroup 
+												on work.draftUserDept = smGroup.id
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+											/* and type not in ('4028809e0a20e689010a2b4be76c0046','4028809e0a20e689010a2b4be76c0049','4028809e0a20e689010a2b4be76c0047','4028809e0a20e689010a2b4be76c0048') */
+											and type not in (select id from WorkType where name like '지도 일지%')
+											and type not in (select id from WorkType where name like '프로젝트리포트%')
+											and type not in (select id from WorkType where name like '주간%')
+											and type not like 'ref_%'
+			/~id: 							and id = {id}~/
+			/~title: 						and title like {title}~/
+			/~assigneeId: 					and assigneeId = {assigneeId}~/
+			/~assignerId: 					and assignerId = {assignerId}~/
+			/~state: 						and state = {state}~/
+			/~type: 						and type = {type}~/
+			/~level: 						and level = {level}~/
+			/~refWorkId1: 					and refWorkId1 = {refWorkId1}~/
+			/~refWorkId2: 					and refWorkId2 = {refWorkId2}~/
+			/~refWorkId3: 					and refWorkId3 = {refWorkId3}~/
+			/~draftUserId: 					and draftUserId = {draftUserId}~/
+			/~draftUserDept: 				and draftUserDept = {draftUserDept}~/
+			/~draftDateFrom: 				and draftDate > {draftDateFrom}~/
+			/~draftDateTo: 					and draftDate < {draftDateTo}~/
+			/~createDateFrom: 				and createDate > {createDateFrom}~/
+			/~createDateTo: 				and createDate < {createDateTo}~/
+			/~openDateFrom: 				and openDate > {openDateFrom}~/
+			/~openDateTo: 					and openDate < {openDateTo}~/
+			/~executeDateFrom: 				and executeDate > {executeDateFrom}~/
+			/~executeDateTo: 				and executeDate < {executeDateTo}~/
+											order by createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="myIngWorkListCount">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id
+													,work.title
+													,work.assigneeId, work.assignerId
+													,work.state, work.type, work.level
+													,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+													,'' as projectName
+													,'' as approvalName
+													,'' as document
+													,work.draftUserId, '' as draftUserName
+													,work.draftUserDept, '' as draftUserDeptName
+													,work.draftDate, work.createDate, work.openDate, work.executeDate
+											FROM Work work WITH(NOLOCK)
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+											and type not like 'ref_%'
+											/* and type not in ('4028809e0a20e689010a2b4be76c0046','4028809e0a20e689010a2b4be76c0049','4028809e0a20e689010a2b4be76c0047','4028809e0a20e689010a2b4be76c0048') */
+											and type not in (select id from WorkType where name like '지도 일지%')
+											and type not in (select id from WorkType where name like '프로젝트리포트%')
+											and type not in (select id from WorkType where name like '주간%')
+						/~assigneeId: 		and assigneeId = {assigneeId}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="myIngWorkListForMobile">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id
+														,work.title
+														,work.assigneeId, work.assignerId
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														,(select projectName from project where projectCode = work.refWorkId1) as projectName
+														,(case when refWorkId2 is null  
+																then (select name from worktype where worktype.id = work.type) 
+																else  (select approvalName from sanctionTemplate where approvalType = work.refWorkId2)  end) approvalName
+														,document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, smGroup.description as draftUserDeptName
+														,work.draftDate, work.createDate, work.openDate, work.executeDate
+														,(select useMobile from workType where id = work.type) useMobile
+											FROM Work work WITH(NOLOCK)
+											left outer join Expertpool
+												on work.draftUserId = Expertpool.ssn
+											left outer join smGroup 
+												on work.draftUserDept = smGroup.id
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+											/* and type not in ('4028809e0a20e689010a2b4be76c0046','4028809e0a20e689010a2b4be76c0049','4028809e0a20e689010a2b4be76c0047','4028809e0a20e689010a2b4be76c0048') */
+											and type not in (select id from WorkType where name like '지도 일지%')
+											and type not in (select id from WorkType where name like '프로젝트리포트%')
+											and type not in (select id from WorkType where name like '주간%')
+											and type not like 'ref_%'
+			/~title: 						and title like {title}~/
+			/~assigneeId: 					and assigneeId = {assigneeId}~/
+											order by createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListForMobileWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="myRefWorkList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id
+														,work.title
+														,work.assigneeId, work.assignerId
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														,(select projectName from project where projectCode = work.refWorkId1) as projectName
+														,(case when refWorkId2 is null  
+																then (select name from worktype where worktype.id = work.type) 
+																else  (select approvalName from sanctionTemplate where approvalType = work.refWorkId2)  end) approvalName
+														,document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, smGroup.Name as draftUserDeptName
+														,work.draftDate, work.createDate, work.openDate, work.executeDate
+											FROM Work work WITH(NOLOCK)
+											left outer join Expertpool
+												on work.draftUserId = Expertpool.ssn
+											left outer join smGroup 
+												on work.draftUserDept = smGroup.id
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+			/~id: 							and id = {id}~/
+			/~title: 						and title like {title}~/
+			/~assigneeId: 				and assigneeId = {assigneeId}~/
+			/~assignerId: 				and assignerId = {assignerId}~/
+			/~state: 						and state = {state}~/
+			/~type: 						and type = {type}~/
+			/~level: 						and level = {level}~/
+			/~refWorkId1: 				and refWorkId1 = {refWorkId1}~/
+			/~refWorkId2: 				and refWorkId2 = {refWorkId2}~/
+			/~refWorkId3: 				and refWorkId3 = {refWorkId3}~/
+			/~draftUserId: 				and draftUserId = {draftUserId}~/
+			/~draftUserDept: 			and draftUserDept = {draftUserDept}~/
+			/~draftDateFrom: 		and draftDate > {draftDateFrom}~/
+			/~draftDateTo: 			and draftDate < {draftDateTo}~/
+			/~createDateFrom: 		and createDate > {createDateFrom}~/
+			/~createDateTo: 			and createDate < {createDateTo}~/
+			/~openDateFrom: 		and openDate > {openDateFrom}~/
+			/~openDateTo: 			and openDate < {openDateTo}~/
+			/~executeDateFrom: 	and executeDate > {executeDateFrom}~/
+			/~executeDateTo: 		and executeDate < {executeDateTo}~/
+											and type like 'ref%'
+											order by createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="myRefWorkListForMobile">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id
+														,work.title
+														,work.assigneeId, work.assignerId
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														,(select projectName from project where projectCode = work.refWorkId1) as projectName
+														,(case when refWorkId2 is null  
+																then (select name from worktype where worktype.id = work.type) 
+																else  (select approvalName from sanctionTemplate where approvalType = work.refWorkId2)  end) approvalName
+														,document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, smGroup.Name as draftUserDeptName
+														,work.draftDate, work.createDate, work.openDate, work.executeDate
+														,(select useMobile from workType where id = replace(work.type, 'ref_', '')) as useMobile
+											FROM Work work WITH(NOLOCK)
+											left outer join Expertpool
+												on work.draftUserId = Expertpool.ssn
+											left outer join smGroup 
+												on work.draftUserDept = smGroup.id
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+			/~id: 							and id = {id}~/
+			/~title: 						and title like {title}~/
+			/~assigneeId: 				and assigneeId = {assigneeId}~/
+			/~assignerId: 				and assignerId = {assignerId}~/
+			/~state: 						and state = {state}~/
+			/~type: 						and type = {type}~/
+			/~level: 						and level = {level}~/
+			/~refWorkId1: 				and refWorkId1 = {refWorkId1}~/
+			/~refWorkId2: 				and refWorkId2 = {refWorkId2}~/
+			/~refWorkId3: 				and refWorkId3 = {refWorkId3}~/
+			/~draftUserId: 				and draftUserId = {draftUserId}~/
+			/~draftUserDept: 			and draftUserDept = {draftUserDept}~/
+			/~draftDateFrom: 		and draftDate > {draftDateFrom}~/
+			/~draftDateTo: 			and draftDate < {draftDateTo}~/
+			/~createDateFrom: 		and createDate > {createDateFrom}~/
+			/~createDateTo: 			and createDate < {createDateTo}~/
+			/~openDateFrom: 		and openDate > {openDateFrom}~/
+			/~openDateTo: 			and openDate < {openDateTo}~/
+			/~executeDateFrom: 	and executeDate > {executeDateFrom}~/
+			/~executeDateTo: 		and executeDate < {executeDateTo}~/
+											and type like 'ref%'
+											order by createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="projectReportWorkList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id, work.title
+														,work.assigneeId, work.assignerId 
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														--,(select projectName from project where projectCode = work.refWorkId1) as projectName
+														,project.projectName
+														,report.writeDate
+														,report.assignDate
+														,work.document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, Expertpool.deptName as draftUserDeptName --smGroup.description as draftUserDeptName
+														,work.draftDate, work.openDate, work.executeDate, work.createDate
+														,isNull(report.payAmount, '-') as payAmount
+											FROM work WITH(NOLOCK)
+											left outer join Expertpool
+											on work.draftUserId = Expertpool.ssn
+											left outer join project
+											on project.projectCode = work.refWorkId1
+											left outer join ProjectReportContent as report
+											on work.refWorkId1 = report.projectCode and work.refWorkId2 = report.taskFormTypeId and work.refWorkId3 = report.seq
+											WHERE	1=1
+											and work.state = 'WORK_STATE_READY'
+											and work.type in ('4028809e0a20e689010a2b4be76c0046','4028809e0a20e689010a2b4be76c0049','4028809e0a20e689010a2b4be76c0047','4028809e0a20e689010a2b4be76c0048')
+											
+			/~id: 							and id = {id}~/
+			/~title: 						and title like {title}~/
+			/~assigneeId: 					and assigneeId = {assigneeId}~/
+			/~assignerId: 					and assignerId = {assignerId}~/
+			/~state: 						and work.state = {state}~/
+			/~type: 						and type = {type}~/
+			/~level: 						and level = {level}~/
+			/~refWorkId1: 					and refWorkId1 = {refWorkId1}~/
+			/~refWorkId2: 					and refWorkId2 = {refWorkId2}~/
+			/~refWorkId3: 					and refWorkId3 = {refWorkId3}~/
+			/~draftUserId: 					and draftUserId = {draftUserId}~/
+			/~draftUserDept: 				and draftUserDept = {draftUserDept}~/
+			/~draftUserName: 				and Expertpool.name LIKE {draftUserName}~/
+			/~draftDateFrom: 				and draftDate > {draftDateFrom}~/
+			/~draftDateTo: 					and draftDate < {draftDateTo}~/
+			/~createDateFrom: 				and createDate > {createDateFrom}~/
+			/~createDateTo: 				and createDate < {createDateTo}~/
+			/~openDateFrom: 				and openDate > {openDateFrom}~/
+			/~openDateTo: 					and openDate < {openDateTo}~/
+			/~executeDateFrom: 				and executeDate > {executeDateFrom}~/
+			/~executeDateTo: 				and executeDate < {executeDateTo}~/
+			/~projectName: 					and project.projectName like {projectName}~/
+			/~massive:						and type not in ('4028809e0a20e689010a2b4be76c0046', '4028809e0a20e689010a2b4be76c0047')~/
+			
+											order by assignDate desc, createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectReportCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="projectReportWorkListCount">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	 work.id, work.title
+													,work.assigneeId, work.assignerId 
+													,work.state, work.type, work.level
+													,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+													,'' as projectName
+													,'' as writeDate
+													,'' as assignDate
+													,work.document
+													,work.draftUserId, '' as draftUserName
+													,work.draftUserDept, '' as draftUserDeptName
+													,work.draftDate, work.openDate, work.executeDate, work.createDate, '-' as payAmount
+											FROM Work WITH(NOLOCK)
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+											and type in ('4028809e0a20e689010a2b4be76c0046','4028809e0a20e689010a2b4be76c0049','4028809e0a20e689010a2b4be76c0047','4028809e0a20e689010a2b4be76c0048')
+						/~assigneeId: 		and assigneeId = {assigneeId}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectReportCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getSanctiontPresentState">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+						select * from(								
+								select * 
+								from (	
+									select 	sd.seq,  sd.approvalType, st.approvalName, sd.createrDate,
+											sd.projectCode,
+											(case  sd.projectCode when '8888888' then sd.subject else sd.subject end) projectName,
+											sd.registerDept, sm.description as registerDeptName, substring(sd.registerDept, 1, 3) + '0' divCode,
+											sd.registerSsn, sd.registerName, sd.registerDate,
+											(case  sd.state	when 'SANCTION_STATE_DRAFT'				then '작성'		when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_REVIEW'			then '검토'		when 'SANCTION_STATE_CHECK'				then '확인'		when 'SANCTION_STATE_APPROVE' then '승인'		
+															when 'SANCTION_STATE_ASSIST1'			then '협의'		when 'SANCTION_STATE_ASSIST2'			then '협의'		
+															when 'SANCTION_STATE_ASSIST3'			then '협의'		when 'SANCTION_STATE_ASSIST4'			then '협의'		
+															when 'SANCTION_STATE_SUPPORT_DRAFT'		then '기획실'	when 'SANCTION_STATE_SUPPORT_REVIEW'	then '기획실'		
+															when 'SANCTION_STATE_SUPPORT_APPROVE'	then '기획실'	when 'SANCTION_STATE_CEO'				then 'CEO'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as present,
+											(case  sd.state	when 'SANCTION_STATE_COMPLETE'			then '종료'
+															when  'SANCTION_STATE_DRAFT' 			then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REJECT_DRAFT'		then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REVIEW' 			then dbo.getExpertPoolName(sd.teammanagerSsn)
+															when  'SANCTION_STATE_CHECK' 			then dbo.getExpertPoolName(sd.cfoSsn)
+															when  'SANCTION_STATE_APPROVE' 			then dbo.getExpertPoolName(sd.cioSsn)
+															when  'SANCTION_STATE_ASSIST1' 			then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_ASSIST2' 			then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_ASSIST3' 			then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_ASSIST4'			then dbo.getExpertPoolName(sd.assistant4Ssn)
+															when  'SANCTION_STATE_SUPPORT_DRAFT'	then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_SUPPORT_REVIEW'	then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_SUPPORT_APPROVE'	then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_CEO'				then dbo.getExpertPoolName(sd.ceoSsn)
+											else '~' end) as presentName,												
+											(case  sd.state	when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as state, worktype, wt.formUrl workTypeUrl, isWholeApproval, wt.useMobile 
+									from		sanctionDoc sd with(nolock)
+										inner join sanctionTemplate st with(nolock)
+										on sd.approvalType = st.approvalType
+										and sd.approvalType <> 'draft21' and sd.approvalType <> 'draft22'
+										and sd.approvalType <> 'draft3'	and sd.approvalType <> 'draft5'	and sd.approvalType <> 'draft15' and sd.approvalType <> 'salary'	
+										and sd.state <> 'SANCTION_STATE_DRAFT'
+										inner join worktype wt with(nolock)
+										on wt.id = sd.workType
+										left outer join smGroup sm
+										on sd.registerDept = sm.id
+										left outer join project pr
+										on sd.projectCode = pr.projectCode
+						/~userId: where (sd.registerSsn	= {userId}
+										or sd.teammanagerSsn	= {userId}
+										or sd.cfoSsn			= {userId}
+										or sd.cioSsn			= {userId}
+										or sd.assistant1Ssn		= {userId}
+										or sd.assistant2Ssn		= {userId}
+										or sd.assistant3Ssn		= {userId}
+										or sd.assistant4Ssn		= {userId}
+										or sd.ceoSsn			= {userId}
+										or (select left(dept,3) from expertpool where ssn = {userId} and companyposition='06CB') = left(sd.registerDept,3) 
+										or (select dept from expertpool where ssn = {userId} and companyposition in ('08CF','09CJ')) = sd.registerDept  
+										)~/	
+								) res
+								where 1=1
+				/~approvalType:	and res.approvalType like {approvalType}~/
+			 /~isWholeApproval:	and res.isWholeApproval <> {isWholeApproval}~/
+						/~name:	and res.registerName like {name}~/
+				 /~projectName:	and res.projectName like {projectName}~/
+						 /~ing:	and res.state = {ing}~/
+					 /~divCode:	and res.registerDept in (select key_1 from cmtabledata where table_name='DEPT_SUBSTRUCTURE' and data_1 = {divCode})~/
+				 /~prevDivCode: and res.registerDept = {prevDivCode}~/ 
+				   /~startDate: and (res.registerDate >= {startDate} or res.registerDate is null )~/
+				  	 /~endDate: and (res.registerDate <= {endDate} or res.registerDate is null )~/		  
+		union 
+
+								select * 
+								from (	
+									select 	sd.seq,  sd.approvalType, st.approvalName, sd.createrDate, 
+											sd.projectCode,
+											(case  sd.projectCode when '8888888' then sd.subject else sd.subject end) projectName,
+											sd.registerDept, sm.description as registerDeptName, substring(sd.registerDept, 1, 3) + '0' divCode,
+											sd.registerSsn, sd.registerName, sd.registerDate,
+											(case  sd.state	when 'SANCTION_STATE_DRAFT'				then '작성'		when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_REVIEW'			then '검토'		when 'SANCTION_STATE_CHECK'				then '확인'		when 'SANCTION_STATE_APPROVE' then '승인'		
+															when 'SANCTION_STATE_ASSIST1'			then '협의'		when 'SANCTION_STATE_ASSIST2'			then '협의'		
+															when 'SANCTION_STATE_ASSIST3'			then '협의'		when 'SANCTION_STATE_ASSIST4'			then '협의'		
+															when 'SANCTION_STATE_SUPPORT_DRAFT'		then '기획실'	when 'SANCTION_STATE_SUPPORT_REVIEW'	then '기획실'		
+															when 'SANCTION_STATE_SUPPORT_APPROVE'	then '기획실'	when 'SANCTION_STATE_CEO'				then 'CEO'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as present,
+											(case  sd.state	when 'SANCTION_STATE_COMPLETE'			then '종료'
+															when  'SANCTION_STATE_DRAFT' 			then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REJECT_DRAFT'		then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REVIEW' 			then dbo.getExpertPoolName(sd.teammanagerSsn)
+															when  'SANCTION_STATE_CHECK' 			then dbo.getExpertPoolName(sd.cfoSsn)
+															when  'SANCTION_STATE_APPROVE' 			then dbo.getExpertPoolName(sd.cioSsn)
+															when  'SANCTION_STATE_ASSIST1' 			then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_ASSIST2' 			then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_ASSIST3' 			then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_ASSIST4'			then dbo.getExpertPoolName(sd.assistant4Ssn)
+															when  'SANCTION_STATE_SUPPORT_DRAFT'	then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_SUPPORT_REVIEW'	then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_SUPPORT_APPROVE'	then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_CEO'				then dbo.getExpertPoolName(sd.ceoSsn)
+											else '~' end) as presentName,												
+											(case  sd.state	when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as state, worktype, wt.formUrl workTypeUrl, isWholeApproval, wt.useMobile
+									from		sanctionDoc sd with(nolock)
+										inner join sanctionTemplate st with(nolock)
+										on sd.approvalType = st.approvalType
+										and sd.approvalType in ('draft21', 'draft22')
+										and sd.state <> 'SANCTION_STATE_DRAFT'
+										inner join worktype wt with(nolock)
+										on wt.id = sd.workType
+										left outer join smGroup sm
+										on sd.registerDept = sm.id
+										left outer join project pr
+										on sd.projectCode = pr.projectCode
+					/~userIdDraft3: where (	sd.registerSsn	= {userIdDraft3}
+										or sd.teammanagerSsn	= {userIdDraft3}
+										or sd.cfoSsn			= {userIdDraft3}
+										or sd.cioSsn			= {userIdDraft3}
+										or sd.assistant1Ssn		= {userIdDraft3}
+										or sd.assistant2Ssn		= {userIdDraft3}
+										or sd.assistant3Ssn		= {userIdDraft3}
+										or sd.assistant4Ssn		= {userIdDraft3}
+										or sd.ceoSsn			= {userIdDraft3})~/	
+								) res
+								where 1=1
+				/~approvalType:	and res.approvalType like {approvalType}~/
+			 /~isWholeApproval:	and res.isWholeApproval <> {isWholeApproval}~/
+						/~name:	and res.registerName like {name}~/
+				 /~projectName:	and res.projectName like {projectName}~/
+						 /~ing:	and res.state = {ing}~/
+					 /~divCode:	and res.registerDept in (select key_1 from cmtabledata where table_name='DEPT_SUBSTRUCTURE' and data_1 = {divCode})~/
+				 /~prevDivCode: and res.registerDept = {prevDivCode}~/ 
+				   /~startDate: and (res.registerDate >= {startDate} or res.registerDate is null )~/
+				     /~endDate: and (res.registerDate <= {endDate} or res.registerDate is null )~/			 
+
+		union 
+
+								select * 
+								from (	
+									select 	sd.seq,  sd.approvalType, st.approvalName, sd.createrDate, 
+											sd.projectCode,
+											(case  sd.projectCode when '8888888' then sd.subject else sd.subject end) projectName,
+											sd.registerDept, sm.description as registerDeptName, substring(sd.registerDept, 1, 3) + '0' divCode,
+											sd.registerSsn, sd.registerName, sd.registerDate,
+											(case  sd.state	when 'SANCTION_STATE_DRAFT'				then '작성'		when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_REVIEW'			then '검토'		when 'SANCTION_STATE_CHECK'				then '확인'		when 'SANCTION_STATE_APPROVE' then '승인'		
+															when 'SANCTION_STATE_ASSIST1'			then '협의'		when 'SANCTION_STATE_ASSIST2'			then '협의'		
+															when 'SANCTION_STATE_ASSIST3'			then '협의'		when 'SANCTION_STATE_ASSIST4'			then '협의'		
+															when 'SANCTION_STATE_SUPPORT_DRAFT'		then '기획실'	when 'SANCTION_STATE_SUPPORT_REVIEW'	then '기획실'		
+															when 'SANCTION_STATE_SUPPORT_APPROVE'	then '기획실'	when 'SANCTION_STATE_CEO'				then 'CEO'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as present,
+											(case  sd.state	when 'SANCTION_STATE_COMPLETE'			then '종료'
+															when  'SANCTION_STATE_DRAFT' 			then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REJECT_DRAFT'		then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REVIEW' 			then dbo.getExpertPoolName(sd.teammanagerSsn)
+															when  'SANCTION_STATE_CHECK' 			then dbo.getExpertPoolName(sd.cfoSsn)
+															when  'SANCTION_STATE_APPROVE' 			then dbo.getExpertPoolName(sd.cioSsn)
+															when  'SANCTION_STATE_ASSIST1' 			then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_ASSIST2' 			then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_ASSIST3' 			then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_ASSIST4'			then dbo.getExpertPoolName(sd.assistant4Ssn)
+															when  'SANCTION_STATE_SUPPORT_DRAFT'	then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_SUPPORT_REVIEW'	then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_SUPPORT_APPROVE'	then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_CEO'				then dbo.getExpertPoolName(sd.ceoSsn)
+											else '~' end) as presentName,												
+											(case  sd.state	when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as state, worktype, wt.formUrl workTypeUrl, isWholeApproval, wt.useMobile 
+									from		sanctionDoc sd with(nolock)
+										inner join sanctionTemplate st with(nolock)
+										on sd.approvalType = st.approvalType
+										and sd.approvalType in ( 'salary', 'draft3', 'draft5', 'draft15' )		
+										and sd.state <> 'SANCTION_STATE_DRAFT'							
+										inner join worktype wt with(nolock)
+										on wt.id = sd.workType
+										left outer join smGroup sm
+										on sd.registerDept = sm.id
+										left outer join project pr
+										on sd.projectCode = pr.projectCode
+					/~userIdDraftS: where (	sd.registerSsn	= {userIdDraftS}
+										or sd.teammanagerSsn	= {userIdDraftS}
+										or sd.cfoSsn			= {userIdDraftS}
+										or sd.cioSsn			= {userIdDraftS}
+										or sd.assistant1Ssn		= {userIdDraftS}
+										or sd.assistant2Ssn		= {userIdDraftS}
+										or sd.assistant3Ssn		= {userIdDraftS}
+										or sd.assistant4Ssn		= {userIdDraftS}
+										or sd.ceoSsn			= {userIdDraftS})~/	
+								) res
+								where 1=1
+				/~approvalType:	and res.approvalType like {approvalType}~/
+			 /~isWholeApproval:	and res.isWholeApproval <> {isWholeApproval}~/
+						/~name:	and res.registerName like {name}~/
+				 /~projectName:	and res.projectName like {projectName}~/
+						 /~ing:	and res.state = {ing}~/
+					 /~divCode:	and res.registerDept in (select key_1 from cmtabledata where table_name='DEPT_SUBSTRUCTURE' and data_1 = {divCode})~/
+				 /~prevDivCode: and res.registerDept = {prevDivCode}~/ 
+				   /~startDate: and (res.registerDate >= {startDate} or res.registerDate is null )~/
+				     /~endDate: and (res.registerDate <= {endDate} or res.registerDate is null )~/		  			 
+						) result			
+						where ((state = '반려' and approvalType in ('A','PA','draft14','draft17','M','ME','MF','MG','MI') and registerDate is null) or registerDate is not null)				 
+						order by (case state	when '반려' 	then '1'
+												when '진행'	then '2'
+												when '종료'	then '3' end) asc, 
+									registerDate desc --, seq desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="sanctiontPresentStateWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getSpecificSanctiontPresentState">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+						select * from(								
+								select * 
+								from (	
+									select 	sd.seq,  sd.approvalType, st.approvalName, 
+											sd.projectCode,
+											(case  sd.projectCode when '8888888' then sd.subject else pr.projectName end) projectName,
+											sd.registerDept, sm.description as registerDeptName, substring(sd.registerDept, 1, 3) + '0' divCode,
+											sd.registerSsn, sd.registerName, sd.registerDate,
+											(case  sd.state	when 'SANCTION_STATE_DRAFT'				then '작성'		when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_REVIEW'			then '검토'		when 'SANCTION_STATE_CHECK'				then '확인'		when 'SANCTION_STATE_APPROVE' then '승인'		
+															when 'SANCTION_STATE_ASSIST1'			then '협의'		when 'SANCTION_STATE_ASSIST2'			then '협의'		
+															when 'SANCTION_STATE_ASSIST3'			then '협의'		when 'SANCTION_STATE_ASSIST4'			then '협의'		
+															when 'SANCTION_STATE_SUPPORT_DRAFT'		then '기획실'	when 'SANCTION_STATE_SUPPORT_REVIEW'	then '기획실'		
+															when 'SANCTION_STATE_SUPPORT_APPROVE'	then '기획실'	when 'SANCTION_STATE_CEO'				then 'CEO'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as present,
+											(case  sd.state	when 'SANCTION_STATE_COMPLETE'			then '종료'
+															when  'SANCTION_STATE_DRAFT' 			then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REJECT_DRAFT'		then dbo.getExpertPoolName(sd.registerSsn)
+															when  'SANCTION_STATE_REVIEW' 			then dbo.getExpertPoolName(sd.teammanagerSsn)
+															when  'SANCTION_STATE_CHECK' 			then dbo.getExpertPoolName(sd.cfoSsn)
+															when  'SANCTION_STATE_APPROVE' 			then dbo.getExpertPoolName(sd.cioSsn)
+															when  'SANCTION_STATE_ASSIST1' 			then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_ASSIST2' 			then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_ASSIST3' 			then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_ASSIST4'			then dbo.getExpertPoolName(sd.assistant4Ssn)
+															when  'SANCTION_STATE_SUPPORT_DRAFT'	then dbo.getExpertPoolName(sd.assistant1Ssn)
+															when  'SANCTION_STATE_SUPPORT_REVIEW'	then dbo.getExpertPoolName(sd.assistant2Ssn)
+															when  'SANCTION_STATE_SUPPORT_APPROVE'	then dbo.getExpertPoolName(sd.assistant3Ssn)
+															when  'SANCTION_STATE_CEO'				then dbo.getExpertPoolName(sd.ceoSsn)
+											else '~' end) as presentName,												
+											(case  sd.state	when 'SANCTION_STATE_REJECT_DRAFT'		then '반려'		
+															when 'SANCTION_STATE_COMPLETE'			then '종료'		
+											else '진행' 	end) as state, worktype, wt.formUrl workTypeUrl, isWholeApproval, wt.useMobile 
+									from		sanctionDoc sd with(nolock)
+										inner join sanctionTemplate st with(nolock)
+										on sd.approvalType = st.approvalType
+										inner join worktype wt with(nolock)
+										on wt.id = sd.workType
+										left outer join smGroup sm
+										on sd.registerDept = sm.id
+										left outer join project pr
+										on sd.projectCode = pr.projectCode
+								  where 1=1
+						   /~ssn:		and	sd.registerSsn	=  {ssn}~/
+				  /~approvalType:		and	sd.approvalType = {approvalType}~/
+						  /~from:		and	registerDate >= {from}~/
+							/~to:		and	registerDate < {to}~/
+								) res
+								where 1=1
+						 		and res.state = '종료'
+						) result					 
+						order by registerDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="sanctiontPresentStateWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getSearchRule_GSM_BM_SA">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+ 						 select key_1 from cmTableData with(nolock) 
+						  where (table_name = 'GENERAL_SUPPORT_MEMBER' or table_name = 'BOARD_MEMBER'  or table_name = 'SYSTEM_ADMIN' )
+				/~userId:	and key_1 = {userId}~/									
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchRuleWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getSearchRule_GSM_SA">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+ 						 select key_1 from cmTableData with(nolock) 
+						  where (table_name = 'GENERAL_SUPPORT_MEMBER' or table_name = 'SYSTEM_ADMIN' )
+				/~userId:	and key_1 = {userId}~/									
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchRuleWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getSearchRule_GSM_SALARY_SA">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+ 						 select key_1 from cmTableData with(nolock) 
+						  where (table_name = 'SALARY_MANAGE_MEMBER' )
+				/~userId:	and key_1 = {userId}~/									
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="searchRuleWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+
+				<entry key="getSanctionCountOnProject">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT	R.projectCode
+										,(CASE WHEN R.projectCode = '합계' THEN '합계' ELSE P.projectName END) projectName
+										,(CASE WHEN R.projectCode = '합계' THEN '합계' ELSE P.runningDivCode END) runningDivCode
+										,(CASE WHEN R.projectCode = '합계' THEN '합계' ELSE (select description from smgroup where id =P.runningDivCode) END) runningDivName
+										,R.M0000, R.S0000, R.draft11, R.draft14, R.R0000, R.C0000
+								FROM
+								(
+									SELECT	(CASE WHEN GROUPING(projectCode) = 1 THEN '합계' ELSE projectCode END) projectCode
+											,SUM(ISNULL(M,0))		AS M0000	-- 인력변동
+											,SUM(ISNULL(S,0))		AS S0000	-- 일정변경
+											,SUM(ISNULL(draft11,0))	AS draft11	-- 사업관련
+											,SUM(ISNULL(draft14,0))	AS draft14	-- 예산변경
+											,SUM(ISNULL(R,0))		AS R0000	-- 기획사업재품의
+											,SUM(ISNULL(C,0))		AS C0000	-- 기획사업취소
+									FROM
+									(
+										SELECT	projectCode, M, S, draft11, draft14, R, C
+										FROM
+										(
+											SELECT projectCode, approvalType, COUNT(approvalType) cnt
+											FROM
+											(
+												SELECT	projectCode, 
+														(CASE approvalType 
+															WHEN 'MC' THEN 'M' WHEN 'SC' THEN 'S' 
+														 ELSE approvalType END) approvalType,
+														registerDate
+												  FROM	sanctionDoc
+												 WHERE	projectCode <> '8888888'
+												   AND	state = 'SANCTION_STATE_COMPLETE'
+											) sanction
+											WHERE 1=1 
+							/~approvalType:   AND approvalType = {approvalType}~/
+							/~searchYear:	  AND substring(convert(varchar,registerDate,112),1,4) = {searchYear}~/
+											GROUP BY projectCode, approvalType
+										) DATA
+										PIVOT (
+											SUM(cnt) FOR approvalType IN (M, S, draft11, draft14, C, R)
+										) PVT
+										WHERE M > 0 OR S > 0 OR draft11 > 0 OR draft14 > 0 OR R > 0 OR C > 0
+									) RESULT
+									GROUP BY projectCode
+									WITH ROLLUP
+								) R LEFT OUTER JOIN project P
+								ON R.projectCode = P.projectCode
+								WHERE 1=1
+					 /~divCode:	  AND P.runningDivCode = {divCode} ~/
+					 			ORDER BY 3		
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="sanctionCountOnProjectWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="weeklyReportWorkList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id, work.title
+														,work.assigneeId, work.assignerId 
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														,project.projectName, project.projectCode
+														,'' as approvalName
+														,report.writeDate
+														,report.assignDate
+														,work.document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, Expertpool.deptName as draftUserDeptName
+														,work.draftDate, work.openDate, work.executeDate, work.createDate
+														,report.state
+														,report.assignYear, report.assignMonth, report.assignWeekOfMonth
+											FROM work
+											left outer join Expertpool
+											on work.draftUserId = Expertpool.ssn
+											left outer join project
+											on project.projectCode = work.refWorkId1
+											left outer join ProjectWeeklyReport as report
+											on work.refWorkId1 = report.projectCode and work.refWorkId2 = report.taskFormTypeId 
+												and work.refWorkId3 = concat(assignYear, assignMonth, assignWeekOfMonth)
+											WHERE	1=1
+											and work.state = 'WORK_STATE_READY'
+											and work.type in ('4028809e0a20e689010a2b4be76c2226','4028809e0a20e689010a2b4be76c2227','4028809e0a20e689010a2b4be76c2228','4028809e0a20e689010a2b4be76c2229')
+			/~id: 							and id = {id}~/
+			/~title: 						and title like {title}~/
+			/~assigneeId: 					and assigneeId = {assigneeId}~/
+			/~assignerId: 					and assignerId = {assignerId}~/
+			/~state: 						and work.state = {state}~/
+			/~type: 						and type = {type}~/
+			/~level: 						and level = {level}~/
+			/~refWorkId1: 					and refWorkId1 = {refWorkId1}~/
+			/~refWorkId2: 					and refWorkId2 = {refWorkId2}~/
+			/~refWorkId3: 					and refWorkId3 = {refWorkId3}~/
+			/~draftUserId: 					and draftUserId = {draftUserId}~/
+			/~draftUserDept: 				and draftUserDept = {draftUserDept}~/
+			/~draftUserName: 				and Expertpool.name LIKE {draftUserName}~/
+			/~draftDateFrom: 				and draftDate > {draftDateFrom}~/
+			/~draftDateTo: 					and draftDate < {draftDateTo}~/
+			/~createDateFrom: 				and createDate > {createDateFrom}~/
+			/~createDateTo: 				and createDate < {createDateTo}~/
+			/~openDateFrom: 				and openDate > {openDateFrom}~/
+			/~openDateTo: 					and openDate < {openDateTo}~/
+			/~executeDateFrom: 				and executeDate > {executeDateFrom}~/
+			/~executeDateTo: 				and executeDate < {executeDateTo}~/
+			/~projectName: 					and project.projectName like {projectName}~/
+			/~massive:						and type not in ('4028809e0a20e689010a2b4be76c0046', '4028809e0a20e689010a2b4be76c0047')~/
+			/~intMonth:						and assignMonth like {intMonth} ~/
+			/~intWeekOfMonth:				and assignWeekOfMOnth like {intWeekOfMonth} ~/
+			
+											order by createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="weeklyReportCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="weeklyReportWorkListCount">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[					
+
+											SELECT	work.id
+													,work.title
+													,work.assigneeId, work.assignerId
+													,work.state, work.type, work.level
+													,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+													,'' as projectName
+													,'' as approvalName
+													,'' as document
+													,work.draftUserId, '' as draftUserName
+													,work.draftUserDept, '' as draftUserDeptName
+													,work.draftDate, work.createDate, work.openDate, work.executeDate
+											FROM Work work WITH(NOLOCK)
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+											and type in ('4028809e0a20e689010a2b4be76c2226', '4028809e0a20e689010a2b4be76c2227','4028809e0a20e689010a2b4be76c2228','4028809e0a20e689010a2b4be76c2229')
+						/~assigneeId: 		and assigneeId = {assigneeId}~/
+						
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>	
+				
+				<entry key="monthlyReportWorkList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+											SELECT	work.id, work.title
+														,work.assigneeId, work.assignerId 
+														,work.state, work.type, work.level
+														,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+														,project.projectCode
+														,project.projectName
+														,'' as approvalName
+														,report.writeDate
+														,report.assignDate
+														,work.document
+														,work.draftUserId, Expertpool.name as draftUserName
+														,work.draftUserDept, Expertpool.deptName as draftUserDeptName
+														,work.draftDate, work.openDate, work.executeDate, work.createDate
+														,report.state
+														,report.assignYear, report.assignMonth
+											FROM work
+											left outer join Expertpool
+											on work.draftUserId = Expertpool.ssn
+											left outer join project
+											on project.projectCode = work.refWorkId1
+											left outer join ProjectMonthlyReport as report
+											on work.refWorkId1 = report.projectCode and work.refWorkId2 = report.taskFormTypeId 
+												and work.refWorkId3 = concat(assignYear, assignMonth, '|', report.writerSsn)
+											WHERE	1=1
+											and work.state = 'WORK_STATE_READY'
+											and work.type in ('4028809e0a20e689010a2b4be76c2386','4028809e0a20e689010a2b4be76c2387','4028809e0a20e689010a2b4be76c2388','4028809e0a20e689010a2b4be76c2389')
+			/~id: 							and id = {id}~/
+			/~title: 						and title like {title}~/
+			/~assigneeId: 					and assigneeId = {assigneeId}~/
+			/~assignerId: 					and assignerId = {assignerId}~/
+			/~state: 						and work.state = {state}~/
+			/~type: 						and type = {type}~/
+			/~level: 						and level = {level}~/
+			/~refWorkId1: 					and refWorkId1 = {refWorkId1}~/
+			/~refWorkId2: 					and refWorkId2 = {refWorkId2}~/
+			/~refWorkId3: 					and refWorkId3 = {refWorkId3}~/
+			/~draftUserId: 					and draftUserId = {draftUserId}~/
+			/~draftUserDept: 				and draftUserDept = {draftUserDept}~/
+			/~draftUserName: 				and Expertpool.name LIKE {draftUserName}~/
+			/~draftDateFrom: 				and draftDate > {draftDateFrom}~/
+			/~draftDateTo: 					and draftDate < {draftDateTo}~/
+			/~createDateFrom: 				and createDate > {createDateFrom}~/
+			/~createDateTo: 				and createDate < {createDateTo}~/
+			/~openDateFrom: 				and openDate > {openDateFrom}~/
+			/~openDateTo: 					and openDate < {openDateTo}~/
+			/~executeDateFrom: 				and executeDate > {executeDateFrom}~/
+			/~executeDateTo: 				and executeDate < {executeDateTo}~/
+			/~projectName: 					and project.projectName like {projectName}~/
+			/~massive:						and type not in ('4028809e0a20e689010a2b4be76c0046', '4028809e0a20e689010a2b4be76c0047')~/
+			/~intYear:					and assignYear = {intYear} ~/
+			/~intMonth:					and assignMonth = {intMonth} ~/
+											order by createDate desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="monthlyReportCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="monthlyReportWorkListCount">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource" ref="dataSource" />
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[					
+
+											SELECT	work.id
+													,work.title
+													,work.assigneeId, work.assignerId
+													,work.state, work.type, work.level
+													,work.refWorkId1 ,work.refWorkId2 ,work.refWorkId3
+													,'' as projectName
+													,'' as approvalName
+													,'' as document
+													,work.draftUserId, '' as draftUserName
+													,work.draftUserDept, '' as draftUserDeptName
+													,work.draftDate, work.createDate, work.openDate, work.executeDate
+											FROM Work work WITH(NOLOCK)
+											WHERE	1=1
+											and state = 'WORK_STATE_READY'
+											and type in ('4028809e0a20e689010a2b4be76c2386','4028809e0a20e689010a2b4be76c2387','4028809e0a20e689010a2b4be76c2388','4028809e0a20e689010a2b4be76c2389')
+						/~assigneeId: 		and assigneeId = {assigneeId}~/
+						
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="workCabinetListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+				
+			</map>
+		</property>
+	</bean>
+
+	<bean id="sanctionCountOnProjectWrapper" class="kr.co.kmac.pms.sanction.statistics.vl.SanctionCountOnProjectWrapper" />
+	<bean id="sanctiontPresentStateWrapper" class="kr.co.kmac.pms.sanction.statistics.vl.SanctiontPresentStateWrapper" />
+	<bean id="projectReportCabinetListWrapper" class="kr.co.kmac.pms.sanction.workcabinet.vl.ProjectReportCabinetListWrapper" />
+	<bean id="weeklyReportCabinetListWrapper" class="kr.co.kmac.pms.sanction.workcabinet.vl.WeeklyReportCabinetListWrapper" />
+	<bean id="monthlyReportCabinetListWrapper" class="kr.co.kmac.pms.sanction.workcabinet.vl.MonthlyReportCabinetListWrapper" />
+	<bean id="workCabinetListWrapper" class="kr.co.kmac.pms.sanction.workcabinet.vl.WorkCabinetListWrapper" />
+	<bean id="workCabinetListForMobileWrapper" class="kr.co.kmac.pms.sanction.workcabinet.vl.WorkCabinetListForMobileWrapper" />
+	<bean id="searchRuleWrapper" class="kr.co.kmac.pms.sanction.statistics.vl.SearchRuleWrapper" />
+</beans>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="orgdbMonitoringListBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<!-- 협력기관 모니터링  -->
+				<entry key="getOrgdbMonitoringList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select * from 
+								(
+									select res.writerSsn, (select name from expertPool where ssn = res.writerSsn) as writerName, res.category, res.cnt
+									from 
+									(
+										(
+											select writerSsn, '고객정보' as category, count(writerSsn) as cnt 
+											from customer 
+											where isOrg = 'Y' 
+											and (customerCode is null or customerCode = '')
+			 				/~fromDate: 	 and regDate >= {fromDate}~/
+							   /~toDate: 	 and regDate <={toDate}~/											
+											group by writerSsn
+										)
+										union 
+										(
+											select createrId, '전문가 소속기관' as category, count(createrId) as cnt
+											from expertPool 
+											where jobClass not in ('A', 'B', 'J') 
+											and (companyId is null or companyId = '')
+			 				/~fromDate: 	 and createdDate >= {fromDate}~/
+							   /~toDate: 	 and createdDate <={toDate}~/											
+											group by createrId
+										)
+										union
+										(
+											select pmSsn, '프로젝트 협력사' as category, cnt 
+											from 
+											(
+												select mem.ssn as pmSsn, count(orgCode) as cnt 
+												from projectOrgdbRel rel, projectMember mem, project pro
+												where rel.projectCode = mem.projectCode
+												and mem.projectCode = pro.projectCode
+												and mem.role = 'PM'
+												and mem.trainingYN = 'Y'
+												and (orgCode is null or orgCode = '')
+				 				/~fromDate: 	 and pro.createDate >= {fromDate}~/
+								   /~toDate: 	 and pro.createDate <={toDate}~/															
+												group by mem.ssn
+											) rel
+										)
+									) res
+								) reg
+							   where 1=1
+				   /~writerName: and writerName like {writerName}~/
+				   /~category:   and reg.category = {category}~/
+								order by 2
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbMonitoringListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- 프로젝트 협력사  -->
+				<entry key="getOrgdbCoCompanyList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+																	<![CDATA[
+									select 
+											rel.projectCode as key1, 
+											rel.idx as key2, 
+											mem.ssn as writerSsn, 
+											(select name from expertpool where ssn = mem.ssn) as writerName, 
+											(select projectName from project where projectCode = rel.projectCode) as title,
+											rel.orgCode as orgCode, 
+											rel.orgName as orgName
+									from projectOrgdbRel rel, projectMember mem
+									where rel.projectCode = mem.projectCode
+									and mem.role = 'PM'
+									and mem.trainingYN = 'Y'
+									and (orgCode is null or orgCode = '')
+	                  /~writerSsn: AND mem.ssn = {writerSsn}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbMonitoringDetailWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- 고객정보  -->
+				<entry key="getOrgdbCustomerInfoList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select 
+										idx as key1, 
+										'' as key2, 
+										writerSsn as writerSsn, 
+										writer as writerName, 
+										subject as title, 
+										customerCode as orgCode, 
+										customerName as orgName
+								from customer 
+								where isOrg = 'Y' 
+								and (customerCode is null or	customerCode = '')
+						/~writerSsn: and writerSsn = {writerSsn}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbMonitoringDetailWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<!-- 전문가 소속기관  -->
+				<entry key="getOrgdbExpertCompanyList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									select 
+											ssn as key1, 
+											'' as key2,
+											createrId as writerSsn, 
+											createdDate as writerName, 
+											name as title, 
+											companyId as orgCode, 
+											company as orgName
+									from expertPool 
+									where jobClass not in ('A', 'B', 'J') 
+									and (companyId is null or companyId = '')							
+	                  /~writerSsn: AND createrId = {writerSsn}~/
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="orgdbMonitoringDetailWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="orgdbMonitoringListWrapper" class="kr.co.kmac.pms.orgdb.vl.OrgdbMonitoringListWrapper" />
+	<bean id="orgdbMonitoringDetailWrapper" class="kr.co.kmac.pms.orgdb.vl.OrgdbMonitoringDetailWrapper" />
+</beans>

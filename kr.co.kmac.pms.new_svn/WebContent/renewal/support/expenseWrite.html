@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=1600">
+		<title>KMAC 통합 인트라넷</title>
+
+		<link rel="stylesheet" href="../resources/css/common.css" type="text/css" />
+		<link rel="stylesheet" href="../resources/css/board.css" type="text/css" /><!-- 서브페이지에서만 사용 -->	
+
+		<script type="text/javascript" src="../resources/js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" src="../resources/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="../resources/js/common.js"></script>
+
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../resources/js/html5shiv.js"></script>
+		<![endif]-->
+ 
+	</head>
+
+	<body>	
+
+		<div class="wrap">
+
+			<div class="container">
+
+				<div class="link_area">
+					<div>
+						<ul>
+							<li><a href="javascript:;" title="HOME"><i class="mdi mdi-home"></i><p>HOME</p></a></li>
+							<li><a href="javascript:;" title="마이페이지"><i class="mdi mdi-card-account-details"></i><p>마이페이지</p></a></li>
+							<li><a href="javascript:;" title="로그아웃"><i class="mdi mdi-lock-open"></i><p>로그아웃</p></a></li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li><a href="javascript:;" title="즐겨찾기"><i class="mdi mdi-star"></i><p>즐겨찾기</p></a></li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li><a href="javascript:;" title="개인 일정"><i class="mdi mdi-calendar-month"></i><p>개인 일정</p></a></li>
+							<li><a href="javascript:;" title="비상연락망"><i class="mdi mdi-contacts"></i><p>비상연락망</p></a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- // link_area -->
+
+				<div class="status_area">
+					<div class="logo"><img src="../resources/img/logo.png" alt="KMAC 한국능률협회컨설팅" /></div>
+					<div class="profile"><img src="../resources/img/photo_none.png" alt="프로필 이미지" /></div>
+					<p class="name">홍길동</p>
+					<p class="position">Employment</p>
+					<div class="today_date"><p>2021년 06월 29일 오전 11시 00분</p></div>
+
+					<div class="commute">
+						<ul>
+							<li class="on">
+								<a href="javascript:;">
+									<p>출근</p>
+									<span>08:30</span>
+									<span>AM</span>
+								</a>
+							</li>
+							<li class="off">
+								<a href="javascript:;">
+									<p>퇴근</p>
+									<span>06:00</span>
+									<span>PM</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+					
+					<div class="data_box">
+						<div>
+							<i class="mdi mdi-email"></i><p>메일</p>
+						</div>
+						<div>
+							<ul>
+								<li><span class="c-ing"><a href="javascript:;">35</a></span>건</li>
+							</ul>
+						</div>
+					</div>
+					<div class="data_box">
+						<div>
+							<i class="mdi mdi-draw"></i><p>전자결제</p>
+						</div>
+						<div>
+							<ul>
+								<li><span class="c-new"><a href="javascript:;">1</a></span>건 /</li>
+								<li><span class="c-ing"><a href="javascript:;">35</a></span>건 /</li>
+								<li><span class="c-finish"><a href="javascript:;">75</a></span>건</li>
+							</ul>
+						</div>
+					</div>
+
+					<ul class="dropdown depth_menu"><!-- 2뎁스 메뉴에 필요 .depth_menu -->
+						<li class="on"><!-- 2뎁스 메뉴에 필요 .on -->
+							<div class="drop_title"><i class="mdi mdi-bulletin-board"></i><a href="javascript:;" title="메뉴 보이기/숨기기">게시판</a></div>
+							<div class="drop_data sc">
+								<ul>
+									<li class="current"><a href="javascript:;">공지사항</a></li><!-- 현재 위치한 메뉴 .current -->
+									<li><a href="javascript:;">기준지침</a></li>
+									<li><a href="javascript:;">경영정보</a></li>
+									<li><a href="javascript:;">제안하기</a></li>
+									<li><a href="javascript:;">전자입찰계정관리</a></li>
+									<li><a href="javascript:;">두빛나눔</a></li>
+									<li><a href="javascript:;">열린세상</a></li>
+									<li><a href="javascript:;">시스템Q&amp;A</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+
+					<ul class="dropdown">
+						<li>
+							<div class="drop_title"><i class="mdi mdi-format-list-checks"></i><a href="javascript:;" title="오늘의 일정 보이기/숨기기">오늘의 일정<span>(2)</span></a></div>
+							<div class="drop_data sc">
+								<ul>
+									<li>
+										<p class="time">plan과 schedule</p>
+										<p class="schedule">A사와 Zoom 미팅 예정</p>
+									</li>
+									<li>
+										<p class="time">plan과 schedule</p>
+										<p class="schedule">A사와 Zoom 미팅 예정</p>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+
+					<ul class="dropdown">
+						<li>
+							<div class="drop_title"><i class="mdi mdi-format-list-checks"></i><a href="javascript:;" title="내일의 일정 보이기/숨기기">내일의 일정<span>(2)</span></a></div>
+							<div class="drop_data sc">
+								<ul>
+									<li>
+										일정이 없습니다.
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+					
+				</div>
+				<!-- // status_area -->
+
+				<div class="contents_area">
+
+					<div class="header">
+
+						<div class="gnb">
+							<ul>
+								<li>
+									<a href="javascript:;">게시판</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li><a href="javascript:;">공지사항</a></li>
+											<li><a href="javascript:;">기준지침</a></li>
+											<li><a href="javascript:;">회의자료</a></li>
+											<li><a href="javascript:;">제안하기</a></li>
+											<li><a href="javascript:;">전자입찰계정관리</a></li>
+											<li><a href="javascript:;">두빛나눔</a></li>
+											<li><a href="javascript:;">블라인드 소통 채널</a></li>
+											<li><a href="javascript:;">열린세상</a></li>
+											<li><a href="javascript:;">시스템 Q&amp;A</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">고객정보</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li><a href="javascript:;">고객정보등록</a></li>
+											<li><a href="javascript:;">나라장터 사전규격</a></li>
+											<li><a href="javascript:;">나라장터 입찰정보</a></li>
+											<li><a href="javascript:;">고객정보현황(개인)</a></li>
+											<li><a href="javascript:;">고객정보현황(조직)</a></li>
+											<li><a href="javascript:;">고객정보현황(주간)</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">스케줄관리</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li><a href="javascript:;">개인일정</a></li>
+											<li><a href="javascript:;">일정관리</a></li>
+											<li><a href="javascript:;">간방문기업</a></li>
+											<li><a href="javascript:;">전사주요행사</a></li>
+											<li><a href="javascript:;">세미나/컨퍼런스</a></li>
+											<li><a href="javascript:;">일정관리(관리자)</a></li>
+											<li><a href="javascript:;">개인근무시간</a></li>
+											<li><a href="javascript:;">근무시간관리</a></li>
+											<li><a href="javascript:;">근무시간관리(관리자)</a></li>
+											<li><a href="javascript:;">재택근무 출/퇴근 현황</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">전자결재</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li><a href="javascript:;">내결재함</a></li>
+											<li><a href="javascript:;">기안하기</a></li>
+											<li><a href="javascript:;">결재현황보기</a></li>
+											<li><a href="javascript:;">PJ변동현황보기</a></li>
+											<li><a href="javascript:;">성과급품의하기</a></li>
+											<li><a href="javascript:;">내참조함</a></li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">PMS</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li>
+												<a href="javascript:;">프로젝트관리</a>
+												<ul>										
+													<li><a href="javascript:;">MY PROJECT</a></li>
+													<li><a href="javascript:;">예산등록</a></li>
+													<li><a href="javascript:;">프로젝트등록</a></li>
+													<li><a href="javascript:;">성과급관리(프로젝트별)</a></li>
+													<li><a href="javascript:;">성과급관리(컨설턴트별)</a></li>
+													<li><a href="javascript:;">실시간성과급(본부/센터)</a></li>
+													<li><a href="javascript:;">실시간성과급(프로젝트)</a></li>
+													<li><a href="javascript:;">출장비관리(PJ)</a></li>
+													<li><a href="javascript:;">고객만족도관리</a></li>
+													<li><a href="javascript:;">인건비원가관리</a></li>									
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">프로젝트현황</a>
+												<ul>										
+													<li><a href="javascript:;">프로젝트전체현황</a></li>
+													<li><a href="javascript:;">Emergency PJ현황</a></li>
+													<li><a href="javascript:;">VOC현황</a></li>
+													<li><a href="javascript:;">고객만족도현황</a></li>
+													<li><a href="javascript:;">컨설턴트평가현황</a></li>
+													<li><a href="javascript:;">고객만족도진행현황</a></li>
+													<li><a href="javascript:;">인건비원가현황</a></li>
+													<li><a href="javascript:;">VOC현황(관리자)</a></li>									
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">기획사업현황</a>
+												<ul>										
+													<li><a href="javascript:;">공개사업현황</a></li>
+													<li><a href="javascript:;">단기공개교육현황</a></li>									
+												</ul>
+											</li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">업무지원</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li>
+												<a href="javascript:;">업무지원</a>
+												<ul>										
+													<li><a href="javascript:;">담당자 안내</a></li>
+													<li><a href="javascript:;">시스템 개발현황</a></li>									
+												</ul>
+											</li>									
+										</ul>
+										<ul>										
+											<li>
+												<a href="javascript:;">신청하기</a>
+												<ul>										
+													<li><a href="javascript:;">TCS119</a></li>
+													<li><a href="javascript:;">세금계산서신청</a></li>
+													<li><a href="javascript:;">세금계산서 발행내역</a></li>
+													<li><a href="javascript:;">증명서신청</a></li>
+													<li><a href="javascript:;">문서발급</a></li>
+													<li><a href="javascript:;">명함신청</a></li>
+													<li><a href="javascript:;">출장비신청</a></li>
+													<li><a href="javascript:;">경조사/주차비 신청</a></li>
+													<li><a href="javascript:;">장비렌탈신청</a></li>
+													<li><a href="javascript:;">EMBBS 발송신청</a></li>
+													<li><a href="javascript:;">양식모음</a></li>									
+												</ul>
+											</li>									
+										</ul>
+										<ul>										
+											<li>
+												<a href="javascript:;">예약하기</a>
+												<ul>										
+													<li><a href="javascript:;">TCS119</a></li>
+													<li><a href="javascript:;">장비예약</a></li>
+													<li><a href="javascript:;">회의실예약</a></li>
+													<li><a href="javascript:;">비즈니스스쿨예약</a></li>									
+												</ul>
+											</li>									
+										</ul>
+										<ul>										
+											<li>
+												<a href="javascript:;">내역보기</a>
+												<ul>										
+													<li><a href="javascript:;">TCS119</a></li>
+													<li><a href="javascript:;">입금내역</a></li>
+													<li><a href="javascript:;">급여내역</a></li>
+													<li><a href="javascript:;">성과급지급내역</a></li>
+													<li><a href="javascript:;">성과급예상내역</a></li>
+													<li><a href="javascript:;">출장비관리</a></li>
+													<li><a href="javascript:;">출장비정산</a></li>
+													<li><a href="javascript:;">선택적복지제도 등</a></li>
+													<li><a href="javascript:;">연차현황</a></li>
+													<li><a href="javascript:;">선택적복지제도(관)</a></li>
+													<li><a href="javascript:;">급여내역(관)</a></li>
+													<li><a href="javascript:;">차량운행(관)</a></li>									
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</li>
+								<li>
+									<a href="javascript:;">KDB</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li><a href="javascript:;">KDB</a></li>
+										</ul>
+									</div>
+								</li>
+								<li>
+									<a href="javascript:;">네트워크</a>
+									<div><!-- div 추가 -->
+										<ul>										
+											<li>
+												<a href="javascript:;">내명함관리</a>
+												<ul>										
+													<li><a href="javascript:;">내명함</a></li>
+													<li><a href="javascript:;">나만의DM관리</a></li>							
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">DM관리</a>
+												<ul>										
+													<li><a href="javascript:;">DM정보수정</a></li>	
+													<li><a href="javascript:;">EMBBS발송내역</a></li>							
+												</ul>
+											</li>
+										</ul>
+										<ul>
+											<li>
+												<a href="javascript:;">INFRA관리</a>
+												<ul>										
+													<li><a href="javascript:;">혁신리더스클럽</a></li>	
+													<li><a href="javascript:;">업무제휴기관(MOU)</a></li>
+													<li><a href="javascript:;">협력사 등록관리</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+								<li>
+									<a href="javascript:;">경영관리</a>
+									<div><!-- div 추가 -->
+										<ul>
+											<li>
+												<a href="javascript:;">사업관리</a>
+												<ul>										
+													<li><a href="javascript:;"> 전체현황</a></li>
+													<li><a href="javascript:;">3개월예상</a></li>
+													<li><a href="javascript:;">조직단위별 현황</a></li>
+													<li><a href="javascript:;">기능별현황</a></li>
+													<li><a href="javascript:;">세부사업유형현황</a></li>
+													<li><a href="javascript:;">수주현황</a></li>
+													<li><a href="javascript:;">미수전체현황</a></li>
+													<li><a href="javascript:;">CE구독현황</a></li>
+													<li><a href="javascript:;">사업현황등록(본부/센터)</a></li>
+												</ul>
+											</li>
+										</ul>
+
+										<ul>
+											<li>
+												<a href="javascript:;">인력관리</a>
+												<ul>										
+													<li><a href="javascript:;">인력POOL
+													<li><a href="javascript:;">투입제한인력POOL</a></li>
+													<li><a href="javascript:;">성과급 안내메일 관리</a></li>
+													<li><a href="javascript:;">인적현황</a></li>
+													<li><a href="javascript:;">(상임)성과급지급현황
+													<li><a href="javascript:;">월별성과급현황(전체)</a></li>
+													<li><a href="javascript:;">채용관리</a></li>
+												</ul>
+											</li>
+										</ul>
+									</div><!-- // div 추가 -->
+								</li>
+							</ul>
+						</div>
+						<!-- // gnb -->
+						
+						<div class="navbar">
+							<div class="overlay"></div>
+							<div class="conts_box">
+								<div class="in_box">
+									<section>
+										<div class="scroll_box sc">
+											<div class="navbar_menu">
+												<p class="home"><a href="javascript:;"><i class="mdi mdi-home"></i>HOME</a></p>										
+												<ul>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-bulletin-board"></i>게시판</a>	
+														<ul class="noDepth"><!-- 3뎁스가 없을 경우 .noDepth -->															
+															<li><a href="javascript:;">공지사항</a></li>
+															<li><a href="javascript:;">기준지침</a></li>
+															<li><a href="javascript:;">회의자료</a></li>
+															<li><a href="javascript:;">제안하기</a></li>
+															<li><a href="javascript:;">전자입찰계정관리</a></li>
+															<li><a href="javascript:;">두빛나눔</a></li>
+															<li><a href="javascript:;">블라인드 소통 채널</a></li>
+															<li><a href="javascript:;">열린세상</a></li>
+															<li><a href="javascript:;">시스템Q&A</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-account-group-outline"></i>고객정보</a>
+														<ul class="noDepth">													
+															<li><a href="javascript:;">고객정보등록</a></li>
+															<li><a href="javascript:;">나라장터 게시판</a></li>
+															<li><a href="javascript:;">고객정보현황(개인)</a></li>
+															<li><a href="javascript:;">고객정보현황(조직)</a></li>
+															<li><a href="javascript:;">고객정보현황(주간)</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-calendar-month"></i>스케줄관리</a>
+														<ul class="noDepth">													
+															<li><a href="javascript:;">개인일정</a></li>
+															<li><a href="javascript:;">일정관리</a></li>
+															<li><a href="javascript:;">주간방문기업</a></li>
+															<li><a href="javascript:;">전사주요행사</a></li>
+															<li><a href="javascript:;">세미나/컨퍼런스</a></li>
+															<li><a href="javascript:;">개인근무시간</a></li>
+															<li><a href="javascript:;">근무시간관리</a></li>
+															<li><a href="javascript:;">재택근무 출/퇴근 현황</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-stamper"></i>전자결재</a>
+														<ul class="noDepth">													
+															<li><a href="javascript:;">내결재함</a></li>
+															<li><a href="javascript:;">기안하기</a></li>
+															<li><a href="javascript:;">결재현황보기</a></li>
+															<li><a href="javascript:;">PJ변동현황보기</a></li>
+															<li><a href="javascript:;">성과급품의하기</a></li>
+															<li><a href="javascript:;">인센티브품의하기</a></li>
+															<li><a href="javascript:;">내참조함</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-projector-screen-outline"></i>PMS</a>
+														<ul>
+															<li>
+																<a href="javascript:;">프로젝트관리</a>
+																<ul>
+																	<li><a href="javascript:;">MY PROJECT</a></li>
+																	<li><a href="javascript:;">예산등록</a></li>
+																	<li><a href="javascript:;">프로젝트등록</a></li>
+																	<li><a href="javascript:;">성과급관리(프로젝트별)</a></li>
+																	<li><a href="javascript:;">성과급관리(컨설턴트별)</a></li>
+																	<li><a href="javascript:;">실시간성과급(본부/센터)</a></li>
+																	<li><a href="javascript:;">실시간성과급(프로젝트)</a></li>
+																	<li><a href="javascript:;">출장비관리(PJ)</a></li>
+																	<li><a href="javascript:;">고객만족도관리</a></li>
+																	<li><a href="javascript:;">인건비원가관리</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">프로젝트현황</a>
+																<ul>
+																	<li><a href="javascript:;">프로젝트전체현황</a></li>
+																	<li><a href="javascript:;">Emergency PJ현황</a></li>
+																	<li><a href="javascript:;">VOC현황</a></li>
+																	<li><a href="javascript:;">고객만족도현황</a></li>
+																	<li><a href="javascript:;">컨설턴트평가현황</a></li>
+																	<li><a href="javascript:;">고객만족도진행현황</a></li>
+																	<li><a href="javascript:;">인건비원가현황</a></li>
+																	<li><a href="javascript:;">VOC현황(관리자)</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">기획사업현황</a>
+																<ul>
+																	<li><a href="javascript:;">공개사업현황</a></li>
+																	<li><a href="javascript:;">단기공개교육현황</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-handshake"></i>업무지원</a>
+														<ul>
+															<li>
+																<a href="javascript:;">업무지원</a>
+																<ul>
+																	<li><a href="javascript:;">담당자 안내</a></li>
+																	<li><a href="javascript:;">시스템 개발현황</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">신청하기</a>
+																<ul>
+																	<li><a href="javascript:;">TCS119</a></li>
+																	<li><a href="javascript:;">세금계산서신청</a></li>
+																	<li><a href="javascript:;">세금계산서 발행내역</a></li>
+																	<li><a href="javascript:;">증명서신청</a></li>
+																	<li><a href="javascript:;">문서발급</a></li>
+																	<li><a href="javascript:;">명함신청</a></li>
+																	<li><a href="javascript:;">출장비신청</a></li>
+																	<li><a href="javascript:;">경조사/주차비 신청</a></li>
+																	<li><a href="javascript:;">장비렌탈신청</a></li>
+																	<li><a href="javascript:;">EMBBS 발송신청</a></li>
+																	<li><a href="javascript:;">양식모음</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">예약하기</a>
+																<ul>
+																	<li><a href="javascript:;">장비예약</a></li>
+																	<li><a href="javascript:;">회의실예약</a></li>
+																	<li><a href="javascript:;">비즈니스스쿨예약</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">내역보기</a>
+																<ul>
+																	<li><a href="javascript:;">입금내역</a></li>
+																	<li><a href="javascript:;">급여내역</a></li>
+																	<li><a href="javascript:;">성과급지급내역</a></li>
+																	<li><a href="javascript:;">성과급예상내역</a></li>
+																	<li><a href="javascript:;">출장비관리</a></li>
+																	<li><a href="javascript:;">출장비정산</a></li>
+																	<li><a href="javascript:;">선택적복지제도 등</a></li>
+																	<li><a href="javascript:;">연차현황</a></li>
+																	<li><a href="javascript:;">선택적복지제도(관)</a></li>
+																	<li><a href="javascript:;">급여내역(관)</a></li>
+																	<li><a href="javascript:;">차량운행(관)</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-server-network"></i>KDB</a>
+														<ul class="noDepth">
+															<li><a href="javascript:;">KDB</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-access-point-network"></i>네트워크</a>
+														<ul>
+															<li>
+																<a href="javascript:;">내명함관리</a>
+																<ul>
+																	<li><a href="javascript:;">내명함</a></li>
+																	<li><a href="javascript:;">나만의DM관리</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">DM관리</a>
+																<ul>
+																	<li><a href="javascript:;">DM정보수정</a></li>
+																	<li><a href="javascript:;">EMBBS발송내역</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">INFRA관리</a>
+																<ul>
+																	<li><a href="javascript:;">혁신리더스클럽</a></li>
+																	<li><a href="javascript:;">업무제휴기관(MOU)</a></li>
+																	<li><a href="javascript:;">협력사 등록관리</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href="javascript:;"><i class="mdi mdi-folder-open-outline"></i>경영관리</a>
+														<ul>
+															<li>
+																<a href="javascript:;">사업관리</a>
+																<ul>
+																	<li><a href="javascript:;">전체현황</a></li>
+																	<li><a href="javascript:;">3개월예상</a></li>
+																	<li><a href="javascript:;">조직단위별 현황</a></li>
+																	<li><a href="javascript:;">기능별현황</a></li>
+																	<li><a href="javascript:;">세부사업유형현황</a></li>
+																	<li><a href="javascript:;">수주현황</a></li>
+																	<li><a href="javascript:;">미수전체현황</a></li>
+																	<li><a href="javascript:;">CE구독현황</a></li>
+																	<li><a href="javascript:;">사업현황등록(본부/센터)</a></li>
+																</ul>
+															</li>
+															<li>
+																<a href="javascript:;">인력관리</a>
+																<ul>
+																	<li><a href="javascript:;">인력POOL
+																	<li><a href="javascript:;">투입제한인력POOL</a></li>
+																	<li><a href="javascript:;">성과급 안내메일 관리</a></li>
+																	<li><a href="javascript:;">인적현황</a></li>
+																	<li><a href="javascript:;">(상임)성과급지급현황</a></li>
+																	<li><a href="javascript:;">월별성과급현황(전체)</a></li>
+																	<li><a href="javascript:;">채용관리</a></li>
+																</ul>
+															</li>
+														</ul>
+													</li>													
+												</ul>
+											</div>
+										</div>
+									</section>
+								</div>
+							</div>
+							<a class="btn_close" href="javascript:;"><span class="blind">창닫기</span></a>
+						</div>						
+						<!-- // navbar -->
+
+					</div>
+					<!-- // header -->
+
+					<div class="location">
+						<p class="menu_title">시스템 Q&A (활용문의)</p>
+						<ul>
+							<li class="home">HOME</li>
+							<li>게시판</li>
+							<li>시스템 Q&A (활용문의)</li>
+						</ul>
+					</div>
+					<!-- // location -->
+
+					<div class="contents sub"><!-- 서브 페이지 .sub -->
+
+						<div class="box">
+							<div class="info_box support">
+								<div>
+									<div class="a-both">
+										<p class="info_title">공지사항</p>
+										<p class="info_title_R">* 등록 시 문의사항 : 667번 이현도</p>
+									</div>
+									<p class="info_text">
+										· 간이영수증 : 처리안됨<br />
+										· 출장비를 제외한 기타비용은 영수증만 제출 ex)자녀 학자금, 원가성 경비 등<br />
+										· 식비 : 1식 8천원 / 조,중식 지원 안됨 (숙박 후 조식만 지원)<br />
+										· 영수증은 A4용지에 출장일별로 <span class="caution1">풀로 붙여서</span> 출장비번호 반드시 기입
+									</p>
+								</div>
+								<div class="link_box">
+									<div class="link_ui">
+										<ul>
+											<li>
+												<a href="javascript:;">
+													<span><i class="mdi mdi-book-open-page-variant-outline"></i></span>
+													<p>출장비신청 매뉴얼</p>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<!-- // info_box -->	
+						</div>
+
+						<div class="fixed_box support">
+							<div class="title">
+								<div class="h1_area">
+									<p class="h1"><i class="mdi mdi-file-document-outline"></i>출장비신청</p>
+									<button type="button" class="btn line btn_aqua" onclick="location.href='javascript:;'"><i class="mdi mdi-check-decagram"></i>신청하기</button>
+								</div>
+								<div class="btn_area">
+									<button type="button" class="btn line btn_blue" onclick="location.href='javascript:;'"><i class="mdi mdi-square-edit-outline"></i>저장</button>
+									<button type="button" class="btn line btn_new" onclick="location.href='javascript:;'"><i class="new">N</i>NEW</button>
+								</div>
+							</div>
+							<div class="fixed_contents sc">
+								
+								<!-- 기본정보 -->
+								<div class="board_box">
+									<div class="title">
+										<div class="h1_area">
+											<p class="h1">기본정보</p>
+										</div>
+									</div>
+									<div class="board_contents">
+										<table class="tbl-edit bg"><!-- 배경값이 있을 경우 .bg -->
+											<colgroup>
+												<col style="width: 11%" />
+												<col style="width: 39%" />
+												<col style="width: 11%" />
+												<col style="width: 39%" />
+											</colgroup>				
+											<tbody>
+												<tr>
+													<th>번호</th>
+													<td>
+														<input type="text" title="번호" />
+													</td>
+													<th>집행팀</th>
+													<td>
+														<select class="select">
+															<option value="선택">선택</option>
+															<option value="옵션">옵션</option>
+															<option value="옵션">옵션</option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<th>출장자</th>
+													<td>
+														<input type="text" title="출장자" />
+													</td>
+													<th>출장일</th>
+													<td>
+														<input type="text" title="출장일" />
+													</td>
+												</tr>
+												<tr>
+													<th>업체명</th>
+													<td>
+														<input type="text" title="업체명" />
+													</td>
+													<th>고객정보검색</th>
+													<td>												
+														<a href="javascript:;" onclick="javascript:layer_open(this,'pop_common_register');" class="search_popup" title="고객정보검색">
+															<input type="text" />
+															<i class="mdi mdi-magnify"></i>
+														</a>														
+													</td>
+												</tr>
+												<tr>
+													<th>프로젝트코드</th>
+													<td>												
+														<a href="javascript:;" onclick="javascript:layer_open(this,'pop_common_register');" class="search_popup" title="프로젝트코드">
+															<input type="text" />
+															<i class="mdi mdi-magnify"></i>
+														</a>														
+													</td>
+													<th>프로젝트게시판</th>
+													<td>
+														<a href="javascript:;" onclick="javascript:layer_open(this,'pop_common_register');" class="search_popup" title="프로젝트게시판">
+															<input type="text" />
+															<i class="mdi mdi-magnify"></i>
+														</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- // 기본정보 -->
+
+								<!-- 출장비 입력 -->
+								<div class="board_box">
+									<div class="title">
+										<div class="h1_area">
+											<p class="h1">출장비 입력</p>
+											<div class="check">																				
+												<input type="checkbox" name="check_total" id="check_total" class="btn_check" />
+												<label for="check_total">전체 영수증 없음</label>
+											</div>								
+										</div>
+										<div class="text-R input">
+											<p>출장비 입력</p>
+											<input type="text" title="출장비 입력" />	
+											<p>원</p>
+										</div>
+									</div>
+									<div class="board_contents">
+										<table class="tbl-edit">
+											<colgroup>
+												<col style="width: 11%" />
+												<col style="*" />
+											</colgroup>				
+											<tbody>
+												<tr>
+													<th>교통비</th>
+													<td>
+														<ul class="input_area">
+															<li>
+																<p class="label">현금</p>
+																<input type="text" title="현금 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">개인카드</p>
+																<input type="text" title="개인카드 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">영수증</p>
+																<select class="select">
+																	<option value="선택">선택</option>
+																	<option value="옵션">옵션</option>
+																</select>
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>택시비</th>
+													<td>
+														<ul class="input_area">
+															<li>
+																<p class="label">현금</p>
+																<input type="text" title="현금 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">개인카드</p>
+																<input type="text" title="개인카드 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">영수증</p>
+																<select class="select">
+																	<option value="선택">선택</option>
+																	<option value="옵션">옵션</option>
+																</select>
+															</li>
+															<li>
+																<p class="label">이동경로</p>
+																<input type="text" title="이동경로 입력" class="wide_1" />	
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>식비</th>
+													<td>
+														<ul class="input_area">
+															<li>
+																<p class="label">현금</p>
+																<input type="text" title="현금 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">개인카드</p>
+																<input type="text" title="개인카드 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">영수증</p>
+																<select class="select">
+																	<option value="선택">선택</option>
+																	<option value="옵션">옵션</option>
+																</select>
+															</li>
+															<li>
+																<p class="label">동행</p>
+																<input type="text" title="동행 입력" class="wide_1" />	
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>숙박비</th>
+													<td>
+														<ul class="input_area">
+															<li>
+																<p class="label">현금</p>
+																<input type="text" title="현금 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">개인카드</p>
+																<input type="text" title="개인카드 입력" placeholder="0" />	
+															</li>
+															<li>
+																<p class="label">영수증</p>
+																<select class="select">
+																	<option value="선택">선택</option>
+																	<option value="옵션">옵션</option>
+																</select>
+															</li>
+															<li>
+																<p class="label">동행</p>
+																<input type="text" title="동행 입력" class="wide_1" />	
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>유류비</th>
+													<td>
+														<ul class="input_area">
+															<li>
+																<p class="label">왕복거리</p>
+																<span class="place_text">
+																	<p>KM</p>
+																	<input type="text" title="왕복거리 입력" placeholder="0" />																	
+																</span>
+															</li>
+															<li>
+																<ul>
+																	<li>
+																		<p class="label">리터거리</p>
+																		<input type="text" title="리터거리 입력" class="bg" />	
+																	</li>
+																	<li>
+																		<p class="label">유류단가</p>
+																		<input type="text" title="유류단가 입력" class="bg" />	
+																	</li>
+																	<li>
+																		<p class="label">감가상각비</p>
+																		<input type="text" title="감가상각비 입력" class="bg" />	
+																	</li>
+																	<li>
+																		<p class="label">지급액</p>
+																		<input type="text" title="지급액 입력" class="bg total" />	
+																	</li>
+																	<li>
+																		<p class="label">이동경로</p>
+																		<input type="text" title="이동경로 입력" class="wide_2" />	
+																	</li>
+																</ul>
+																
+															</li>
+														</ul>
+													</td>
+												</tr>
+												<tr>
+													<th>비고(작성자)</th>
+													<td>
+														<input type="text" title="비고(작성자) 입력" class="wide" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- // 출장비 입력 -->	
+
+								<!-- 저장 리스트 -->
+								<div class="board_box">
+									<div class="title">
+										<div class="h1_area">
+											<p class="h1">저장 리스트</p>
+										</div>
+									</div>
+									<div class="board_contents">
+										<table class="tbl-edit td-c">
+											<colgroup>
+												<col style="width: 9%" />
+												<col style="width: 10%" />
+												<col style="width: 12%" />
+												<col style="width: 10%" />
+												<col style="*">
+												<col style="width: 7%" />
+												<col style="width: 7%" />
+												<col style="width: 7%" />
+												<col style="width: 7%" />
+												<col style="width: 7%" />
+												<col style="width: 9%" />												
+											</colgroup>				
+											<tbody>
+												<tr>
+													<th>출장자</th>
+													<th>출장일</th>
+													<th>번호</th>
+													<th>프로젝트코드</th>
+													<th>프로젝트명</th>
+													<th>교통비</th>
+													<th>식비</th>
+													<th>숙박비</th>
+													<th>유류비</th>
+													<th>출장비 계</th>
+													<th>삭제</th>													
+												</tr>
+												<tr>
+													<td>김병구</td>
+													<td>2021-09-09</td>
+													<td>21-9244-153337</td>
+													<td>1904228</td>
+													<td class="subject none"><p>19 서일대학교, 중장기발전계획</p></td>
+													<td>0</td>
+													<td>0</td>
+													<td>0</td>
+													<td>0</td>
+													<td>0</td>
+													<td><button type="button" class="btn line btn_pink" onclick="location.href='javascript:;'"><i class="mdi mdi-trash-can-outline"></i>삭제</button></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- // 저장 리스트 -->									
+
+							</div>								
+
+						</div>
+
+						<!--  공통 등록 팝업 -->
+						<div id="pop_common_register" class="popup_layer pop_register expense"><!-- 출장비 팝업 창 .expense -->
+							<div class="popup_bg"></div>
+							<div class="popup_inner">
+								<div class="a-both">
+									<p class="h1">고객정보 검색</p>
+									<button type="button" class="btn-close" onclick="javascript:layer_close('pop_common_register');" title="닫기"><i class="mdi mdi-close"></i></button>
+								</div>								
+								<div class="popup_contents">
+									<div class="search_area">
+										<div>
+											<p class="label">정보수집일</p>
+											<div class="month_check">
+												<div class="input_date">
+													<input type="text" title="조회 기간 선택">
+													<button type="button" class="btn_datepicker" title="캘린더오픈"></button>
+												</div>
+												<span>~</span>
+												<div class="input_date">
+													<input type="text" title="조회 기간 선택">
+													<button type="button" class="btn_datepicker" title="캘린더오픈"></button>
+												</div>
+											</div>
+										</div>
+										<div>
+											<p class="label">정보수집일</p>
+											<div class="a-both">
+												<select class="select">
+													<option value="전체">전체</option>
+													<option value="옵션">옵션 옵션 옵션</option>
+													<option value="옵션">옵션</option>
+												</select>
+												<input type="text" title="검색">
+												<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">검색<i class="mdi mdi-magnify"></i></button>
+											</div>
+										</div>
+									</div>
+									<p class="caution_text">
+										<span class="label">※ 고객정보 선택조건: </span><span class="caution1">고객정보 유형</span>이 “방문수집” 이며 <span class="caution2">정보수집자</span>에 <span class="caution2">출장자가 포함</span>되어야 함
+									</p>
+									<table class="tbl-list line"><!-- td 전체 라인 .line -->
+										<thead>
+											<tr>
+												<th>선택</th>
+												<th class="subject">제목</th><!-- 제목 .subject -->
+												<th>고객사</th>
+												<th>작성자</th>
+												<th>정보수집일</th>						
+											</tr>
+										</thead>												
+										<tbody>
+											<tr>
+												<td>																																		
+													<input type="checkbox" name="check_1" id="check_1" class="btn_check" />
+													<label for="check_1"></label>																				
+												</td>
+												<td class="subject">
+													<p>연세대 신촌캠퍼스 전공능력기반 교육과정개발 연세대 신촌캠퍼스 전공능력기반 교육과정개발</p>
+												</td>
+												<td>(학)연세대학교</td>
+												<td>김병구</td>
+												<td>2021-09-13</td>	
+											</tr>
+											<tr>
+												<td>																																		
+													<input type="checkbox" name="check_2" id="check_2" class="btn_check" />
+													<label for="check_2"></label>																				
+												</td>
+												<td class="subject">
+													<p>연세대 신촌캠퍼스 전공능력기반 교육과정개발 연세대 신촌캠퍼스 전공능력기반 교육과정개발</p>
+												</td>
+												<td>(학)연세대학교</td>
+												<td>김병구</td>
+												<td>2021-09-13</td>	
+											</tr>
+											<tr>
+												<td>																																		
+													<input type="checkbox" name="check_3" id="check_3" class="btn_check" />
+													<label for="check_3"></label>																				
+												</td>
+												<td class="subject">
+													<p>연세대 신촌캠퍼스 전공능력기반 교육과정개발 연세대 신촌캠퍼스 전공능력기반 교육과정개발</p>
+												</td>
+												<td>(학)연세대학교</td>
+												<td>김병구</td>
+												<td>2021-09-13</td>	
+											</tr>					
+										</tbody>
+									</table>									
+									<div class="paging">
+										<div class="pagination">
+											<a href="javascript:;" class="icon"><i class="mdi mdi-page-first"></i>처음</a>
+											<a href="javascript:;" class="icon"><i class="mdi mdi-chevron-left"></i>이전</a>
+											<a href="javascript:;" class="current" title="현재 페이지">1</a>
+											<a href="javascript:;">2</a>
+											<a href="javascript:;">3</a>
+											<a href="javascript:;">4</a>
+											<a href="javascript:;">5</a>
+											<a href="javascript:;">6</a>
+											<a href="javascript:;">7</a>
+											<a href="javascript:;">8</a>
+											<a href="javascript:;">9</a>
+											<a href="javascript:;" class="icon"><i class="mdi mdi-chevron-right"></i>다음</a>
+											<a href="javascript:;" class="icon"><i class="mdi mdi-page-last"></i>마지막</a>
+										</div>
+									</div>
+									<!-- // paging -->
+									<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">선택</button>																
+								</div>
+							</div>
+						</div>
+						<!-- // 공통 등록 팝업 -->
+
+					</div>
+					<!-- // contents -->
+						
+					<div class="footer">
+						<p>Copyright  ⓒ 2021 KMAC. All rights reserved</p>
+					</div>
+					<!-- // footer -->		
+
+				</div>
+				<!-- // contents_area -->
+
+			</div>
+			<!-- // container -->				
+
+		</div>
+		<!-- // wrap -->
+
+	</body>
+</html>

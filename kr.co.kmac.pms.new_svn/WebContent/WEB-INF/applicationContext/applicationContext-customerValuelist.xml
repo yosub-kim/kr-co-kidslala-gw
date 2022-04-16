@@ -1,0 +1,1355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="customerSelectListBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<!-- job date: 2007-04-10 author: yhyim purpose: CIO 겸직, 제조-->
+				<entry key="customerSelectListEntryForCIOTypeA">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[		
+									SELECT 	idx, master_idx, com_idx, embbs_idx, 
+										embbsName, embbsCompany, embbsDept, embbsPhone,
+										embbsEmail, embbsGather, subject, writer, 
+										writerSsn, '' AS content, '' AS opinion, info_date, 
+										regdate, sanupgubun, readCnt, ip, 
+										customerInfoType,  B.data_1 AS customerInfoName,
+										receiveGrade, projectName, projectCode, 
+										writerDept, replace(C.data_1,'담당','') AS writerDeptName,
+										customerName, customerCode, industryTypeCode, 
+										businessTypeCode,  D.data_1 AS businessTypeName,
+										pmSsn 
+									FROM 	Customer A, CmTableData B, CmTableData C, CmTableData D
+									WHERE B.table_name = 'CUSTOMERINFO_TYPE_CODE'
+										AND A.customerInfoType = B.key_1
+										AND C.table_name = 'RUNNING_DIV_CODE'
+										AND A.writerDept = C.key_1
+										AND D.table_name = 'BUSINESS_TYPE_CODE'
+										AND A.businessTypeCode = D.key_1
+					/~customerInfoType: AND customerInfoType = {customerInfoType} ~/
+					/~writer:			AND writer = {writer} ~/
+					/~to:				AND CONVERT(VARCHAR, a.regDate, 112) <= {to}~/
+					/~from:				AND CONVERT(VARCHAR, a.regDate, 112) >= {from}~/
+										AND a.industryTypeCode IN ('ITA', 'ITB', 'ITC')
+									ORDER BY regdate DESC, idx DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+
+				<!-- job date: 2007-04-10 author: yhyim purpose: CIO 겸직, 사회공공 -->
+				<entry key="customerSelectListEntryForCIOTypeB">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[		
+									SELECT 	idx, master_idx, com_idx, embbs_idx, 
+										embbsName, embbsCompany, embbsDept, embbsPhone,
+										embbsEmail, embbsGather, subject, writer, 
+										writerSsn, '' AS content, '' AS opinion, info_date, 
+										regdate, sanupgubun, readCnt, ip, 
+										customerInfoType,  B.data_1 AS customerInfoName,
+										receiveGrade, projectName, projectCode, 
+										writerDept, replace(C.data_1,'담당','') AS writerDeptName,
+										customerName, customerCode, industryTypeCode, 
+										businessTypeCode,  D.data_1 AS businessTypeName,
+										pmSsn 
+									FROM 	Customer A, CmTableData B, CmTableData C, CmTableData D
+									WHERE B.table_name = 'CUSTOMERINFO_TYPE_CODE'
+										AND A.customerInfoType = B.key_1
+										AND C.table_name = 'RUNNING_DIV_CODE'
+										AND A.writerDept = C.key_1
+										AND D.table_name = 'BUSINESS_TYPE_CODE'
+										AND A.businessTypeCode = D.key_1
+					/~customerInfoType: AND customerInfoType = {customerInfoType} ~/
+					/~writer:			AND writer = {writer} ~/
+					/~to:				AND CONVERT(VARCHAR, a.regDate, 112) <= {to}~/
+					/~from:				AND CONVERT(VARCHAR, a.regDate, 112) >= {from}~/
+										AND a.industryTypeCode IN ('ITD', 'ITE')
+									ORDER BY regdate DESC, idx DESC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<!-- job date: 2007-04-09 author: yhyim purpose: -->
+				<entry key="customerSelectListEntryForIndividual">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[		
+									SELECT 	idx, master_idx, com_idx, embbs_idx, 
+										embbsName, embbsCompany, embbsDept, embbsPhone,
+										embbsEmail, embbsGather, subject, writer, 
+										writerSsn, '' AS content, '' AS opinion, info_date, 
+										regdate, sanupgubun, readCnt, ip, 
+										customerInfoType,  B.data_1 AS customerInfoName,
+										receiveGrade, projectName, projectCode, 
+										writerDept, C.description AS writerDeptName,
+										customerName, customerCode, industryTypeCode, 
+										businessTypeCode, D.data_1 AS businessTypeName,
+										pmSsn 
+									FROM 	Customer A, CmTableData B, smGroup C, CmTableData D
+									WHERE B.table_name = 'CUSTOMERINFO_TYPE_CODE'
+										AND A.customerInfoType = B.key_1
+										AND A.writerDept = C.id
+										AND D.table_name = 'BUSINESS_TYPE_CODE'
+										AND substring(A.businessTypeCode, 1, 3) = D.key_1
+					/~valueType: 		AND	A.customerInfoType in ('CTF', 'CTB', 'CTC', 'CTH', 'CTI') ~/
+					/~customerInfoType: AND customerInfoType = {customerInfoType} ~/
+					/~industryTypeCode: AND industryTypeCode = {industryTypeCode} ~/
+					/~businessTypeCode:	AND	substring(A.businessTypeCode, 1, 3) = {businessTypeCode} ~/
+					/~BTBC:				AND	(substring(A.businessTypeCode, 1, 3) = 'BTB' 
+											OR substring(A.businessTypeCode, 1, 3) = 'BTC') ~/
+					/~BTEF:				AND	(substring(A.businessTypeCode, 1, 3) = 'BTE' 
+											OR substring(A.businessTypeCode, 1, 3) = 'BTF') ~/
+					/~BTHI:				AND	(substring(A.businessTypeCode, 1, 3) = 'BTH' 
+											OR substring(A.businessTypeCode, 1, 3) = 'BTI') ~/
+					/~writer:			AND writerSsn = {writer} ~/
+					/~to:				AND CONVERT(VARCHAR, a.regDate, 112) <= {to}~/
+					/~from:				AND CONVERT(VARCHAR, a.regDate, 112) >= {from}~/									
+									ORDER BY regdate DESC, idx DESC								
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+
+				<!-- Job Date: 2007-07-20 Author: yhyim Purpose: get registered customer information for BU -->				
+				<entry key="customerPresentReportForBUQuery">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>300</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>acs</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[		
+			
+	SELECT * FROM (
+			SELECT	cust.*, 
+					custDetail.ITA, custDetail.ITB, custDetail.ITD, custDetail.ITC, custDetail.ITE,					  
+					custDetail2.a, custDetail2.b, custDetail2.c, custDetail2.d, custDetail2.e, custDetail2.f
+			FROM
+			(
+					SELECT	id, NAME AS Name, writerName, companyPosition,
+							ssn, 1 AS memberCnt,
+							customerCnt, CTF, CTB, CTC,
+							(CTF+CTB+CTC) AS subTotal, CTE, CTG, CTZ, CTD,
+							(CTF+CTB+CTC+CTE+CTG+CTZ+CTD) AS grandTotal
+					FROM (
+						SELECT ID, NAME, ssn, writerName, companyPosition,
+								(SELECT count(distinct customerCode) 
+								   FROM customer d 
+								  WHERE d.writerSsn = ssn AND d.customerCode IS NOT NULL AND d.customerCode <> ''
+							      /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								) AS customerCnt
+								,sum(CASE customerInfoType WHEN 'CTF' THEN typeCnt ELSE 0 END) CTF
+								,sum(CASE customerInfoType WHEN 'CTB' THEN typeCnt ELSE 0 END) CTB
+								,sum(CASE customerInfoType WHEN 'CTC' THEN typeCnt ELSE 0 END) CTC					
+								,isNull(dbo.getProjectBbsPersonCount(ssn, /~from:{from}~/, /~to:{to}~/ ), 0) AS CTD
+								,sum(CASE customerInfoType WHEN 'CTE' THEN typeCnt ELSE 0 END) CTE
+								,sum(CASE customerInfoType WHEN 'CTG' THEN typeCnt ELSE 0 END) CTG
+								,sum(CASE customerInfoType WHEN 'CTZ' THEN typeCnt ELSE 0 END) CTZ
+						FROM (
+							SELECT  sm.id, sm.description AS name, cus.ssn, cus.writerName, cus.companyPosition, 
+									cus.customerInfoType, cus.typeCnt
+							FROM (
+								SELECT id, REPLACE(description,'담당','') AS description, depth FROM smgroup WHERE enabled = '1'
+								AND id <> '8000' AND id <> '2000' AND id <> '2030'  AND id <> '2040'  AND left(id,3) <> '250' 
+							) sm left outer join (
+								SELECT	res1.writerTeam, res1.ssn, res1.writerName, res1.companyPosition, 
+										customerInfoType, count(customerInfoType) typeCnt
+								FROM (
+									SELECT
+										e.name AS writerName, e.dept AS writerTeam, e.companyPosition, e.ssn, c.writerSsn,
+										c.customerInfoType, c.regDate
+									  FROM expertPool e left outer join (
+										SELECT customerCode, writerSsn, writerDept, customerInfoType, regDate FROM customer WHERE 1=1											
+								        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+									  ) c
+									  ON e.ssn = c.writerssn
+									 WHERE e.enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+								) res1
+								GROUP BY res1.writerTeam, res1.ssn, res1.writerName, res1.companyposition, customerInfoType
+							) cus
+							ON sm.id = cus.writerTeam
+						) T
+						GROUP BY id, name, ssn, writerName, companyPosition
+					) RES
+			) cust,
+			(
+					SELECT	ID, NAME, ssn
+							,sum(CASE industryTypeCode WHEN 'ITB' THEN typeCnt ELSE 0 END) ITB
+							,sum(CASE industryTypeCode WHEN 'ITA' THEN typeCnt ELSE 0 END) ITA
+							,sum(CASE industryTypeCode WHEN 'ITC' THEN typeCnt ELSE 0 END) ITC
+							,sum(CASE industryTypeCode WHEN 'ITD' THEN typeCnt ELSE 0 END) ITD
+							,sum(CASE industryTypeCode WHEN 'ITE' THEN typeCnt ELSE 0 END) ITE
+					FROM (				
+						SELECT  sm.id, sm.description AS name, cus.ssn, 
+								cus.industryTypeCode, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND id <> '8000' AND id <> '2000' AND id <> '2030' AND id <> '2040' AND left(id,3) <> '250' 
+						) sm left outer join (
+							SELECT	res1.writerTeam, res1.ssn, industryTypeCode, count(industryTypeCode) typeCnt
+							FROM (
+									SELECT
+										e.name AS writerName, e.dept AS writerTeam, e.ssn, c.writerSsn,
+										c.industryTypeCode, c.regDate
+									  FROM expertPool e left outer join (
+										SELECT customerCode, writerSsn, writerDept, industryTypeCode, regDate FROM Customer WHERE 1=1
+										AND customerInfoType in ('CTF', 'CTB', 'CTC')
+								        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+									  ) c
+									  ON e.ssn = c.writerssn
+									 WHERE e.enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+							) res1
+							GROUP BY res1.writerTeam, res1.ssn, industryTypeCode
+						) cus
+						ON sm.id = cus.writerTeam
+					) T
+					GROUP BY id, name, ssn
+			) custDetail,
+			(
+				SELECT	id, name, ssn, 
+						BTB + BTC AS a,
+						BTD	 AS b,
+						BTA  AS c,
+						BTE  AS d,
+						BTG  AS e,
+						BTH + BTI AS f,
+						(BTA+BTB+BTC+BTD+BTE+BTG+BTH+BTI) AS subTotal
+				FROM
+				(
+					SELECT id, name, ssn
+						,sum(CASE businessTypeCode WHEN 'BTA'	THEN typeCnt ELSE 0 END) BTA
+						,sum(CASE businessTypeCode WHEN 'BTB'	THEN typeCnt ELSE 0 END) BTB
+						,sum(CASE businessTypeCode WHEN 'BTC'	THEN typeCnt ELSE 0 END) BTC
+						,sum(CASE businessTypeCode WHEN 'BTD'	THEN typeCnt ELSE 0 END) BTD
+						,sum(CASE businessTypeCode WHEN 'BTE'	THEN typeCnt ELSE 0 END) BTE
+						,sum(CASE businessTypeCode WHEN 'BTG'	THEN typeCnt ELSE 0 END) BTG
+						,sum(CASE businessTypeCode WHEN 'BTH'	THEN typeCnt ELSE 0 END) BTH
+						,sum(CASE businessTypeCode WHEN 'BTI'	THEN typeCnt ELSE 0 END) BTI
+					FROM
+					(
+						SELECT  sm.id, sm.description AS name, cus.ssn, 
+								cus.businessTypeCode, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND id <> '8000' AND id <> '2000' AND id <> '2030'   AND id <> '2040' AND left(id,3) <> '250' 
+						) sm left outer join (
+							SELECT	res1.writerTeam, res1.ssn, businessTypeCode, count(businessTypeCode) typeCnt
+							FROM (
+								SELECT
+									e.name AS writerName, e.dept AS writerTeam, e.ssn, c.writerSsn,
+									(CASE c.businessTypeCode WHEN 'BTF' THEN 'BTE' ELSE c.businessTypeCode END) as businessTypeCode, c.regDate
+								  FROM expertPool e left outer join (
+									SELECT	customerCode, writerSsn, writerDept, 
+											substring(businessTypeCode,1,3) as businessTypeCode, regDate
+									FROM Customer WHERE 1=1
+									AND customerInfoType in ('CTF', 'CTB', 'CTC')
+							        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								  ) c
+								  ON e.ssn = c.writerssn
+								 WHERE e.enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+							) res1
+							GROUP BY res1.writerTeam, res1.ssn, businessTypeCode
+						) cus
+						ON sm.id = cus.writerTeam
+					) res
+					GROUP BY id, name, ssn
+				) P
+			) custDetail2
+			WHERE 1=1
+			AND cust.ID = custDetail.ID and cust.ssn = custDetail.ssn 
+			AND custDetail.ID = custDetail2.ID AND custDetail.ssn = custDetail2.ssn
+			AND cust.ID = custDetail2.ID AND cust.ssn = custDetail2.ssn
+			
+			UNION ALL
+			
+			SELECT	cust.*, 
+					custDetail.ITA, custDetail.ITB, custDetail.ITD, custDetail.ITC, custDetail.ITE,					  
+					custDetail2.a, custDetail2.b, custDetail2.c, custDetail2.d, custDetail2.e, custDetail2.f
+			FROM
+			(
+				SELECT	ID + 6 AS ID, '소계' AS NAME, '-' AS writerName, '-' AS companyPosition, '-' AS ssn,
+						dbo.getDivMemberCount(ID) AS memberCnt,
+						customerCnt, CTF, CTB, CTC,
+						(CTF+CTB+CTC) AS subTotal, CTE, CTG, CTZ, CTD,
+						(CTF+CTB+CTC+CTE+CTG+CTZ+CTD) AS grandTotal
+				FROM (
+					SELECT	ID, NAME, 
+							(SELECT count(distinct customerCode) FROM customer d, (
+								SELECT ssn FROM expertPool WHERE substring(dept,1,3) = substring(ID,1,3)
+								AND enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(companyPosition,1) <> '4' -- RA, 아르바이트 제외
+							) e
+							WHERE d.writerSsn = e.ssn and d.customerCode is not null and d.customerCode <> ''
+							AND customerInfoType <> 'CTD' AND customerInfoType <> 'CTA'
+					        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+							) AS customerCnt
+							,sum(CASE customerInfoType WHEN 'CTF' THEN typeCnt ELSE 0 END) CTF
+							,sum(CASE customerInfoType WHEN 'CTB' THEN typeCnt ELSE 0 END) CTB
+							,sum(CASE customerInfoType WHEN 'CTC' THEN typeCnt ELSE 0 END) CTC					
+							,isNull(dbo.getProjectBbsDivCount(ID,  /~from:{from}~/, /~to:{to}~/), 0) AS CTD
+							,sum(CASE customerInfoType WHEN 'CTE' THEN typeCnt ELSE 0 END) CTE
+							,sum(CASE customerInfoType WHEN 'CTG' THEN typeCnt ELSE 0 END) CTG
+							,sum(CASE customerInfoType WHEN 'CTZ' THEN typeCnt ELSE 0 END) CTZ
+					FROM (
+						SELECT  sm.id, sm.description AS name,
+								cus.customerInfoType, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND substring(id,1,1) = '2' AND id <> '2000'  AND left(id,3) <> '250' AND depth = '1'
+						) sm left outer join (
+							SELECT	res1.writerDiv, customerInfoType, count(customerInfoType) typeCnt
+							FROM (
+								SELECT
+									e.name AS writerName, substring(e.dept,1,3) + '0' AS writerDiv, e.companyPosition, e.ssn, c.writerSsn,
+									c.customerInfoType, c.regDate
+								  FROM expertPool e left outer join (
+									SELECT customerCode, writerSsn, writerDept, customerInfoType, regDate FROM customer WHERE 1=1
+							        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								  ) c
+								  ON e.ssn = c.writerssn
+								 WHERE e.enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+							) res1
+							GROUP BY res1.writerDiv, customerInfoType
+						) cus
+						ON sm.id = cus.writerDiv
+					) T
+					GROUP BY id, name
+				) RES
+			) cust,
+			(
+					SELECT	ID + 6 AS ID, NAME
+							,sum(CASE industryTypeCode WHEN 'ITB' THEN typeCnt ELSE 0 END) ITB
+							,sum(CASE industryTypeCode WHEN 'ITA' THEN typeCnt ELSE 0 END) ITA
+							,sum(CASE industryTypeCode WHEN 'ITC' THEN typeCnt ELSE 0 END) ITC
+							,sum(CASE industryTypeCode WHEN 'ITD' THEN typeCnt ELSE 0 END) ITD
+							,sum(CASE industryTypeCode WHEN 'ITE' THEN typeCnt ELSE 0 END) ITE
+					FROM (				
+						SELECT  sm.id, sm.description AS name,
+								cus.industryTypeCode, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND substring(id,1,1) = '2' AND id <> '2000' AND left(id,3) <> '250' AND depth = '1'
+						) sm left outer join (
+							SELECT	res1.writerDiv, industryTypeCode, count(industryTypeCode) typeCnt
+							FROM (
+								SELECT
+									e.name AS writerName, substring(e.dept,1,3) + '0' AS writerDiv, e.ssn, c.writerSsn,
+									c.industryTypeCode, c.regDate
+								  FROM expertPool e left outer join (
+									SELECT customerCode, writerSsn, writerDept, industryTypeCode, regDate FROM Customer WHERE 1=1
+									AND customerInfoType in ('CTF', 'CTB', 'CTC')
+							        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								  ) c
+								  ON e.ssn = c.writerssn
+								 WHERE e.enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+							) res1
+							GROUP BY res1.writerDiv, industryTypeCode
+						) cus
+						ON sm.id = cus.writerDiv
+					) T
+					GROUP BY id, name
+			) custDetail,
+			(
+				SELECT	ID + 6 AS ID, name,
+						BTB + BTC AS a,
+						BTD	 AS b,
+						BTA  AS c,
+						BTE  AS d,
+						BTG  AS e,
+						BTH + BTI AS f
+				FROM
+				(
+					SELECT id, name
+						,sum(CASE businessTypeCode WHEN 'BTA'	THEN typeCnt ELSE 0 END) BTA
+						,sum(CASE businessTypeCode WHEN 'BTB'	THEN typeCnt ELSE 0 END) BTB
+						,sum(CASE businessTypeCode WHEN 'BTC'	THEN typeCnt ELSE 0 END) BTC
+						,sum(CASE businessTypeCode WHEN 'BTD'	THEN typeCnt ELSE 0 END) BTD
+						,sum(CASE businessTypeCode WHEN 'BTE'	THEN typeCnt ELSE 0 END) BTE
+						,sum(CASE businessTypeCode WHEN 'BTG'	THEN typeCnt ELSE 0 END) BTG
+						,sum(CASE businessTypeCode WHEN 'BTH'	THEN typeCnt ELSE 0 END) BTH
+						,sum(CASE businessTypeCode WHEN 'BTI'	THEN typeCnt ELSE 0 END) BTI
+					FROM
+					(
+						SELECT  sm.id, sm.description AS name,
+								cus.businessTypeCode, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND substring(id,1,1) = '2' AND id <> '2000' AND left(id,3) <> '250' AND depth = '1'
+						) sm left outer join (
+							SELECT	res1.writerDiv, businessTypeCode, count(businessTypeCode) typeCnt
+							FROM (
+								SELECT
+									e.name AS writerName, substring(e.dept,1,3) + '0' AS writerDiv, e.ssn, c.writerSsn,
+									c.businessTypeCode, c.regDate
+								  FROM expertPool e left outer join (
+									SELECT	customerCode, writerSsn, writerDept, 
+											substring(businessTypeCode,1,3) as businessTypeCode, regDate 
+									FROM Customer WHERE 1=1
+									AND customerInfoType in ('CTF', 'CTB', 'CTC')
+							        /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								  ) c
+								  ON e.ssn = c.writerssn
+								 WHERE e.enable = '1' AND jobClass = 'A' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+							) res1
+							GROUP BY res1.writerDiv, businessTypeCode
+						) cus
+						ON sm.id = cus.writerDiv
+					) res
+					GROUP BY id, name
+				) P
+			) custDetail2
+			WHERE 1=1
+			AND cust.ID = custDetail.ID
+			AND custDetail.ID = custDetail2.ID
+			AND cust.ID = custDetail2.ID
+			
+			UNION ALL
+			
+			SELECT	cust.*, 
+					custDetail.ITA, custDetail.ITB, custDetail.ITD, custDetail.ITC, custDetail.ITE,
+					custDetail2.a, custDetail2.b, custDetail2.c, custDetail2.d, custDetail2.e, custDetail2.f
+			FROM
+			(
+				SELECT	ID, Name, '-' AS writerName, '-' AS companyPosition, '-' AS ssn,
+						'1' AS memberCnt, customerCnt, CTF, CTB, CTC,
+						(CTF+CTB+CTC) AS subTotal, CTE, CTG, CTZ, CTD,
+						(CTF+CTB+CTC+CTE+CTG+CTZ+CTD) AS grandTotal
+				FROM (
+					SELECT '9999' AS ID, '합계' AS Name,
+						(SELECT count(distinct customerCode) FROM customer d, expertPool e
+						WHERE  d.writerSsn = e.ssn AND e.jobClass = 'A' AND companyPosition <> '' AND e.enable = '1' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+						  AND d.customerCode IS NOT NULL AND d.customerCode <> ''
+						  AND customerInfoType <> 'CTD' AND customerInfoType <> 'CTA'
+				          /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+					 ) AS customerCnt
+						,SUM(CASE customerInfoType WHEN 'CTF' THEN typeCnt ELSE 0 END) CTF
+						,SUM(CASE customerInfoType WHEN 'CTB' THEN typeCnt ELSE 0 END) CTB
+						,SUM(CASE customerInfoType WHEN 'CTC' THEN typeCnt ELSE 0 END) CTC
+						,isNull(dbo.getProjectBbsBUCount( /~from:{from}~/, /~to:{to}~/), 0) AS CTD
+						,SUM(CASE customerInfoType WHEN 'CTE' THEN typeCnt ELSE 0 END) CTE
+						,SUM(CASE customerInfoType WHEN 'CTG' THEN typeCnt ELSE 0 END) CTG
+						,SUM(CASE customerInfoType WHEN 'CTZ' THEN typeCnt ELSE 0 END) CTZ
+
+					FROM 
+					(
+						SELECT	customerInfoType, count(customerInfoType) typeCnt
+						  FROM	Customer c, expertPool e
+						 WHERE	c.writerSsn = e.ssn AND customerInfoType <> 'CTD' AND customerInfoType <> 'CTA' 
+						   AND	e.jobClass = 'A'  AND left(dept,3) <> '250' AND e.enable = '1' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+				           /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY customerInfoType
+					) T
+				) RES
+			) cust,
+			(
+				SELECT	'9999' AS ID, '합계' AS NAME
+						,sum(CASE industryTypeCode WHEN 'ITB' THEN typeCnt ELSE 0 END) ITB
+						,sum(CASE industryTypeCode WHEN 'ITA' THEN typeCnt ELSE 0 END) ITA
+						,sum(CASE industryTypeCode WHEN 'ITC' THEN typeCnt ELSE 0 END) ITC
+						,sum(CASE industryTypeCode WHEN 'ITD' THEN typeCnt ELSE 0 END) ITD
+						,sum(CASE industryTypeCode WHEN 'ITE' THEN typeCnt ELSE 0 END) ITE
+				FROM (
+					SELECT	industryTypeCode, count(industryTypeCode) typeCnt
+					  FROM	Customer c, expertPool e
+					 WHERE 1=1
+					   AND c.writerSsn = e.ssn
+					   AND e.jobClass = 'A'  AND left(dept,3) <> '250' AND e.enable = '1' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+					   AND customerInfoType IN ('CTF', 'CTB', 'CTC')
+				       /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+					 GROUP BY industryTypeCode
+				) T
+			) custDetail, 
+			(
+				SELECT	deptCode	AS ID, deptName AS NAME,
+						BTB + BTC	AS a,
+						BTD			AS b,
+						BTA			AS c,
+						BTE			AS d,							
+						BTG			AS e,
+						BTH + BTI	AS f
+				FROM
+				(
+					SELECT '9999' as deptCode, '합계' as deptName
+						,sum(CASE businessTypeCode WHEN 'BTA'	THEN typeCnt ELSE 0 END) BTA
+						,sum(CASE businessTypeCode WHEN 'BTB'	THEN typeCnt ELSE 0 END) BTB
+						,sum(CASE businessTypeCode WHEN 'BTC'	THEN typeCnt ELSE 0 END) BTC
+						,sum(CASE businessTypeCode WHEN 'BTD'	THEN typeCnt ELSE 0 END) BTD
+						,sum(CASE businessTypeCode WHEN 'BTE'	THEN typeCnt ELSE 0 END) BTE
+						,sum(CASE businessTypeCode WHEN 'BTG'	THEN typeCnt ELSE 0 END) BTG
+						,sum(CASE businessTypeCode WHEN 'BTH'	THEN typeCnt ELSE 0 END) BTH
+						,sum(CASE businessTypeCode WHEN 'BTI'	THEN typeCnt ELSE 0 END) BTI
+					FROM
+					(
+						SELECT	substring(businessTypeCode,1,3) as businessTypeCode, 
+								count(substring(businessTypeCode,1,3)) typeCnt
+						  FROM	Customer c, expertPool e
+						 WHERE 1=1
+						   AND c.writerSsn = e.ssn
+						   AND e.jobClass = 'A' AND left(dept,3) <> '250'  AND e.enable = '1' AND companyPosition <> '' AND left(e.companyPosition,1) <> '4' -- RA, 아르바이트 제외
+						   AND customerInfoType IN ('CTF', 'CTB', 'CTC')
+					       /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						 GROUP BY substring(businessTypeCode,1,3)
+					) res
+				) P
+			) custDetail2
+			WHERE 1=1
+			AND cust.ID = custDetail.ID
+			AND custDetail.ID = custDetail2.ID
+			AND cust.ID = custDetail2.ID
+		) RES
+		ORDER BY (CASE ID 
+					WHEN '2030' THEN '1000'
+					WHEN '2032' THEN '1001'
+					WHEN '2033' THEN '1002'
+					WHEN '2034' THEN '1003'
+					WHEN '2035' THEN '1004'
+					WHEN '2040' THEN '1005'
+					WHEN '2041' THEN '1006'
+					WHEN '2042' THEN '1007'
+					WHEN '2043' THEN '1008'
+					WHEN '2044' THEN '1009'
+					WHEN '2110' THEN '1010'
+					WHEN '2111' THEN '1011'
+					WHEN '2112' THEN '1012'
+					WHEN '2113' THEN '1013'
+					WHEN '2310' THEN '1014'
+					WHEN '2311' THEN '1015'
+					WHEN '2312' THEN '1016'
+					WHEN '2150' THEN '1017'
+					WHEN '2151' THEN '1018'
+					WHEN '2152' THEN '1019'
+					WHEN '2120' THEN '1020'
+					WHEN '2121' THEN '1021'
+					WHEN '2122' THEN '1022'
+					WHEN '2123' THEN '1023'
+					WHEN '2130' THEN '1024'
+					WHEN '2131' THEN '1025'
+					WHEN '2132' THEN '1026'
+					WHEN '2140' THEN '1027'
+					WHEN '2141' THEN '1028'
+					WHEN '2142' THEN '1029'
+					WHEN '2143' THEN '1030'
+					WHEN '2370' THEN '1031'
+					WHEN '2371' THEN '1032'
+					WHEN '2160' THEN '1033'
+					WHEN '2161' THEN '1034'
+					WHEN '2162' THEN '1035'
+					WHEN '2163' THEN '1036'
+					WHEN '2380' THEN '1037'
+					WHEN '2381' THEN '1038'
+					WHEN '2390' THEN '1039'
+					WHEN '2391' THEN '1040'
+					WHEN '2320' THEN '1041'
+					WHEN '2321' THEN '1042'
+					WHEN '2322' THEN '1043'
+					WHEN '2360' THEN '1044'
+					WHEN '2361' THEN '1045'
+					WHEN '2400' THEN '1046'
+					WHEN '2401' THEN '1047'
+					WHEN '2180' THEN '1048'
+					WHEN '2181' THEN '1049'
+					WHEN '2182' THEN '1050'
+					WHEN '2190' THEN '1051'
+					WHEN '2191' THEN '1052'
+					WHEN '2192' THEN '1053'
+					WHEN '2193' THEN '1054'
+					WHEN '2500' THEN '1055'
+					WHEN '2501' THEN '1056'
+					WHEN '2502' THEN '1057'
+					WHEN '8000' THEN '1058'
+				ELSE ID END), companyPosition, writerName
+		
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerPresentReportForIndividualWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+
+				<entry key="customerProjectPresentReportQuery">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>acs</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								
+				SELECT	cust.*, 
+						custDetail.ITA, custDetail.ITB, custDetail.ITD, custDetail.ITC, custDetail.ITE,
+						prj.a, prj.b, prj.c, prj.d, prj.e, prj.f, prj.subTotal as prjTotal
+				FROM
+				(
+						SELECT	ID, (CASE RIGHT(ID,1) WHEN '0' THEN NAME+'장' ELSE NAME END) NAME, 
+								dbo.getDeptMemberCount(ID) AS memberCnt,
+								customerCnt, CTF, CTB, CTC,
+								(CTF+CTB+CTC) AS subTotal, CTE, CTG, CTZ, CTD
+						FROM (
+							SELECT ID, NAME,					
+							(SELECT count(distinct customerCode) FROM customer d, (
+								SELECT ssn FROM expertPool WHERE dept = ID
+								AND enable = '1'
+								AND jobClass in ('A', 'B', 'J')
+							) e
+							WHERE d.writerSsn = e.ssn AND d.customerCode IS NOT NULL AND d.customerCode <> ''
+							/~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+							) AS customerCnt
+									,sum(CASE customerInfoType WHEN 'CTF' THEN typeCnt ELSE 0 END) CTF
+									,sum(CASE customerInfoType WHEN 'CTB' THEN typeCnt ELSE 0 END) CTB
+									,sum(CASE customerInfoType WHEN 'CTC' THEN typeCnt ELSE 0 END) CTC					
+									,isNull(dbo.getProjectBbsDeptCount(ID, /~from: {from}~/, /~to: {to}~/), 0) AS CTD
+									,sum(CASE customerInfoType WHEN 'CTE' THEN typeCnt ELSE 0 END) CTE
+									,sum(CASE customerInfoType WHEN 'CTG' THEN typeCnt ELSE 0 END) CTG
+									,sum(CASE customerInfoType WHEN 'CTZ' THEN typeCnt ELSE 0 END) CTZ
+							FROM (
+								SELECT  sm.id, sm.description AS name,
+										cus.customerInfoType, cus.typeCnt
+								FROM (
+									SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+									AND id <> '8000' AND id <> '2000' AND id <> '2030' 
+								) sm left outer join (
+									SELECT	res1.writerTeam, customerInfoType, count(customerInfoType) typeCnt
+									FROM (
+											SELECT
+												e.name AS writerName, e.dept AS writerTeam, e.ssn, c.writerSsn,
+												c.customerInfoType, c.regDate
+											  FROM expertPool e left outer join (
+												SELECT customerCode, writerSsn, writerDept, customerInfoType, regDate FROM Customer WHERE 1=1												
+												/~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+											  ) c
+											  ON e.ssn = c.writerssn
+											 WHERE e.enable = '1' AND jobClass in ('A', 'B', 'J')
+									) res1
+									GROUP BY res1.writerTeam, customerInfoType
+								) cus
+								ON sm.id = cus.writerTeam
+							) T
+							GROUP BY id, name
+						) RES
+				) cust,
+				(
+						SELECT	ID, NAME
+								,sum(CASE industryTypeCode WHEN 'ITB' THEN typeCnt ELSE 0 END) ITB
+								,sum(CASE industryTypeCode WHEN 'ITA' THEN typeCnt ELSE 0 END) ITA
+								,sum(CASE industryTypeCode WHEN 'ITC' THEN typeCnt ELSE 0 END) ITC
+								,sum(CASE industryTypeCode WHEN 'ITD' THEN typeCnt ELSE 0 END) ITD
+								,sum(CASE industryTypeCode WHEN 'ITE' THEN typeCnt ELSE 0 END) ITE
+						FROM (
+							SELECT  sm.id, sm.description AS name,
+									cus.industryTypeCode, cus.typeCnt
+							FROM (
+								SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+								AND id <> '8000' AND id <> '2000' AND id <> '2030' 
+								
+							) sm left outer join (
+								SELECT	res1.writerTeam, industryTypeCode, count(industryTypeCode) typeCnt
+								FROM (
+										SELECT
+											e.name AS writerName, e.dept AS writerTeam, e.ssn, c.writerSsn,
+											c.industryTypeCode, c.regDate
+										  FROM expertPool e left outer join (
+											SELECT writerSsn, writerDept, customerInfoType, industryTypeCode, regDate FROM Customer WHERE 1=1
+											AND customerInfoType in ('CTF', 'CTB', 'CTC')
+											/~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+										  ) c
+										  ON e.ssn = c.writerssn
+										 WHERE e.enable = '1' AND jobClass in ('A', 'B', 'J')
+								) res1
+								GROUP BY res1.writerTeam, industryTypeCode
+							) cus
+							ON sm.id = cus.writerTeam
+						) T
+						GROUP BY id, name
+				) custDetail, 
+				(
+					SELECT	deptCode AS ID, deptName AS NAME,
+							BTB + BTC AS a,
+							BTD AS b,
+							BTA AS c,
+							BTE AS d,							
+							BTG AS e,
+							BTH + BTI f,
+							(BTA+BTB+BTC+BTD+BTE+BTG+BTH+BTI) AS subTotal
+					FROM
+					(
+						SELECT deptCode, deptName
+							,sum(CASE businessTypeCode WHEN 'BTA'	THEN 1 ELSE 0 END) BTA
+							,sum(CASE businessTypeCode WHEN 'BTB'	THEN 1 ELSE 0 END) BTB
+							,sum(CASE businessTypeCode WHEN 'BTC'	THEN 1 ELSE 0 END) BTC
+							,sum(CASE businessTypeCode WHEN 'BTD'	THEN 1 ELSE 0 END) BTD
+							,sum(CASE businessTypeCode WHEN 'BTE'	THEN 1 ELSE 0 END) BTE
+							,sum(CASE businessTypeCode WHEN 'BTG'	THEN 1 ELSE 0 END) BTG
+							,sum(CASE businessTypeCode WHEN 'BTH'	THEN 1 ELSE 0 END) BTH
+							,sum(CASE businessTypeCode WHEN 'BTI'	THEN 1 ELSE 0 END) BTI
+						FROM
+						(
+							SELECT sm.id AS deptCode, sm.description AS deptName, prj.*
+							FROM
+							(
+								SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+								AND substring(id,1,1) = '2' AND id <> '2000' AND id <> '2030'
+							) sm left outer join (
+								SELECT	p.projectCode, p.projectName, 
+										(CASE p.businessTypeCode WHEN 'BTF' THEN 'BTE' ELSE p.businessTypeCode END) AS businessTypeCode, 
+										e.ssn, e.dept
+								FROM (select * from projectApprovalHeaderDoc where 1=1
+								 /~to: AND CONVERT(varchar, ceoDate, 112) <= {to}~/ /~from:AND CONVERT(varchar, ceoDate, 112) >= {from}~/ 
+									   and state = 'APPROVAL_COMPLETE') d
+									inner join (select * from project where endGubun <> 'N') p on d.projectcode = p.projectCode
+									inner join (select * from projectMember where trainingYN = 'Y' AND role = 'PM') m on p.projectCode = m.projectCode
+									right outer join expertPool e on m.ssn = e.ssn
+								WHERE e.enable = '1'
+							) prj
+							ON sm.id = prj.dept
+				
+							UNION ALL
+						
+							SELECT sm.id AS deptCode, sm.description AS deptName, prj.*
+							FROM
+							(
+								SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+								AND substring(id,1,1) = '6'
+							) sm left outer join (
+								SELECT	p.projectCode, p.projectName, 
+										(CASE p.businessTypeCode WHEN 'BTF' THEN 'BTE' ELSE p.businessTypeCode END) AS businessTypeCode, 
+										e.ssn, e.dept
+								FROM (select * from project where 1=1
+								/~to: and substring(realEndDate,1,4) = substring({to}, 1, 4)~/ and projectState = '6' and endGubun <> 'N') p
+									inner join (select * from projectMember where trainingYN = 'Y' and role = 'PL') m on p.projectCode = m.projectCode
+									right outer join expertPool e on m.ssn = e.ssn
+								WHERE e.enable = '1' AND e.userId is not null
+							) prj
+							ON sm.id = prj.dept
+						) res
+						GROUP BY deptCode, deptName
+					) P
+				) prj
+				WHERE 1=1
+				AND cust.ID = custDetail.ID
+				AND custDetail.ID = prj.ID
+				AND cust.ID = prj.ID
+				ORDER BY (CASE substring(cust.id,1,3)
+							WHEN '203' THEN '100' + substring(cust.id,4,1)
+							WHEN '211' THEN '101' + substring(cust.id,4,1)
+							WHEN '601' THEN '102' + substring(cust.id,4,1)
+							WHEN '231' THEN '103' + substring(cust.id,4,1)
+							WHEN '602' THEN '104' + substring(cust.id,4,1)
+							WHEN '212' THEN '105' + substring(cust.id,4,1)
+							WHEN '213' THEN '106' + substring(cust.id,4,1)
+							WHEN '603' THEN '107' + substring(cust.id,4,1)
+							WHEN '604' THEN '2153' + substring(cust.id,4,1)
+							WHEN '605' THEN '2163' + substring(cust.id,4,1)
+							WHEN '218' THEN '250' + substring(cust.id,4,1)
+							WHEN '219' THEN '260' + substring(cust.id,4,1)
+						ELSE cust.id END)
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerProjectPresentReportWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>
+			
+				<entry key="customerProjectPresentReportForPersonBUQueryWithSubtotal">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>acs</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[			
+			SELECT * FROM (
+				SELECT	ID, replace(description,'현지법인/자동차','현지법인') as Name, seq, replace(replace(name,'(CS)',''),'(인사)','') writerName, companyPosition, g.ssn, '-' AS memberCnt,
+						isNull(customerCnt,0) customerCnt,
+						isNull(CTF,0) CTF, isNull(CTB,0) CTB, isNull(CTC,0) CTC, isNull(CTH,0) CTH, isNull(CTI,0) CTI,
+						isNull(subTotal,0) subTotal, isNull(CTE,0) CTE, isNull(CTG,0) CTG, 
+						isNull(CTZ,0) CTZ, isNull(CTD,0) CTD, 
+						(isNull(CTF,0)+isNull(CTB,0)+isNull(CTC,0)+isNull(CTH,0)+isNull(CTI,0)+isNull(CTE,0)+isNull(CTG,0)+isNull(CTZ,0)+isNull(CTD,0)) AS grandTotal,
+						isNull(ITA,0) ITA, isNull(ITB,0) ITB, isNull(ITD,0) ITD, isNull(ITC,0) ITC, isNull(ITE,0) ITE, 
+						isNull(a,0) a, isNull(b,0) b, isNull(c,0) c, isNull(d,0) d, isNull(e,0) e, isNull(f,0) f
+				FROM (
+					SELECT g.id, g.description, g.seq, e.ssn, e.name, e.companyPosition 
+					FROM (
+						SELECT id, description, seq
+						FROM smGroup
+						WHERE enabled='1' AND LEFT(id,1)='2' AND LEFT(id,2) <> '25' AND id <> '2000' AND id <> '2030' AND id <> '2040'
+					) g INNER JOIN
+					(
+						SELECT ssn, name, dept, companyPosition
+						FROM expertPool
+						WHERE enable='1' AND jobClass='A' AND LEFT(companyPosition,1) <> '4' AND left(dept,1)='2' AND userId is not null
+					) e ON g.id = e.dept
+				) g LEFT OUTER JOIN
+				(
+					SELECT	*, 0 as CTD,
+							(SELECT count(distinct customerCode) 
+							   FROM customer d 
+							  WHERE d.writerSsn = res.writerSsn AND d.customerCode IS NOT NULL AND d.customerCode <> ''
+						  /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+							) AS customerCnt			
+					FROM (
+						SELECT	writerSsn, isNull(CTF,0) as 'CTF', isNull(CTB,0) as 'CTB', isNull(CTC,0) 'CTC',
+								isNull(CTH,0) as 'CTH', isNull(CTI,0) 'CTI',
+								isNull(CTE,0) 'CTE', isNull(CTG,0) 'CTG', isNull(CTZ,0) 'CTZ'
+						FROM (
+							SELECT writerSsn, customerInfoType, count(customerInfoType) typeCnt
+							FROM customer WHERE 1=1											
+					   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+							GROUP BY writerSsn, customerInfoType
+						) DATA
+						PIVOT (
+							SUM(typeCnt) FOR customerInfoType IN(CTF, CTB, CTC, CTH, CTI, CTE, CTG, CTZ)
+						) PVT
+					) res
+				) c ON g.ssn = c.writerSsn
+				LEFT OUTER JOIN
+				(
+					SELECT writerSsn, isNull(ITA,0) as 'ITA', isNull(ITB,0) as 'ITB', isNull(ITC,0) as 'ITC', isNull(ITD,0) as 'ITD', isNull(ITE,0) as 'ITE'
+					FROM (
+						SELECT writerSsn, industryTypeCode, count(industryTypeCode) typeCnt
+						FROM customer WHERE 1=1											
+				   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY writerSsn, industryTypeCode
+					) DATA
+					PIVOT (
+						SUM(typeCnt) FOR industryTypeCode IN(ITB, ITA, ITC, ITD, ITE)
+					) PVT
+				) i on g.ssn = i.writerSsn
+				LEFT OUTER JOIN
+				(
+					SELECT	writerSsn, isNull(BTB,0)+isNull(BTC,0) as 'a', isNull(BTD,0) as 'b', isNull(BTA,0) as 'c',
+							isNull(BTE,0)+isNull(BTF,0) as 'd', isNull(BTG,0) as 'e', isNull(BTH,0)+isNull(BTI,0) as 'f',
+							isNull(BTA,0)+isNull(BTB,0)+isNull(BTC,0)+isNull(BTD,0)+isNull(BTE,0)+isNull(BTF,0)+isNull(BTG,0)+isNull(BTH,0)+isNull(BTI,0) as 'subTotal'
+					FROM (
+						SELECT writerSsn, left(businessTypeCode,3) as businessTypeCode, count(left(businessTypeCode,3)) typeCnt
+						FROM customer WHERE 1=1											
+				   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY writerSsn, left(businessTypeCode,3)
+					) DATA
+					PIVOT (
+						SUM(typeCnt) FOR businessTypeCode IN(BTA, BTB, BTC, BTD, BTE, BTF, BTG, BTH, BTI)
+					) PVT
+				) b on g.ssn = b.writerSsn
+				
+				UNION ALL
+				
+				SELECT	id+6 as ID, '소계' as Name, seq, '-' AS writerName, '-' AS companyPosition, '-' AS ssn, '-' AS memberCnt,
+						isNull(customerCnt,0) customerCnt,
+						isNull(CTF,0) CTF, isNull(CTB,0) CTB, isNull(CTC,0) CTC, isNull(CTH,0) CTH, isNull(CTI,0) CTI, 
+						isNull(subTotal,0) subTotal, isNull(CTE,0) CTE, isNull(CTG,0) CTG, 
+						isNull(CTZ,0) CTZ, isNull(CTD,0) CTD, 
+						(isNull(CTF,0)+isNull(CTB,0)+isNull(CTC,0)+isNull(CTH,0)+isNull(CTI,0)+isNull(CTE,0)+isNull(CTG,0)+isNull(CTZ,0)+isNull(CTD,0)) AS grandTotal,
+						isNull(ITA,0) ITA, isNull(ITB,0) ITB, isNull(ITD,0) ITD, isNull(ITC,0) ITC, isNull(ITE,0) ITE, 
+						isNull(a,0) a, isNull(b,0) b, isNull(c,0) c, isNull(d,0) d, isNull(e,0) e, isNull(f,0) f
+				FROM (
+					SELECT id, description, seq
+					FROM smGroup
+					WHERE enabled='1' and depth='1' and left(id,1)='2' and id <> '2500'
+				) g LEFT OUTER JOIN
+				(
+					SELECT	*, 0 CTD,
+							(SELECT count(distinct customerCode) 
+							   FROM customer WHERE 1=1
+						  /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								AND left(writerDept,3) = left(res.writerDept,3) AND customerCode IS NOT NULL AND customerCode <> ''
+							) AS customerCnt			
+					FROM (
+						SELECT	writerDept, isNull(CTF,0) as 'CTF', isNull(CTB,0) as 'CTB', isNull(CTC,0) 'CTC',
+								isNull(CTH,0) as 'CTH', isNull(CTI,0) 'CTI',
+								isNull(CTE,0) 'CTE', isNull(CTG,0) 'CTG', isNull(CTZ,0) 'CTZ'
+						FROM (
+							SELECT left(writerDept,3)+'0' as writerDept, customerInfoType, count(customerInfoType) typeCnt
+							FROM customer WHERE 1=1											
+					   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+							GROUP BY writerDept, customerInfoType
+						) DATA
+						PIVOT (
+							SUM(typeCnt) FOR customerInfoType IN(CTF, CTB, CTC, CTH, CTI, CTE, CTG, CTZ)
+						) PVT
+					) res
+				) c ON g.id = c.writerDept
+				LEFT OUTER JOIN
+				(
+					SELECT writerDept, isNull(ITA,0) as 'ITA', isNull(ITB,0) as 'ITB', isNull(ITC,0) as 'ITC', isNull(ITD,0) as 'ITD', isNull(ITE,0) as 'ITE'
+					FROM (
+						SELECT left(writerDept,3)+'0' as writerDept, industryTypeCode, count(industryTypeCode) typeCnt
+						FROM customer WHERE 1=1																	 
+				   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY writerDept, industryTypeCode
+					) DATA
+					PIVOT (
+						SUM(typeCnt) FOR industryTypeCode IN(ITB, ITA, ITC, ITD, ITE)
+					) PVT
+				) i on g.id = i.writerDept
+				LEFT OUTER JOIN
+				(
+					SELECT	writerDept, isNull(BTB,0)+isNull(BTC,0) as 'a', isNull(BTD,0) as 'b', isNull(BTA,0) as 'c',
+							isNull(BTE,0)+isNull(BTF,0) as 'd', isNull(BTG,0) as 'e', isNull(BTH,0)+isNull(BTI,0) as 'f',
+							isNull(BTA,0)+isNull(BTB,0)+isNull(BTC,0)+isNull(BTD,0)+isNull(BTE,0)+isNull(BTF,0)+isNull(BTG,0)+isNull(BTH,0)+isNull(BTI,0) as 'subTotal'
+					FROM (
+						SELECT left(writerDept,3)+'0' as writerDept, left(businessTypeCode,3) businessTypeCode, count(left(businessTypeCode,3)) typeCnt
+						FROM customer WHERE 1=1						 
+				   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY writerDept, left(businessTypeCode,3)
+					) DATA
+					PIVOT (
+						SUM(typeCnt) FOR businessTypeCode IN(BTA, BTB, BTC, BTD, BTE, BTF, BTG, BTH, BTI)
+					) PVT
+				) b on g.id = b.writerDept
+				
+				UNION ALL
+				
+				SELECT	c.ID, '합계' as Name, '99' as seq, '-' AS writerName, '-' AS companyPosition, '-' AS ssn, '-' AS memberCnt,
+						isNull(customerCnt,0) customerCnt,
+						isNull(CTF,0) CTF, isNull(CTB,0) CTB, isNull(CTC,0) CTC, isNull(CTH,0) CTH, isNull(CTI,0) CTI, 
+						isNull(subTotal,0) subTotal, isNull(CTE,0) CTE, isNull(CTG,0) CTG, 
+						isNull(CTZ,0) CTZ, isNull(CTD,0) CTD, 
+						(isNull(CTF,0)+isNull(CTB,0)+isNull(CTC,0)+isNull(CTH,0)+isNull(CTI,0)+isNull(CTE,0)+isNull(CTG,0)+isNull(CTZ,0)+isNull(CTD,0)) AS grandTotal,
+						isNull(ITA,0) ITA, isNull(ITB,0) ITB, isNull(ITD,0) ITD, isNull(ITC,0) ITC, isNull(ITE,0) ITE, 
+						isNull(a,0) a, isNull(b,0) b, isNull(c,0) c, isNull(d,0) d, isNull(e,0) e, isNull(f,0) f
+				FROM (
+					SELECT	'9999' as ID, *, 0 as CTD,
+							(SELECT count(distinct customerCode) 
+							   FROM customer WHERE 1=1
+						  /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+								AND customerCode IS NOT NULL AND customerCode <> ''
+								AND left(writerDept,1)='2' AND left(writerDept,2) <> '25'
+							) AS customerCnt			
+					FROM (
+						SELECT	isNull(CTF,0) as 'CTF', isNull(CTB,0) as 'CTB', isNull(CTC,0) 'CTC', isNull(CTH,0) as 'CTH', isNull(CTI,0) 'CTI',
+								isNull(CTE,0) 'CTE', isNull(CTG,0) 'CTG', isNull(CTZ,0) 'CTZ'
+						FROM (
+							SELECT customerInfoType, count(customerInfoType) typeCnt
+							FROM customer WHERE 1=1											
+					   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+							 AND left(writerDept,1)='2' AND left(writerDept,2) <> '25'
+							GROUP BY customerInfoType
+						) DATA
+						PIVOT (
+							SUM(typeCnt) FOR customerInfoType IN(CTF, CTB, CTC, CTH, CTI, CTE, CTG, CTZ)
+						) PVT
+					) res
+				) c LEFT OUTER JOIN
+				(
+					SELECT '9999' as ID, isNull(ITA,0) as 'ITA', isNull(ITB,0) as 'ITB', isNull(ITC,0) as 'ITC', isNull(ITD,0) as 'ITD', isNull(ITE,0) as 'ITE'
+					FROM (
+						SELECT industryTypeCode, count(industryTypeCode) typeCnt
+						FROM customer WHERE 1=1																	 
+						 AND left(writerDept,1)='2' AND left(writerDept,2) <> '25'
+				   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY industryTypeCode
+					) DATA
+					PIVOT (
+						SUM(typeCnt) FOR industryTypeCode IN(ITB, ITA, ITC, ITD, ITE)
+					) PVT
+				) i on c.id = i.id
+				LEFT OUTER JOIN
+				(
+					SELECT	'9999' as ID, isNull(BTB,0)+isNull(BTC,0) as 'a', isNull(BTD,0) as 'b', isNull(BTA,0) as 'c',
+							isNull(BTE,0)+isNull(BTF,0) as 'd', isNull(BTG,0) as 'e', isNull(BTH,0)+isNull(BTI,0) as 'f',
+							isNull(BTA,0)+isNull(BTB,0)+isNull(BTC,0)+isNull(BTD,0)+isNull(BTE,0)+isNull(BTF,0)+isNull(BTG,0)+isNull(BTH,0)+isNull(BTI,0) as 'subTotal'
+					FROM (
+						SELECT left(businessTypeCode,3) businessTypeCode, count(left(businessTypeCode,3)) typeCnt
+						FROM customer WHERE 1=1						 
+						 AND left(writerDept,1)='2' AND left(writerDept,2) <> '25'
+				   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from:and convert(varchar, regDate, 112) >= {from}~/
+						GROUP BY left(businessTypeCode,3)
+					) DATA
+					PIVOT (
+						SUM(typeCnt) FOR businessTypeCode IN(BTA, BTB, BTC, BTD, BTE, BTF, BTG, BTH, BTI)
+					) PVT
+				) b on c.id = b.id
+			) RES
+			ORDER BY seq, id, companyPosition, writerName
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerProjectPresentReportWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>			
+			
+				<entry key="customerProjectPresentReportForPersonPUQueryWithSubtotal">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>acs</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+SELECT * FROM (
+			SELECT	cust.*, 
+					custDetail.ITA, custDetail.ITB, custDetail.ITD, custDetail.ITC, custDetail.ITE,					  
+					custDetail2.a, custDetail2.b, custDetail2.c, custDetail2.d, custDetail2.e, custDetail2.f
+			FROM
+			(
+					SELECT	id, (CASE RIGHT(ID,1) WHEN '0' THEN NAME+'장' ELSE NAME END) Name, writerName, companyPosition,
+							ssn, 1 AS memberCnt,
+							customerCnt, CTF, CTB, CTC,CTH,CTI,
+							(CTF+CTB+CTC+CTH+CTI) AS subTotal, CTE, CTG, CTZ, CTD,
+							(CTF+CTB+CTC+CTH+CTI+CTE+CTG+CTZ+CTD) AS grandTotal
+					FROM (
+						SELECT ID, NAME, ssn, writerName, companyPosition,
+								(SELECT count(distinct customerCode) 
+								   FROM customer d 
+								  WHERE d.writerSsn = ssn AND d.customerCode IS NOT NULL AND d.customerCode <> ''
+							/~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/ 
+								) AS customerCnt
+								,sum(CASE customerInfoType WHEN 'CTF' THEN typeCnt ELSE 0 END) CTF
+								,sum(CASE customerInfoType WHEN 'CTB' THEN typeCnt ELSE 0 END) CTB
+								,sum(CASE customerInfoType WHEN 'CTC' THEN typeCnt ELSE 0 END) CTC	
+								,sum(CASE customerInfoType WHEN 'CTH' THEN typeCnt ELSE 0 END) CTH
+								,sum(CASE customerInfoType WHEN 'CTI' THEN typeCnt ELSE 0 END) CTI					
+								,isNull(dbo.getProjectBbsPersonCount(ssn, /~from: {from}~/,  /~to: {to}~/), 0) AS CTD
+								,sum(CASE customerInfoType WHEN 'CTE' THEN typeCnt ELSE 0 END) CTE
+								,sum(CASE customerInfoType WHEN 'CTG' THEN typeCnt ELSE 0 END) CTG
+								,sum(CASE customerInfoType WHEN 'CTZ' THEN typeCnt ELSE 0 END) CTZ
+						FROM (
+							SELECT  sm.id, sm.description AS name, cus.ssn, cus.writerName, cus.companyPosition, 
+									cus.customerInfoType, cus.typeCnt
+							FROM (
+								SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+								AND substring(id,1,2) = '25' AND id <> '2500'
+							) sm left outer join (
+								SELECT	res1.writerTeam, res1.ssn, res1.writerName, res1.companyPosition, 
+										customerInfoType, count(customerInfoType) typeCnt
+								FROM (
+									SELECT
+										e.name AS writerName, e.dept AS writerTeam, e.companyPosition, e.ssn, c.writerSsn,
+										c.customerInfoType, c.regDate
+									  FROM expertPool e left outer join (
+										SELECT customerCode, writerSsn, writerDept, customerInfoType, regDate FROM customer WHERE 1=1											
+								   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/ 
+									  ) c
+									  ON e.ssn = c.writerssn
+									 WHERE e.enable = '1' AND e.userId is not null
+									   AND (e.jobClass = 'B' OR e.jobClass = 'J') 
+									   AND e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+								) res1
+								GROUP BY res1.writerTeam, res1.ssn, res1.writerName, res1.companyposition, customerInfoType
+							) cus
+							ON sm.id = cus.writerTeam
+						) T
+						GROUP BY id, name, ssn, writerName, companyPosition
+					) RES
+			) cust,
+			(
+					SELECT	ID, NAME, ssn
+							,sum(CASE industryTypeCode WHEN 'ITB' THEN typeCnt ELSE 0 END) ITB
+							,sum(CASE industryTypeCode WHEN 'ITA' THEN typeCnt ELSE 0 END) ITA
+							,sum(CASE industryTypeCode WHEN 'ITC' THEN typeCnt ELSE 0 END) ITC
+							,sum(CASE industryTypeCode WHEN 'ITD' THEN typeCnt ELSE 0 END) ITD
+							,sum(CASE industryTypeCode WHEN 'ITE' THEN typeCnt ELSE 0 END) ITE
+					FROM (				
+						SELECT  sm.id, sm.description AS name, cus.ssn, 
+								cus.industryTypeCode, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND substring(id,1,2) = '25' AND id <> '2500'
+						) sm left outer join (
+							SELECT	res1.writerTeam, res1.ssn, industryTypeCode, count(industryTypeCode) typeCnt
+							FROM (
+									SELECT
+										e.name AS writerName, e.dept AS writerTeam, e.ssn, c.writerSsn,
+										c.industryTypeCode, c.regDate
+									  FROM expertPool e left outer join (
+										SELECT customerCode, writerSsn, writerDept, industryTypeCode, regDate FROM Customer WHERE 1=1
+										AND customerInfoType in ('CTF', 'CTB', 'CTC', 'CTH', 'CTI')
+								   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/ 
+									  ) c
+									  ON e.ssn = c.writerssn
+									 WHERE e.enable='1'  AND e.userId is not null 
+									   AND (e.jobClass = 'B' OR e.jobClass = 'J') 
+									   AND e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+							) res1
+							GROUP BY res1.writerTeam, res1.ssn, industryTypeCode
+						) cus
+						ON sm.id = cus.writerTeam
+					) T
+					GROUP BY id, name, ssn
+			) custDetail,
+			(
+				SELECT	id, name, ssn, 
+						BTB + BTC AS a,
+						BTD	 AS b,
+						BTA  AS c,
+						BTE  AS d,
+						BTG  AS e,
+						BTH + BTI AS f,
+						(BTA+BTB+BTC+BTD+BTE+BTG+BTH+BTI) AS subTotal
+				FROM
+				(
+					SELECT id, name, ssn
+						,sum(CASE businessTypeCode WHEN 'BTA'	THEN typeCnt ELSE 0 END) BTA
+						,sum(CASE businessTypeCode WHEN 'BTB'	THEN typeCnt ELSE 0 END) BTB
+						,sum(CASE businessTypeCode WHEN 'BTC'	THEN typeCnt ELSE 0 END) BTC
+						,sum(CASE businessTypeCode WHEN 'BTD'	THEN typeCnt ELSE 0 END) BTD
+						,sum(CASE businessTypeCode WHEN 'BTE'	THEN typeCnt ELSE 0 END) BTE
+						,sum(CASE businessTypeCode WHEN 'BTG'	THEN typeCnt ELSE 0 END) BTG
+						,sum(CASE businessTypeCode WHEN 'BTH'	THEN typeCnt ELSE 0 END) BTH
+						,sum(CASE businessTypeCode WHEN 'BTI'	THEN typeCnt ELSE 0 END) BTI
+					FROM
+					(
+						SELECT  sm.id, sm.description AS name, cus.ssn, 
+								cus.businessTypeCode, cus.typeCnt
+						FROM (
+							SELECT id, description, depth FROM smgroup WHERE enabled = '1'
+							AND substring(id,1,2) = '25' AND id <> '2500'
+						) sm left outer join (
+							SELECT	res1.writerTeam, res1.ssn, businessTypeCode, count(businessTypeCode) typeCnt
+							FROM (
+								SELECT
+									e.name AS writerName, e.dept AS writerTeam, e.ssn, c.writerSsn,
+									(CASE c.businessTypeCode WHEN 'BTF' THEN 'BTE' ELSE c.businessTypeCode END) as businessTypeCode, c.regDate
+								  FROM expertPool e left outer join (
+									SELECT	customerCode, writerSsn, writerDept, 
+											substring(businessTypeCode,1,3) as businessTypeCode, regDate
+									FROM Customer WHERE 1=1
+									AND customerInfoType in ('CTF', 'CTB', 'CTC', 'CTH', 'CTI')
+							   /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/ 
+								  ) c
+								  ON e.ssn = c.writerssn
+								 WHERE e.enable = '1' AND e.userId is not null 
+								   AND (e.jobClass = 'B' OR e.jobClass = 'J') 
+								   AND e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+							) res1
+							GROUP BY res1.writerTeam, res1.ssn, businessTypeCode
+						) cus
+						ON sm.id = cus.writerTeam
+					) res
+					GROUP BY id, name, ssn
+				) P
+			) custDetail2
+			WHERE 1=1
+			AND cust.ID = custDetail.ID and cust.ssn = custDetail.ssn 
+			AND custDetail.ID = custDetail2.ID AND custDetail.ssn = custDetail2.ssn
+			AND cust.ID = custDetail2.ID AND cust.ssn = custDetail2.ssn
+			
+			UNION ALL
+			
+			SELECT	cust.*, 
+					custDetail.ITA, custDetail.ITB, custDetail.ITD, custDetail.ITC, custDetail.ITE,
+					custDetail2.a, custDetail2.b, custDetail2.c, custDetail2.d, custDetail2.e, custDetail2.f
+			FROM
+			(
+				SELECT	ID, Name, '-' AS writerName, '-' AS companyPosition, '-' AS ssn,
+						'1' AS memberCnt, customerCnt, CTF, CTB, CTC,CTH,CTI,
+						(CTF+CTB+CTC+CTH+CTI) AS subTotal, CTE, CTG, CTZ, CTD,
+						(CTF+CTB+CTC+CTH+CTI+CTE+CTG+CTZ+CTD) AS grandTotal
+				FROM (
+					SELECT '9999' AS ID, '합계' AS Name,
+						(SELECT count(distinct customerCode) FROM customer d, expertPool e
+						WHERE  d.writerSsn = e.ssn AND (e.jobClass = 'B' OR jobClass = 'J') AND e.enable = '1'  AND e.userId is not null
+						  AND e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+						  AND d.customerCode IS NOT NULL AND d.customerCode <> ''
+						  AND customerInfoType <> 'CTD' AND customerInfoType <> 'CTA'
+				     /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/  
+					 ) AS customerCnt
+						,SUM(CASE customerInfoType WHEN 'CTF' THEN typeCnt ELSE 0 END) CTF
+						,SUM(CASE customerInfoType WHEN 'CTB' THEN typeCnt ELSE 0 END) CTB
+						,SUM(CASE customerInfoType WHEN 'CTC' THEN typeCnt ELSE 0 END) CTC
+						,SUM(CASE customerInfoType WHEN 'CTH' THEN typeCnt ELSE 0 END) CTH
+						,SUM(CASE customerInfoType WHEN 'CTI' THEN typeCnt ELSE 0 END) CTI
+						,isNull(dbo.getProjectBbsBUCount( /~from: {from}~/,  /~to: {to}~/), 0) AS CTD
+						,SUM(CASE customerInfoType WHEN 'CTE' THEN typeCnt ELSE 0 END) CTE
+						,SUM(CASE customerInfoType WHEN 'CTG' THEN typeCnt ELSE 0 END) CTG
+						,SUM(CASE customerInfoType WHEN 'CTZ' THEN typeCnt ELSE 0 END) CTZ
+
+					FROM 
+					(
+						SELECT	customerInfoType, count(customerInfoType) typeCnt
+						  FROM	Customer c, expertPool e
+						 WHERE	c.writerSsn = e.ssn AND customerInfoType <> 'CTD' AND customerInfoType <> 'CTA' 
+						   AND	(e.jobClass = 'B' OR e.jobClass = 'J') AND e.enable = '1'  AND e.userId is not null
+						   AND	e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+				      /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/  
+						GROUP BY customerInfoType
+					) T
+				) RES
+			) cust,
+			(
+				SELECT	'9999' AS ID, '합계' AS NAME
+						,sum(CASE industryTypeCode WHEN 'ITB' THEN typeCnt ELSE 0 END) ITB
+						,sum(CASE industryTypeCode WHEN 'ITA' THEN typeCnt ELSE 0 END) ITA
+						,sum(CASE industryTypeCode WHEN 'ITC' THEN typeCnt ELSE 0 END) ITC
+						,sum(CASE industryTypeCode WHEN 'ITD' THEN typeCnt ELSE 0 END) ITD
+						,sum(CASE industryTypeCode WHEN 'ITE' THEN typeCnt ELSE 0 END) ITE
+				FROM (
+					SELECT	industryTypeCode, count(industryTypeCode) typeCnt
+					  FROM	Customer c, expertPool e
+					 WHERE 1=1
+					   AND c.writerSsn = e.ssn
+					   AND (e.jobClass = 'B' OR e.jobClass = 'J') AND e.enable = '1' AND e.userId is not null
+					   AND e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+					   AND customerInfoType IN ('CTF', 'CTB', 'CTC', 'CTH', 'CTI')
+				  /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/  
+					 GROUP BY industryTypeCode
+				) T
+			) custDetail, 
+			(
+				SELECT	deptCode	AS ID, deptName AS NAME,
+						BTB + BTC	AS a,
+						BTD			AS b,
+						BTA			AS c,
+						BTE			AS d,							
+						BTG			AS e,
+						BTH + BTI	AS f
+				FROM
+				(
+					SELECT '9999' as deptCode, '합계' as deptName
+						,sum(CASE businessTypeCode WHEN 'BTA'	THEN typeCnt ELSE 0 END) BTA
+						,sum(CASE businessTypeCode WHEN 'BTB'	THEN typeCnt ELSE 0 END) BTB
+						,sum(CASE businessTypeCode WHEN 'BTC'	THEN typeCnt ELSE 0 END) BTC
+						,sum(CASE businessTypeCode WHEN 'BTD'	THEN typeCnt ELSE 0 END) BTD
+						,sum(CASE businessTypeCode WHEN 'BTE'	THEN typeCnt ELSE 0 END) BTE
+						,sum(CASE businessTypeCode WHEN 'BTG'	THEN typeCnt ELSE 0 END) BTG
+						,sum(CASE businessTypeCode WHEN 'BTH'	THEN typeCnt ELSE 0 END) BTH
+						,sum(CASE businessTypeCode WHEN 'BTI'	THEN typeCnt ELSE 0 END) BTI
+					FROM
+					(
+						SELECT	substring(businessTypeCode,1,3) as businessTypeCode, 
+								count(substring(businessTypeCode,1,3)) typeCnt
+						  FROM	Customer c, expertPool e
+						 WHERE 1=1
+						   AND c.writerSsn = e.ssn
+						   AND (e.jobClass = 'B' OR e.jobClass = 'J') AND e.enable = '1'  AND e.userId is not null
+						   AND e.companyPosition <> '' AND e.companyPosition <> '61DT' AND e.companyPosition <> '62DT'
+						   AND customerInfoType IN ('CTF', 'CTB', 'CTC', 'CTH', 'CTI')
+					  /~to: and convert(varchar, regDate, 112) <= {to}~/ /~from: and convert(varchar, regDate, 112) >= {from}~/  
+						 GROUP BY substring(businessTypeCode,1,3)
+					) res
+				) P
+			) custDetail2
+			WHERE 1=1
+			AND cust.ID = custDetail.ID
+			AND custDetail.ID = custDetail2.ID
+			AND cust.ID = custDetail2.ID
+		) RES
+		ORDER BY id, companyPosition, writerName
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="customerProjectPresentReportWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="customerSelectListWrapper" class="kr.co.kmac.pms.customer.vl.CustomerSelectListWrapper" />
+	<bean id="customerHistorySelectListWrapper" class="kr.co.kmac.pms.customer.vl.CustomerHistorySelectListWrapper" />
+	<bean id="customerCommentSelectListWrapper" class="kr.co.kmac.pms.customer.vl.CustomerCommentSelectListWrapper" />
+	<bean id="customerPresentReportWrapper" class="kr.co.kmac.pms.customer.vl.CustomerPresentReportWrapper" />
+	<!-- Job Date: 2007-04-05 Author: yhyim Purpose: written customer information of permanent wrapper-->
+	<bean id="customerPresentReportForIndividualWrapper" class="kr.co.kmac.pms.customer.vl.CustomerPresentReportForIndividualWrapper" />	
+	<bean id="customerProjectPresentReportWrapper" class="kr.co.kmac.pms.customer.vl.CustomerProjectPresentReportWrapper" />	
+</beans>

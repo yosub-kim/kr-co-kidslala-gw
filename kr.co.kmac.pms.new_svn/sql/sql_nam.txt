@@ -1,0 +1,341 @@
+CREATE TABLE [dbo].[RoleDetail](
+	[roleNum] [varchar](50) COLLATE Korean_Wansung_CI_AS NOT NULL,
+	[nodeKey] [varchar](4) COLLATE Korean_Wansung_CI_AS NOT NULL,
+	[menuNum] [varchar](50) COLLATE Korean_Wansung_CI_AS NULL,
+	[ordSeq] [nchar](10) COLLATE Korean_Wansung_CI_AS NULL,
+	[pNodeKey] [varchar](4) COLLATE Korean_Wansung_CI_AS NULL,
+ CONSTRAINT [PK_RoleDetail] PRIMARY KEY CLUSTERED 
+(
+	[roleNum] ASC,
+	[nodeKey] ASC
+)WITH (IGNORE_DUP_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [IX_RoleDetail] UNIQUE NONCLUSTERED 
+(
+	[roleNum] ASC,
+	[nodeKey] ASC
+)WITH (IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[RoleDetail]  WITH NOCHECK ADD  CONSTRAINT [FK_RoleDetail_Menu] FOREIGN KEY([menuNum])
+REFERENCES [dbo].[Menu] ([menuNum])
+GO
+ALTER TABLE [dbo].[RoleDetail] CHECK CONSTRAINT [FK_RoleDetail_Menu]
+GO
+ALTER TABLE [dbo].[RoleDetail]  WITH CHECK ADD  CONSTRAINT [FK_RoleDetail_Role] FOREIGN KEY([roleNum])
+REFERENCES [dbo].[Role] ([roleNum])
+
+
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.07.08
+-- Description:	New Key Value Return
+-- =============================================
+CREATE FUNCTION [dbo].[getNewNodeKey]
+(
+	-- Add the parameters for the function here
+	@roleNum varchar(50)
+)
+RETURNS varchar(4)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @nodeKey varchar(4)
+
+	-- Add the T-SQL statements to compute the return value here
+	SELECT @nodeKey = Right('0000' + CAST(ISNULL(MAX(cast(NodeKey as int)), 1)+1 AS varchar(4)),4) FROM RoleDetail WHERE roleNum = @roleNum
+
+	-- Return the result of the function
+	RETURN @nodeKey
+
+END
+
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.07.08
+-- Description:	
+-- =============================================
+CREATE FUNCTION [dbo].[getNewOrdSeq]
+(
+	-- Add the parameters for the function here
+	@pNodeKey varchar(4)
+)
+RETURNS int
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @ordSeq int
+
+	-- Add the T-SQL statements to compute the return value here
+	SELECT @ordSeq = (ISNULL(MAX(OrdSeq),0) + 1) FROM RoleDetail WHERE pNodeKey = @pNodeKey
+
+	-- Return the result of the function
+	RETURN @ordSeq
+
+END
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.07.08
+-- Description:	스케쥴 테이블 수정
+-- =============================================
+--Schedule 테이블에
+--[seq] [int] NULL
+--[idx] [int] IDENTITY(1,1) NOT NULL
+--[secretYN] [varchar(1)] NULL
+
+--3개의 칼럽 추가
+
+--
+-- seq 칼럽에 값을 세팅.
+--
+UPDATE Schedule
+SET 
+   secretYN = 'N'
+   ,seq = a.rowNumber
+	from (
+		select ssn,year,month, day, row_number() over(partition by ssn,year, month,day order by ssn,year,month,day,starthour) as rowNumber,content,startHour,startMin,endHour,endMin, idx
+		from schedule
+	) a
+	inner join Schedule b on a.idx = b.idx
+	
+--
+-- 추가했던 idx열을 제거 하고. (ssn,year,month,day,seq)로 그룹키 설정.
+--	
+	
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.07.23
+-- Description:	 스케쥴 테이블의 seq 칼럽을 값을 생성.
+-- =============================================
+CREATE FUNCTION [dbo].[getScheduleSeq]
+(
+	-- Add the parameters for the function here
+	@ssn varchar(50)
+	, @year varchar(4)
+	, @month varchar(2)
+	, @day  varchar(2)
+)
+RETURNS int
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @Seq int
+
+	-- Add the T-SQL statements to compute the return value here
+	SELECT  @Seq = (IsNULL(MAX(seq),0) + 1) FROM schedule WHERE ssn = @ssn AND [year]=@year AND [month]=@month AND [day]=@day
+	-- Return the result of the function
+	RETURN @Seq
+
+END
+
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.08.03
+-- Description:	 vUserInfo 뷰 생성
+-- =============================================
+CREATE VIEW [dbo].[vUserInfo]
+AS
+SELECT     TOP (100) PERCENT E.userId, E.ssn, E.name AS userName, D.name AS posName, G.id AS groupId, G.name AS groupName, G.groupType, G.enabled, 
+                      G.description AS groupDescription, G.parentId AS groupParentId, G.path AS groupPath, G.depth AS groupDepth, G.seq AS groupSeq, E.jobclass
+FROM         MiracomBpmsDB.dbo.SMGroupUser AS U LEFT OUTER JOIN
+                      MiracomBpmsDB.dbo.SMGroup AS G ON U.groupId = G.id LEFT OUTER JOIN
+                      dbo.ExpertPool AS E ON U.userId = E.ssn LEFT OUTER JOIN
+                      MiracomBpmsDB.dbo.SMUserRole AS R ON R.userId = U.userId LEFT OUTER JOIN
+                      MiracomBpmsDB.dbo.SMRole AS D ON R.roleId = D.id
+ORDER BY groupSeq
+
+GO
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.08.03
+-- Description:	 vUserInfo 뷰 생성
+-- =============================================
+ExpertPool 테이블에
+[deptName] [varchar(100)] NULL
+[companyPositionName] [varchar(100)] NULL
+
+--2개의 칼럽 추가  후  다음 쿼리 실행
+-- 주의 : SMGroup , SMRole 테이블이 옮겨졌는지 확인한다.
+
+UPDATE ExpertPool
+	SET deptName = isNULL((select description from SMgroup WHERE id = dept),dept)
+		, companyPositionName = isNull((select name  from SMRole WHERE id = companyPosition), companyPosition)
+
+		
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.08.16
+-- Description:	 GadGet 테이블 생성
+-- =============================================
+USE [KmacPms]
+GO
+/****** 개체:  Table [dbo].[GadGet]    스크립트 날짜: 08/16/2009 15:45:03 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[GadGet](
+	[gadgetId] [varchar](3) COLLATE Korean_Wansung_CI_AS NOT NULL,
+	[gadgetName] [varchar](100) COLLATE Korean_Wansung_CI_AS NULL,
+	[sqlText] [text] COLLATE Korean_Wansung_CI_AS NULL,
+	[linkUrl] [varchar](300) COLLATE Korean_Wansung_CI_AS NULL,
+	[fixedYN] [varchar](1) COLLATE Korean_Wansung_CI_AS NULL,
+	[gadgetType] [varchar](1) COLLATE Korean_Wansung_CI_AS NULL,
+	[useYN] [varchar](1) COLLATE Korean_Wansung_CI_AS NULL,
+ CONSTRAINT [PK_GadGet] PRIMARY KEY CLUSTERED 
+(
+	[gadgetId] ASC
+)WITH (IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.08.16
+-- Description:	 getGadgetId 함수 생성
+-- =============================================
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION getGadgetId()
+RETURNS varchar(3)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @gadgetId varchar(3)
+
+	-- Add the T-SQL statements to compute the return value here
+	SELECT @gadgetId = RIGHT('000' + CAST(CAST(IsNULL(MAX(gadgetId), '000') AS int) + 1 AS varchar(3)), 3)
+	FROM GadGet
+
+	-- Return the result of the function
+	RETURN @gadgetId
+
+END
+GO
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.08.26
+-- Description:	 
+-- =============================================
+
+UPDATE CMTABLEDATA
+SET key_2 = LEFT(key_1,1)
+WHERE table_Name = 'SPECIAL_FIELD_CODE'
+
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.09.03
+-- Description:	 
+-- =============================================
+
+기준정보 등록 : CBO 와 하부 조직 매핑 정보 등록
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.09.03
+-- Description:	cmtabledata 의 테이블 이름 기준으로 리턴
+-- =============================================
+CREATE FUNCTION dbo.ufnGetTable
+(	
+	-- Add the parameters for the function here
+	@varTableName varchar(40)
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+select * from cmtabledata
+WHERE TABLE_NAME = @varTableName
+)
+GO
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.09.03
+-- Description:	 cbo 와 조직을 맵핑테이블 리턴.
+-- =============================================
+
+
+ALTER FUNCTION [dbo].[ufnGetDept_Break_Down]
+(	
+	-- Add the parameters for the function here
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+select key_1 as seq, key_2 as cboCode, data_1 AS buCode, data_2 AS puCode from dbo.ufnGetTable('DEPT_BREAK_DOWN')
+)
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.09.03
+-- Description:	 마이가젯 고객 리스트를 위한조건
+-- =============================================
+
+
+set ANSI_NULLS ON
+set QUOTED_IDENTIFIER ON
+go
+
+ALTER FUNCTION [dbo].[ufnGetMyGadgetCustomerCondition](@userSsn varchar(20))
+RETURNS @retTable TABLE 
+(
+    -- Columns returned by the function
+    DeptCode varchar(10)
+)
+AS 
+begin
+
+	declare @topDept varchar(10)
+	SELECT  top 1 @topDept = SMGroup.id
+	FROM       SMGroupUser INNER JOIN
+				  SMGroup ON LEFT(SMGroupUser.groupId, 3) = LEFT(SMGroup.id, 3)
+	WHERE     (SMGroupUser.userId = @userSsn)
+
+	begin
+		INSERT @retTable
+			SELECT  SMGroup.id AS groupCode
+			FROM    SMGroupUser INNER JOIN
+					  SMGroup ON LEFT(SMGroupUser.groupId, 3) = LEFT(SMGroup.id, 3)
+			WHERE  (SMGroupUser.userId = @userSsn)
+		INSERT @retTable
+			select cboCode from dbo.ufnGetDept_Break_Down() where (buCode = @topDept) OR (puCode = @topDept)
+		INSERT @retTable
+			select buCode from dbo.ufnGetDept_Break_Down() where (buCode = @topDept) OR (puCode = @topDept)
+		INSERT @retTable
+			select puCode from dbo.ufnGetDept_Break_Down() where (buCode = @topDept) OR (puCode = @topDept)
+	end
+	return
+end
+
+
+
+-- =============================================
+-- Author:		<남민호>
+-- Create date: 2009.09.14
+-- Description:	 게시판 공지 가장 맨위 리스트로 
+-- =============================================
+
+StandardBBS 테이블에 topArticle varchar(1) 칼럼 추가

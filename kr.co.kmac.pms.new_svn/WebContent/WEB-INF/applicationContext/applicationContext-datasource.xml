@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<!-- transaction -->
+	<bean id="abstractTxDefinition" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributeSource" />
+		</property> 
+	</bean>
+
+	<bean id="transactionAttributeSource" class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+		<property name="properties">
+			<props>
+				<!-- 
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="execute*">PROPAGATION_REQUIRED</prop>
+				<prop key="reject*">PROPAGATION_REQUIRED</prop>
+				<prop key="assign*">PROPAGATION_REQUIRED</prop>
+				<prop key="complete*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="finish*">PROPAGATION_REQUIRED</prop>
+				<prop key="clear*">PROPAGATION_REQUIRED</prop>
+				<prop key="rename*">PROPAGATION_REQUIRED</prop>
+				<prop key="move*">PROPAGATION_REQUIRED</prop>
+				<prop key="set*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="create*">PROPAGATION_REQUIRED</prop>
+				<prop key="store*">PROPAGATION_REQUIRED</prop>
+				<prop key="import*">PROPAGATION_REQUIRED</prop>
+				<prop key="confirm*">PROPAGATION_REQUIRED</prop>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_SUPPORTS, readOnly</prop>
+				-->
+				<prop key="isConnectedProject">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="updateErpState">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="updateEduState">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="updateEduStateCancle">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="updateEduStateAgain">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="sendBudgetState">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="completeARExpenseSanction">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="completeKMExpenseSanction">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="*Retrieve">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="*List">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="get*">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="retrieve*">PROPAGATION_SUPPORTS, readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!--
+		<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"> <property name="transactionManagerName"
+		value="java:/TransactionManager" /> </bean>
+	-->
+
+	<!-- dataSource 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.kmacPms.driverClassName}" />
+		<property name="url" value="${jdbc.kmacPms.url}" />
+		<property name="username" value="${jdbc.kmacPms.username}" />
+		<property name="password" value="${jdbc.kmacPms.password}" />
+		<property name="maxIdle" value="${jdbc.kmacPms.maxIdle}"/>
+		<property name="maxActive" value="${jdbc.kmacPms.maxActive}"/>
+	</bean>
+	-->
+	
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/newKmacPmsDB</value>
+		</property>
+	</bean>
+
+	<bean id="intranetDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.kmacIntranet.driverClassName}" />
+		<property name="url" value="${jdbc.kmacIntranet.url}" />
+		<property name="username" value="${jdbc.kmacIntranet.username}" />
+		<property name="password" value="${jdbc.kmacIntranet.password}" />
+		<property name="maxIdle" value="${jdbc.kmacIntranet.maxIdle}"/>
+		<property name="maxActive" value="${jdbc.kmacIntranet.maxActive}"/>
+	</bean>
+	<bean id="intranetEduDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.kmacEduIntranet.driverClassName}" />
+		<property name="url" value="${jdbc.kmacEduIntranet.url}" />
+		<property name="username" value="${jdbc.kmacEduIntranet.username}" />
+		<property name="password" value="${jdbc.kmacEduIntranet.password}" />
+		<property name="maxIdle" value="${jdbc.kmacEduIntranet.maxIdle}"/>
+		<property name="maxActive" value="${jdbc.kmacEduIntranet.maxActive}"/>
+	</bean>
+	<bean id="erpDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.kmacErp.driverClassName}" />
+		<property name="url" value="${jdbc.kmacErp.url}" />
+		<property name="username" value="${jdbc.kmacErp.username}" />
+		<property name="password" value="${jdbc.kmacErp.password}" />
+		<property name="maxIdle" value="${jdbc.kmacErp.maxIdle}"/>
+		<property name="maxActive" value="${jdbc.kmacErp.maxActive}"/>
+	</bean>
+	<bean id="hhDevDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.hhDev.driverClassName}" />
+		<property name="url" value="${jdbc.hhDev.url}" />
+		<property name="username" value="${jdbc.hhDev.username}" />
+		<property name="password" value="${jdbc.hhDev.password}" />
+		<property name="maxIdle" value="${jdbc.hhDev.maxIdle}"/>
+		<property name="maxActive" value="${jdbc.hhDev.maxActive}"/>
+	</bean>
+	<!-- 
+	<bean id="miracomDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.miracomBpmsDS.driverClassName}" />
+		<property name="url" value="${jdbc.miracomBpmsDS.url}" />
+		<property name="username" value="${jdbc.miracomBpmsDS.username}" />
+		<property name="password" value="${jdbc.miracomBpmsDS.password}" />
+	</bean>
+	<bean id="dataSource" class="com.p6spy.engine.spy.P6DataSource">
+		<constructor-arg>
+			<ref local="dataSourceReal" />
+		</constructor-arg>
+	</bean>
+	 -->
+	<!-- 
+	<bean id="intranetDataSource" class="com.p6spy.engine.spy.P6DataSource">
+		<constructor-arg>
+			<ref local="intranetDataSourceReal" />
+		</constructor-arg>
+	</bean>
+	<bean id="erpDataSource" class="com.p6spy.engine.spy.P6DataSource">
+		<constructor-arg>
+			<ref local="erpDataSourceReal" />
+		</constructor-arg>
+	</bean>
+	<bean id="miracomDataSource" class="com.p6spy.engine.spy.P6DataSource">
+		<constructor-arg>
+			<ref local="miracomDataSourceReal" />
+		</constructor-arg>
+	</bean>
+	-->
+
+</beans>

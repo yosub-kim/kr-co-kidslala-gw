@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0.1</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>date</shortname>
+	<uri>http://kmac.co.kr/pms/date</uri>
+	<info>
+		The Security custom tag library contains tags which can be used to handle
+		security data related functions.
+</info>
+	<tag>
+		<name>year</name>
+		<tagclass>kr.co.kmac.pms.common.tag.date.DateYearTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>attribute</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedInfo</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>beforeYears</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>afterYears</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hasAll</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>month</name>
+		<tagclass>kr.co.kmac.pms.common.tag.date.DateMonthTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>attribute</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedInfo</name>
+			<required>no</required>
+			<rtexprvalue>no</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hasAll</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>day</name>
+		<tagclass>kr.co.kmac.pms.common.tag.date.DateDayTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>attribute</name>
+			<required>yes</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedInfo</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+		</attribute>
+	</tag>
+
+</taglib>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

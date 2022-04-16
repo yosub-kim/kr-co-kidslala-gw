@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- expertPool beans-->
+	<bean id="scheduleManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.schedule.manager.impl.ScheduleManagerImpl">
+				<property name="scheduleDao" ref="scheduleDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="companyScheduleManager" parent="abstractTxDefinition">
+		<property name="target">
+			<bean class="kr.co.kmac.pms.companySchedule.manager.impl.CompanyScheduleManagerImpl">
+				<property  name="companyScheduleDao" ref="companyScheduleDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- dao -->
+	<bean id="scheduleDao" class="kr.co.kmac.pms.schedule.dao.impl.ScheduleDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<!-- property name="miracomDataSource" ref="miracomDataSource" / -->
+	</bean>
+	
+	<bean id="companyScheduleDao" class="kr.co.kmac.pms.companySchedule.dao.impl.CompanyScheduleDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+</beans>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="ending" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>idx</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT 	businessTypeCode, processTypeCode, endGubun, endReason + endRate as endReason, 
+										endBackground, endResult, endReview, endSuggestion,
+										'' as endRate, groupComment, cfoComment, cboComment, endTaskState
+							  FROM 	project
+		/~projectCode:	 WHERE 	projectCode = {projectCode}	~/									  
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="endingWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="endingWrapper" class="kr.co.kmac.pms.project.endprocess.vl.EndingWrapper" />
+	
+	<!-- 만족도평가 -->
+	<bean id="rolling" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 
+											a.answer1, a.answer2, a.answer3, a.answer4, a.answer5,
+											a.answer6, a.answer7, a.answer8, a.answer9, a.answer10,
+											--a.dept, a.duty, a.name, a.comment, b.customerName, 
+											a.dept, a.duty, (case when a.name = '' then b.customerWorkPName else a.name end) name, a.comment, b.customerName,
+											(
+											  CASE 
+											    WHEN b.businessTypeCode = 'BTA' OR b.businessTypeCode = 'BTD' OR b.processTypeCode = 'N4' OR b.processTypeCode = 'DE'
+													THEN convert(real, a.answer3) + convert(real, a.answer4) + convert(real, a.answer5) + convert(real, a.answer6)
+												WHEN b.processTypeCode = 'N1' OR b.processTypeCode = 'N2'
+											    	THEN convert(real, a.answer1) + convert(real, a.answer2) + convert(real, a.answer3) + convert(real, a.answer4) + convert(real, a.answer5) + convert(real, a.answer6) 
+												WHEN b.processTypeCode = 'DD'
+											    	THEN convert(int, a.answer1) + convert(int, a.answer2) + convert(int, a.answer3) + convert(int, a.answer4) + convert(int, a.answer5) + convert(int, a.answer6) + convert(int, a.answer7) + convert(int, a.answer8) + convert(int, a.answer9) + convert(int, a.answer10)
+											    ELSE '0' 
+											  END
+											) as sum
+									  FROM 	projectRolling a, project b
+				/~projectCode:		 WHERE 	a.projectCode = {projectCode}		~/
+									   AND 	a.projectCode = b.projectCode
+									   --AND 	a.gubun = 'T'
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="rollingWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="rollingWrapper" class="kr.co.kmac.pms.project.endprocess.vl.RollingWrapper" />
+	
+	<!-- 만족도평가 -->
+	<bean id="rollingC" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 
+											B.ssn, B.name, 
+											A.answer8, A.answer9, A.answer10, A.answer12, A.answer13,
+											(
+												convert(real, A.answer8) + convert(real, A.answer9) + convert(real, A.answer10) + convert(real, A.answer12) + convert(real, A.answer13)
+											) as estimateC
+									  FROM 	projectRollingC A, expertPool B
+				/~projectCode:		 WHERE 	projectCode = {projectCode}		~/
+									   AND 	A.gubun = 'E'
+									   AND 	A.ssn = B.ssn
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="rollingCWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="rollingCWrapper" class="kr.co.kmac.pms.project.endprocess.vl.RollingCWrapper" />
+	
+	<!-- PL 평가 -->
+	<bean id="rateP" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 	B.ssn, B.name, A.answer1, A.answer2, A.answer3, A.answer4, A.answer5, 
+											A.answer6, A.answer7, A.answer8, A.answer9, A.answer10, A.comment
+									  FROM 	projectRateP A, expertPool B
+				/~projectCode:		 WHERE 	A.projectCode = {projectCode}		~/
+									   AND 	A.ssn = B.ssn
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="ratePWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="ratePWrapper" class="kr.co.kmac.pms.project.endprocess.vl.RatePWrapper" />
+	
+	<!-- 컨설턴트 평가 -->
+	<bean id="rateC" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 
+											B.ssn, B.name, 
+											A.answer1, A.answer2, A.answer3, A.answer4, A.answer5, 
+											A.answer6, A.answer7, A.answer8, A.answer9, A.answer10, 
+											A.comment
+									  FROM 	projectRateC A, expertPool B
+				/~projectCode:		 WHERE 	A.projectCode = {projectCode}		~/
+									   AND 	A.ssn = B.ssn
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="rateCWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="rateCWrapper" class="kr.co.kmac.pms.project.endprocess.vl.RateCWrapper" />
+	
+	<!-- 강사 평가 -->
+	<bean id="rateE" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="select">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<!-- 
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						-->
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 
+											B.ssn, B.name, A.subject,
+											A.answer1, A.answer2, A.answer3, A.answer4,
+											(convert(smallint,A.answer1)+convert(smallint,A.answer2)+convert(smallint,A.answer3)+convert(smallint,A.answer4)) estimateC
+									  FROM 	projectRateE A, expertPool B
+				/~projectCode:		 WHERE 	A.projectCode = {projectCode}		~/
+									   AND 	A.ssn = B.ssn								
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="rateEWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="rateEWrapper" class="kr.co.kmac.pms.project.endprocess.vl.RateEWrapper" />
+</beans>

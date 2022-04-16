@@ -1,0 +1,1700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="projectValueList" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="erpProjectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>id</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+					SELECT	PJTTYPE					/*프로젝트 구분*/
+									,PJTTYPENAME		/*프로젝트 구분명*/
+									,BUCODE				/*bu 코드*/
+									,BUCODENAME			/*bu*/
+									,PUCODE				/*pu 코드*/
+									,PUCODENAME			/*pu*/
+									,INDSTYPE			/*산업구분 코드*/
+									,INDSTYPENAME		/*산업구분	*/
+									,PROJID				/*프로젝트코드*/
+									,PJTNAME			/*프로젝트명*/
+									,PROMTYPE			/*계약구분*/
+									,PROMTYPENAME		/*계약구분명*/
+									,CUSTOM				/*거래처*/
+									,CUSTOMNAME			/*거래처명*/
+									,WORKFROMDT			/*수행기간 From*/
+									,WORKTODT			/*수행기간 to*/
+									,ACPTTYPE
+									,ACPTDATE
+									,ACPTEMPNO
+									,CO_GRP				/*계열사 구분*/
+									,INPUTEMP			/*입력 사번*/
+									,INPUTDATE			/*입력일*/
+									,UPDEMPNO			/*수정 사번*/
+									,UPDDATE			/*수정일*/
+						 FROM	DWPM.DBO.DW_PROJECTMST WITH(NOLOCK)
+						WHERE	1=1
+						  AND PRE_ENTNO IS NULL
+						  AND ACPTTYPE = '0'
+						  AND PROJID != 'PJTCOPY'
+						  AND PROJID NOT IN (SELECT projectCode FROM Project)
+	/~projectName: 		  AND PJTNAME like {projectName}~/
+	/~buCode: 			  AND BUCODE = {buCode}~/
+	/~createrSsn: 		  AND INPUTEMP = {createrSsn}~/
+					ORDER BY INPUTDATE DESC
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="erpProjectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="registerProjectList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>createDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>desc</value>
+						</property>
+						<property name="sql">
+							<value>
+						select	projectCode, projectName,
+								industryTypeCode, dbo.getCmTableDataValue(industryTypeCode, 'INDUSTRY_TYPE_CODE') industryTypeName,
+								businessTypeCode, dbo.getCmTableDataValue(businessTypeCode, 'BUSINESS_TYPE_CODE') businessTypeName,
+								projectState, createDate, createrSsn, dbo.getExpertPoolName(createrSsn) createrName,
+								(select count(*) from sanctionDoc where projectCode = project.projectCode and approvalType in ('A', 'PA') and state = 'SANCTION_STATE_REJECT_DRAFT') isReject
+						from 	project with(nolock)
+						where 1=1
+/~projectName: 	and projectName like {projectName}~/
+/~createrSsn: 		and createrSsn like {createrSsn}~/
+/~ing: 				and projectState = '1'~/
+/~sanction: 		and projectState = '2'~/
+/~finished: 		and projectState in ('3', '4', '5', '6')~/
+					and (parentProjectCode is null or projectcode != parentProjectCode)
+						order by createDate desc
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="registerProjectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="projectMemberListSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>data_2</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									 SELECT 
+											B.name, B.ssn, C.data_1 AS role, C.data_2 AS data_2, A.trainingYN, A.cost
+											--,B.rate as rate, A.resRate as resRate, B.companyPosition, 
+											--isNull((select data_1 from cmTableData 
+											--		where table_name='BASIC_SALARY' 
+											--		and key_1=B.companyPosition and key_2=B.jobClass), '0') as basicSalary
+									   FROM 	ProjectMember A WITH(NOLOCK), ExpertPool B WITH(NOLOCK), CmTableData C WITH(NOLOCK)
+				/~projectCode:		  WHERE 	projectCode = {projectCode}			~/
+									    AND 	A.ssn = B.ssn
+									    AND 	C.table_name = 'POSITION_KIND'
+									    AND 	A.role = C.key_1
+				/~AGPMPLMB:    			AND 	( (A.role = 'AG' AND A.trainingYN = 'Y') OR (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y') )	~/
+				/~PMPLMB:	    		AND 	( (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PMPLMB_ALL: 			AND 	( A.role = 'PM' OR A.role = 'PL' OR A.role = 'MB' )			~/
+				/~PMMB:					AND 	( (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PLMB:					AND 	( (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PLMB_ALL:				AND 	( A.role = 'PL' OR A.role = 'MB' )	~/
+				/~PM:					AND		A.role = 'PM' AND A.trainingYN = 'Y'	~/
+				/~PL_ALL:				AND		A.role = 'PL' 							~/
+				/~PL:				    AND		A.role = 'PL' AND A.trainingYN = 'Y'	~/
+				/~MB:					AND		A.role = 'MB' AND A.trainingYN = 'Y' 	~/
+				/~subPL:				AND		A.role = 'subPL' AND A.trainingYN = 'Y' 	~/
+								  ORDER BY	C.data_2 ASC, name ASC
+								]]>
+								<!-- 
+									membername	: 이름
+									memberSsn	: 주민번호
+									role		: 직책
+								-->
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectMemberWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="projectMemberListForProjectReportSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>data_2</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									 SELECT 
+											B.name, B.ssn, C.data_1 AS role, C.data_2 AS data_2, A.trainingYN, A.cost
+											--,B.rate as rate, A.resRate as resRate, B.companyPosition, 
+											--isNull((select data_1 from cmTableData 
+											--		where table_name='BASIC_SALARY' 
+											--		and key_1=B.companyPosition and key_2=B.jobClass), '0') as basicSalary
+									   FROM 	ProjectMember A WITH(NOLOCK), ExpertPool B WITH(NOLOCK), CmTableData C WITH(NOLOCK)
+				/~projectCode:		  WHERE 	projectCode = {projectCode}			~/
+									    AND 	A.ssn = B.ssn
+									    AND 	C.table_name = 'POSITION_KIND'
+									    AND 	A.role = C.key_1
+									    AND		B.jobClass IN ('A','J','C')
+				/~AGPMPLMB:    			AND 	( (A.role = 'AG' AND A.trainingYN = 'Y') OR (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y') )	~/
+				/~PMPLMB:	    		AND 	( (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PMPLMB_ALL: 			AND 	( A.role = 'PM' OR A.role = 'PL' OR A.role = 'MB' )			~/
+				/~PMMB:					AND 	( (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PLMB:					AND 	( (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PLMB_ALL:				AND 	( A.role = 'PL' OR A.role = 'MB' )	~/
+				/~PM:					AND		A.role = 'PM' AND A.trainingYN = 'Y'	~/
+				/~PL_ALL:				AND		A.role = 'PL' 							~/
+				/~PL:				    AND		A.role = 'PL' AND A.trainingYN = 'Y'	~/
+				/~MB:					AND		A.role = 'MB' AND A.trainingYN = 'Y' 	~/
+								  ORDER BY	C.data_2 ASC, name ASC
+								]]>
+								<!-- 
+									membername	: 이름
+									memberSsn	: 주민번호
+									role		: 직책
+								-->
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectMemberWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="projectMemberListForProjectManpowerSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>data_2</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									 SELECT 	B.name, B.ssn, C.data_1 AS role, C.data_2 AS data_2, A.trainingYN, A.cost
+									   FROM 	ProjectMember A WITH(NOLOCK), ExpertPool B WITH(NOLOCK), CmTableData C WITH(NOLOCK)
+				/~projectCode:		  WHERE 	projectCode = {projectCode}			~/
+									    AND 	A.ssn = B.ssn
+									    AND 	C.table_name = 'POSITION_KIND'
+									    AND 	A.role = C.key_1
+									    AND		B.jobClass IN ('A','J','C','H','N','B')
+				/~AGPMPLMB:    			AND 	( (A.role = 'AG' AND A.trainingYN = 'Y') OR (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y') )	~/
+				/~PMPLMB:	    		AND 	( (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PMPLMB_ALL: 			AND 	( A.role = 'PM' OR A.role = 'PL' OR A.role = 'MB' )			~/
+				/~PMMB:					AND 	( (A.role = 'PM' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PLMB:					AND 	( (A.role = 'PL' AND A.trainingYN = 'Y') OR (A.role = 'MB' AND A.trainingYN = 'Y' ) )	~/
+				/~PLMB_ALL:				AND 	( A.role = 'PL' OR A.role = 'MB' )	~/
+				/~PM:					AND		A.role = 'PM' AND A.trainingYN = 'Y'	~/
+				/~PL_ALL:				AND		A.role = 'PL' 							~/
+				/~PL:				    AND		A.role = 'PL' AND A.trainingYN = 'Y'	~/
+				/~MB:					AND		A.role = 'MB' AND A.trainingYN = 'Y' 	~/
+								  ORDER BY	C.data_2 ASC, name ASC
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectMemberWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="projectWorkNameListSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 	workSeq, workName, outputName, startDate, endDate
+									  FROM 	ProjectScheduleM WITH(NOLOCK)
+				/~projectCode:		 WHERE 	projectCode = {projectCode} ~/
+					 /~workSeq:		 AND	workSeq = {workSeq} ~/
+				
+								]]>
+								<!-- 
+									workSeq		: 업무순서
+									workName	: 업무명
+									outputName	: 산출물명
+								-->
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectWorkNameWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="myProjectListSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT * FROM (
+									SELECT																		
+											A.projectState, A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,	
+											A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 		
+											A.businessTypeCode, A.processTypeCode, A.seq, A.runningDivCode,		
+											B.data_1 AS businessTypeCodeName, C.data_1 AS runningDivCodeName,	
+											d.role, d.roleName, A.costOver, A.isVoc, A.attach, A.parentProjectCode,
+											(case 	when A.projectState in ( '2', '3') 
+													then	(												
+																select (case when (realEndDate >= (select convert(varchar, getDate()+ 7, 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+															)
+											end) as delayForecast,											
+											(case 	when (a.projectcode = a.parentProjectCode) then 'B'
+													when A.projectState in ( '2', '3') 
+													then	(												
+																select (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+															)
+													when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30 THEN 'ER'		
+													when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50 THEN 'RR'
+													when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'			
+											end) as delayState,	
+											isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+											isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM,
+											A.adminOpen, A.customerName 		
+									  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK), cmTableData C WITH(NOLOCK),							
+												(																	
+												SELECT 	DISTINCT projectCode, ssn, role,
+														(CASE role WHEN 'AR' THEN 'COO' WHEN 'MB' THEN '멤버' WHEN 'AG' THEN '그룹장' WHEN 'AA' THEN 'PU장' ELSE role END) roleName
+												  FROM 	projectMember	WITH(NOLOCK)	
+												 WHERE 	( ( role = 'PM' AND trainingYN = 'Y' ) OR (role = 'PL' AND trainingYN = 'Y') OR (role = 'AR' AND trainingYN = 'Y')
+												 		OR (role = 'AG' AND trainingYN = 'Y') OR (role = 'AA' AND trainingYN = 'Y') OR (role = 'MB') OR (role='QM'))
+												   AND trainingYN = 'Y'											 		
+							 	/~userSsn:		   AND	ssn = {userSsn}~/				
+												) D						
+									 WHERE 	1=1		
+									   AND	A.projectCode = D.projectCode								
+									   /*AND	A.endGubun <> 'N'						*/
+									   AND 	A.businessTypeCode = B.KEY_1			
+									   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'		
+									   AND 	A.runningDivCode = C.KEY_1				
+									   AND 	C.table_Name = 'RUNNING_DIV_CODE'		
+								  ) res
+								  WHERE 1=1
+					 /~delayState:	   AND	delayState = {delayState} and projectState in ('3','4','5')~/
+				  /~delayStateAll:	   AND  delayState in ('R','ER','RR') and projectState in ('3','4','5')~/
+					 /~pjtEndYear:	   AND	realEndDate LIKE {pjtEndYear}~/	
+               		/~projectName:	   AND 	projectName LIKE {projectName} ~/
+               	   /~customerName:	   AND 	customerName LIKE {customerName} ~/
+					/~projectCode:	   AND 	projectCode = {projectCode} ~/
+			   /~businessTypeCode:     AND 	businessTypeCode = {businessTypeCode} ~/
+				   /~projectState:     AND 	projectState = {projectState} ~/
+				/~costOver:			   AND costOver = {costOver}~/
+				/~projectStateAll:	   AND 	projectState >= '3' ~/
+				  /~realStartDate:	   AND	( 
+												(
+													{realStartDate} >= realStartDate OR {realEndDate} >= realStartDate
+												)
+											AND
+												( 	
+											    	{realStartDate} <= realEndDate OR {realEndDate} <= realEndDate
+												) 
+											)~/
+									ORDER BY projectState asc, realEndDate desc
+			
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="myProjectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="myProjectTeamListSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>15</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+	SELECT * FROM (
+									SELECT																		
+											A.projectState, A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,	
+											A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 		
+											A.businessTypeCode, A.processTypeCode, A.seq, A.runningDivCode,		
+											B.data_1 AS businessTypeCodeName, C.data_1 AS runningDivCodeName,	
+											'AR' AS role, 'COO' as roleName, A.costOver, A.isVoc, A.attach, A.parentProjectCode,	
+											(case 	when A.projectState in ( '2', '3') 
+													then	(												
+																select (case when (realEndDate >= (select convert(varchar, getDate()+ 7, 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+															)
+											end) as delayForecast,											
+											(case 	when (a.projectcode = a.parentProjectCode) then 'B'
+													when A.projectState in ( '2', '3') 
+													then	(												
+																select (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+															)
+													when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30 THEN 'ER'		
+													when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50 THEN 'RR'		
+											end) as delayState,														
+											isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+											isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM,
+											A.adminOpen, A.customerName 		
+									  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK), cmTableData C WITH(NOLOCK)
+									 WHERE 	1=1		
+									   /*AND	A.endGubun <> 'N'						*/
+									   AND 	A.businessTypeCode = B.KEY_1			
+									   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'		
+									   AND 	A.runningDivCode = C.KEY_1				
+									   AND 	C.table_Name = 'RUNNING_DIV_CODE'		
+               			/~projectName: AND 	A.projectName LIKE {projectName} ~/
+               		   /~customerName: AND 	A.customerName LIKE {customerName} ~/
+						/~projectCode: AND 	A.projectCode = {projectCode} ~/
+				   /~businessTypeCode: AND 	A.businessTypeCode = {businessTypeCode} ~/
+					   /~projectState: AND 	A.projectState = {projectState} ~/
+					/~projectStateAll: AND 	A.projectState >= '3' ~/
+          			 /~runningDivCode: AND	(A.runningDivCode = {runningDivCode} or A.refRunningDivCode = {runningDivCode})~/
+        			/~runningDeptCode: AND 	(A.runningDeptCode = {runningDeptCode} or A.refRunningDeptCode = {runningDeptCode})~/
+					  /~realStartDate: AND	( 
+												(
+													{realStartDate} >= realStartDate OR {realEndDate} >= realStartDate
+												)
+											AND
+												( 	
+											    	{realStartDate} <= realEndDate OR {realEndDate} <= realEndDate
+												) 
+											)~/
+											
+									UNION --ALL		
+											
+									SELECT																		
+											A.projectState, A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,	
+											A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 		
+											A.businessTypeCode, A.processTypeCode, A.seq, A.runningDivCode,		
+											B.data_1 AS businessTypeCodeName, C.data_1 AS runningDivCodeName,	
+											d.role, d.roleName, A.costOver, A.isVoc, A.attach, A.parentProjectCode,
+											(case 	when A.projectState in ( '2', '3') 
+													then	(												
+																select (case when (realEndDate >= (select convert(varchar, getDate()+ 7, 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+															)
+											end) as delayForecast,											
+											(case 	when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'	
+													when A.projectState in ( '2', '3') 
+													then	(												
+																select (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+															)
+													when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30 THEN 'ER'		
+													when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50 THEN 'RR'	
+											end) as delayState,	
+											isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+											isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM,
+											A.adminOpen, A.customerName 		
+									  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK), cmTableData C WITH(NOLOCK),							
+												(																	
+												SELECT 	DISTINCT projectCode, ssn, role,
+														(CASE role WHEN 'AR' THEN 'COO' WHEN 'MB' THEN '멤버' WHEN 'AG' THEN '그룹장' WHEN 'AA' THEN 'PU장' ELSE role END) roleName
+												  FROM 	projectMember	WITH(NOLOCK)	
+												 WHERE 	( ( role = 'PM' AND trainingYN = 'Y' ) OR (role = 'PL' AND trainingYN = 'Y') OR (role = 'AR' AND trainingYN = 'Y')
+												 		OR (role = 'AG' AND trainingYN = 'Y') OR (role = 'AA' AND trainingYN = 'Y') OR (role = 'MB') OR (role='QM'))
+							 	/~userSsn:		   AND	ssn = {userSsn}~/				
+												) D						
+									 WHERE 	1=1		
+									   AND	A.projectCode = D.projectCode								
+									   /*AND	A.endGubun <> 'N'						*/
+									   AND 	A.businessTypeCode = B.KEY_1			
+									   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'		
+									   AND 	A.runningDivCode = C.KEY_1				
+									   AND 	C.table_Name = 'RUNNING_DIV_CODE'		
+               		/~projectName:	   AND 	A.projectName LIKE {projectName} ~/
+               	   /~customerName:	   AND 	A.customerName LIKE {customerName} ~/
+					/~projectCode:	   AND 	A.projectCode = {projectCode} ~/
+			   /~businessTypeCode:     AND 	A.businessTypeCode = {businessTypeCode} ~/
+				   /~projectState:     AND 	A.projectState = {projectState} ~/
+				/~projectStateAll:	   AND 	A.projectState >= '3' ~/
+				  /~realStartDate:	   AND	( 
+												(
+													{realStartDate} >= realStartDate OR {realEndDate} >= realStartDate
+												)
+											AND
+												( 	
+											    	{realStartDate} <= realEndDate OR {realEndDate} <= realEndDate
+												) 
+											)~/	
+								) res
+								WHERE 1=1										
+ 			   /~delayState:	  AND	delayState = {delayState} and projectState in ('3','4','5')~/
+		    /~delayStateAll:	  AND	delayState in ('R','ER','RR') and projectState in ('3','4','5')~/
+			   /~pjtEndYear:	  AND	realEndDate LIKE {pjtEndYear}~/	
+			 /~costOver:	   	  AND   costOver = {costOver}~/							
+								ORDER BY 	projectState asc, realEndDate desc					
+			
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="myProjectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="progessEntityListSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultSortColumn">
+							<value>orderSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT ps.projectCode, ps.workName, ps.workSeq, ps.level, ps.parentWorkSeq, ps.startDate, ps.endDate,
+							       ps.realEndDate, ps.orderSeq, ps.contentId, pm.assignmonth, pm.assignweekofmonth, pm.weekofproject, pm.writedate, pm.projecttypecode
+							FROM projectScheduleM ps WITH(NOLOCK)
+							left join
+							(
+								SELECT TOP 1 pr.weekofproject, pr.projectCode, pr.assignDate, pr.assignYear, pr.assignMonth, pr.assignWeekOfMonth, pr.realProgress, pr.planProgress, pr.progressRatio,
+									         pr.thisWeekFromDate, pr.thisWeekToDate, pr.nextWeekFromDate, pr.nextWeekToDate, pr.attach,
+											 pr.state, pr.writerSsn, pr.writerName, pr.writeDate, pr.reviewerSsn, pr.reviewerName, pr.revieweDate ,pr.approverSsn, 
+											 pr.approverName, pr.approveDate, p.projecttypecode
+								FROM ProjectWeeklyReport pr WITH(NOLOCK), project p
+								WHERE 1=1
+								AND pr.projectcode = p.projectcode 
+			/~projectCode:		AND p.projectCode = {projectCode} ~/			
+								ORDER BY convert(float, weekofproject) DESC
+							) pm
+							ON ps.projectCode = pm.projectcode
+			/~projectCode:	WHERE ps.projectCode = {projectCode} ~/
+		/~parentWorkSeq:	AND ps.parentWorkSeq = {parentWorkSeq} ~/
+				/~level:    AND	ps.level = {level} ~/
+							ORDER BY ps.orderSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="progessEntityListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+				<entry key="projectSearchList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+	SELECT result.* FROM 
+	(
+  	SELECT	*, count(delayState) over(partition by delayState) as realCount from 																					
+		(SELECT																						
+			A.projectState, A.endGubun,											
+			A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,										
+			A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 							
+			A.industryTypeCode, A.businessTypeCode, A.cioTypeCode, A.processTypeCode, A.seq, A.runningDeptCode, runningDivCode,	
+			'' as runningPUCode, A.businessTypeCodeName, 
+			(case when len(A.runningDivCodeName) > 3 then left(A.runningDivCodeName, len(A.runningDivCodeName)-2) else A.runningDivCodeName end) as runningDivCodeName,
+			(case when len(A.runningDeptCodeName) > 3 then replace(left(A.runningDeptCodeName, len(A.runningDeptCodeName)-2),'본부','') else replace(A.runningDeptCodeName,'본부','') end) as runningDeptCodeName,
+			A.payCostOver, A.etcCostOver, A.attach, A.parentProjectCode, A.businessFunctionType,				
+			D.pmSsn, E.plSsn, A.costOver, A.adminOpen,	A.customerName, dbo.getexpertpoolname(D.pmSsn) pmname,
+			isNull((case 	when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'	
+							when A.projectState in ( '2', '3') 
+							then	(												
+										select (case when (realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end)
+																FROM	PROJECT WITH(NOLOCK)														
+																WHERE	projectCode = a.projectCode
+									)
+							when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30 THEN 'ER'		
+							when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50 THEN 'RR'
+							when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'				
+					end		 			 																
+				), 'R') as delayState,																			
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM
+			/~chartSsn: ,F.chartSsn~/		
+	  	FROM (
+	  		SELECT																					
+					A.projectState, A.endGubun,					
+					A.projectCode, A.projectName, A.projectTypeCode, 								
+					A.preStartDate, A.preEndDate,													
+					A.realStartDate, A.realEndDate, 												
+					A.businessTypeCode, A.processTypeCode, A.cioTypeCode, A.seq, 
+					(case A.runningDivCode when '6201' then '9210' when '6200' then '9210' else A.runningDivCode end) as runningDivCode, A.runningDeptCode,
+					(select description from smGroup where id = A.runningDivCode) as runningDivCodeName,
+					(select description from smGroup where id = A.runningDeptCode) as runningDeptCodeName,					
+					B.data_1 AS businessTypeCodeName, A.industryTypeCode, A.costOver, A.payCostOver, A.etcCostOver, A.adminOpen,
+					A.customerName, A.attach, A.parentProjectCode, A.businessFunctionType				
+			  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK)										
+			 WHERE 	A.businessTypeCode = B.KEY_1													
+			   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'												
+			) A																						
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS pmSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PM'																		
+			   AND 	trainingYN = 'Y'																
+			) D																						
+			ON 	A.projectCode = D.projectCode														
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS plSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PL'																		
+			   AND 	trainingYN = 'Y'																
+			) E																						
+			ON A.projectCode = E.projectCode
+			/~chartSsn:
+	        LEFT OUTER JOIN (
+				SELECT  distinct projectCode, ssn chartSsn
+	              FROM  projectMember WITH(NOLOCK)
+				 where  trainingYN = 'Y'
+				  and   ssn = {chartSsn}
+	        ) F
+	        ON A.projectCode = F.projectCode
+			~/																			
+	) res 
+	where 1=1 
+		/~ssn:					AND	projectCode in (select projectCode from projectMember WITH(NOLOCK) where ssn= ({ssn}) and trainingYn='Y')~/
+		/~delayState:			AND	delayState = {delayState} and projectState in ('3','4','5')~/
+		/~delayStateAll:		AND	delayState in ('R','ER','RR') and projectState in ('3','4','5')~/
+		/~projectCode:			AND	projectCode = {projectCode}~/
+		/~projectName:			AND	projectName LIKE {projectName}~/
+		/~projectState:			AND projectState = {projectState}~/
+		/~endProcess:			AND projectState in ('4','5')~/
+		/~payCostOver:			AND payCostOver = {payCostOver}~/
+		/~etcCostOver:			AND etcCostOver = {etcCostOver}~/
+		/~endGubun:				AND endGubun = {endGubun}~/
+		/~businessTypeCode:		AND businessTypeCode = {businessTypeCode}~/
+		/~projectTypeCode:		AND projectTypeCode = {projectTypeCode}~/
+		/~runningDivCode:		AND runningDivCode = {runningDivCode}~/
+		/~runningDeptCode:		AND runningDeptCode LIKE (CASE WHEN {runningDeptCode} = '합계' THEN '%%' ELSE {runningDeptCode} END)~/	
+		/~runningPUCode:		AND runningPUCode = {runningPUCode}~/	
+		/~industryTypeCode:		AND industryTypeCode = {industryTypeCode}~/
+		/~pjtEndYear:			AND	realEndDate LIKE {pjtEndYear}~/	
+		/~realStartDate:	    AND  (  ({realStartDate} >= realStartDate or  ~/
+		/~realEndDate:			   		 {realEndDate} >= realStartDate ) and  ~/ 
+		/~realStartDate:                	   ({realStartDate} <= realEndDate or ~/ 
+		/~realEndDate:			   		 {realEndDate} <= realEndDate ) )  ~/ 
+		/~costOver:				AND costOver = {costOver}~/
+		/~adminOpen:			AND adminOpen = {adminOpen}~/
+		/~chartSsn:				AND chartSsn = {chartSsn}~/
+		/~customerName:			AND customerName LIKE {customerName}~/
+	)result
+  	/*ORDER BY res.seq DESC*/
+	order by (case when delayState in ('R','ER','RR') and projectstate = '3' then runningdeptcode else projectstate end) asc,  
+	(case when delayState in ('R','ER','RR') and projectstate = '3' then pmname else projectcode end) desc		
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectSearchListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>
+				<entry key="projectSearchList2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+	SELECT result.* FROM 
+	(
+  	SELECT	*, count(delayState) over(partition by delayState) as realCount from 																					
+		(SELECT																						
+			A.projectState, A.endGubun,											
+			A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,										
+			A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 							
+			A.industryTypeCode, A.businessTypeCode, A.cioTypeCode, A.processTypeCode, A.seq, A.runningDeptCode, runningDivCode,	
+			'' as runningPUCode, A.businessTypeCodeName, 
+			(case when len(A.runningDivCodeName) > 3 then left(A.runningDivCodeName, len(A.runningDivCodeName)-2) else A.runningDivCodeName end) as runningDivCodeName,
+			(case when len(A.runningDeptCodeName) > 3 then replace(left(A.runningDeptCodeName, len(A.runningDeptCodeName)-2),'본부','') else replace(A.runningDeptCodeName,'본부','') end) as runningDeptCodeName,
+			A.payCostOver, A.etcCostOver, A.attach, A.parentProjectCode,				
+			D.pmSsn, E.plSsn, A.costOver, A.adminOpen,	A.customerName, dbo.getexpertpoolname(D.pmSsn) pmname,
+			isNull((case 	when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'	
+							when A.projectState in ( '2', '3') 
+							then	(												
+						/~realEndDate:	SELECT	(case	when (endDate >= (select convert(varchar, {realEndDate}, 112)))  then 'B' else 'R' end) ~/
+										FROM	projectScheduleM WITH(NOLOCK)
+										WHERE	projectCode = a.projectCode												
+										AND	workSeq =																	
+											(																		
+												SELECT min(workSeq)													
+												FROM	projectScheduleM WITH(NOLOCK)
+												WHERE	projectCode = a.projectCode									
+												AND	(realEndDate = ''  OR realEndDate is null )						
+											)
+										UNION
+						/~realEndDate:	SELECT	(case	when (a.realEndDate >= (select convert(varchar,  {realEndDate}, 112)) ) then 'B' else 'R' end) ~/
+										FROM	projectScheduleM WITH(NOLOCK)
+										WHERE	projectCode = a.projectCode												
+										AND
+											(																		
+												SELECT min(workSeq)													
+												FROM	projectScheduleM WITH(NOLOCK)
+												WHERE	projectCode = a.projectCode									
+												AND	(realEndDate = ''  OR realEndDate is null )						
+											) IS NULL
+									)
+				/~realEndDate:		when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), {realEndDate}) > 30 THEN 'ER'	~/	
+				/~realEndDate:		when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), {realEndDate}) > 50 THEN 'RR'	~/		
+					end		 			 																
+				), 'R') as delayState,																			
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM
+			/~chartSsn: ,F.chartSsn~/		
+	  	FROM (
+	  		SELECT																					
+					A.projectState, A.endGubun,					
+					A.projectCode, A.projectName, A.projectTypeCode, 								
+					A.preStartDate, A.preEndDate,													
+					A.realStartDate, A.realEndDate, 												
+					A.businessTypeCode, A.processTypeCode, A.cioTypeCode, A.seq, 
+					A.runningDivCode, A.runningDeptCode,
+					(select description from smGroup where id = A.runningDivCode) as runningDivCodeName,
+					(select description from smGroup where id = A.runningDeptCode) as runningDeptCodeName,					
+					B.data_1 AS businessTypeCodeName, A.industryTypeCode, A.costOver, A.payCostOver, A.etcCostOver, A.adminOpen,
+					A.customerName, A.attach, A.parentProjectCode					
+			  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK)										
+			 WHERE 	A.businessTypeCode = B.KEY_1													
+			   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'												
+			) A																						
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS pmSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PM'																		
+			   AND 	trainingYN = 'Y'																
+			) D																						
+			ON 	A.projectCode = D.projectCode														
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS plSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PL'																		
+			   AND 	trainingYN = 'Y'																
+			) E																						
+			ON A.projectCode = E.projectCode
+			/~chartSsn:
+	        LEFT OUTER JOIN (
+				SELECT  distinct projectCode, ssn chartSsn
+	              FROM  projectMember WITH(NOLOCK)
+				 where  trainingYN = 'Y'
+				  and   ssn = {chartSsn}
+	        ) F
+	        ON A.projectCode = F.projectCode
+			~/																			
+	) res 
+	where 1=1 
+		/~ssn:					AND	projectCode in (select projectCode from projectMember WITH(NOLOCK) where ssn= ({ssn}) and trainingYn='Y')~/
+		/~delayState:			AND	delayState = {delayState} and projectState in ('3','4','5')~/
+		/~delayStateAll:		AND	delayState in ('R','ER','RR') and projectState in ('3','4','5')~/
+		/~projectCode:			AND	projectCode = {projectCode}~/
+		/~projectName:			AND	projectName LIKE {projectName}~/
+		/~projectState:			AND projectState = {projectState}~/
+		/~endProcess:			AND projectState in ('4','5')~/
+		/~payCostOver:			AND payCostOver = {payCostOver}~/
+		/~etcCostOver:			AND etcCostOver = {etcCostOver}~/
+		/~endGubun:				AND endGubun = {endGubun}~/
+		/~businessTypeCode:		AND businessTypeCode = {businessTypeCode}~/
+		/~projectTypeCode:		AND projectTypeCode = {projectTypeCode}~/
+		/~runningDivCode:		AND runningDivCode = {runningDivCode}~/
+		/~runningDeptCode:		AND runningDeptCode LIKE (CASE WHEN {runningDeptCode} = '합계' THEN '%%' ELSE {runningDeptCode} END)~/	
+		/~runningPUCode:		AND runningPUCode = {runningPUCode}~/	
+		/~industryTypeCode:		AND industryTypeCode = {industryTypeCode}~/
+		/~pjtEndYear:			AND	realEndDate LIKE {pjtEndYear}~/	
+	
+		/~costOver:				AND costOver = {costOver}~/
+		/~adminOpen:			AND adminOpen = {adminOpen}~/
+		/~chartSsn:				AND chartSsn = {chartSsn}~/
+		/~customerName:			AND customerName LIKE {customerName}~/
+		AND runningdeptcode not in ('9261','9263')
+	)result
+  	/*ORDER BY res.seq DESC*/
+	order by (case when delayState in ('R','ER','RR') and projectstate = '3' then runningdeptcode else projectstate end) asc,  
+	(case when delayState in ('R','ER','RR') and projectstate = '3' then pmname else projectcode end) desc		
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectSearchListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="true" />
+					</bean>
+				</entry>
+				<entry key="delayProjectSearchList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+  SELECT result.* FROM 
+	(
+  	SELECT	*, count(delayState) over(partition by delayState) as realCount from 																					
+		(SELECT																						
+			A.projectState, A.endGubun,											
+			A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,										
+			A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 							
+			A.industryTypeCode, A.businessTypeCode, A.cioTypeCode, A.processTypeCode, A.seq, A.runningDeptCode, runningDivCode,	
+			'' as runningPUCode, A.businessTypeCodeName, 
+			(case when len(A.runningDivCodeName) > 3 then left(A.runningDivCodeName, len(A.runningDivCodeName)-2) else A.runningDivCodeName end) as runningDivCodeName,
+			(case when len(A.runningDeptCodeName) > 3 then replace(left(A.runningDeptCodeName, len(A.runningDeptCodeName)-2),'본부','') else replace(A.runningDeptCodeName,'본부','') end) as runningDeptCodeName,
+			A.payCostOver, A.etcCostOver, A.attach, A.parentProjectCode,				
+			dbo.getExpertPoolName(D.pmSsn) as pmSsn, E.plSsn, A.costOver, A.adminOpen,	A.customerName, dbo.getexpertpoolname(D.pmSsn) pmname,
+			isNull((case 	when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'	
+							when A.projectState in ( '2', '3') 
+							then	(												
+										SELECT	(case	when (endDate >= (select convert(varchar, getDate(), 112)) and realEndDate = '')  then 'B' else 'R' end) 
+										FROM	projectScheduleM WITH(NOLOCK)
+										WHERE	projectCode = a.projectCode												
+										AND	workSeq =																	
+											(																		
+												SELECT min(workSeq)													
+												FROM	projectScheduleM WITH(NOLOCK)
+												WHERE	projectCode = a.projectCode									
+												AND	(realEndDate = ''  OR realEndDate is null )						
+											)
+										UNION
+										SELECT	(case	when (a.realEndDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end) 
+										FROM	projectScheduleM WITH(NOLOCK)
+										WHERE	projectCode = a.projectCode												
+										AND
+											(																		
+												SELECT min(workSeq)													
+												FROM	projectScheduleM WITH(NOLOCK)
+												WHERE	projectCode = a.projectCode									
+												AND	(realEndDate = ''  OR realEndDate is null )						
+											) IS NULL
+									)
+							when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30 THEN 'ER'		
+							when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50 THEN 'RR'		
+					end		 			 																
+				), 'R') as delayState,																			
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM
+			/~chartSsn: ,F.chartSsn~/		
+	  	FROM (
+	  		SELECT																					
+					A.projectState, A.endGubun,					
+					A.projectCode, A.projectName, A.projectTypeCode, 								
+					A.preStartDate, A.preEndDate,													
+					A.realStartDate, A.realEndDate, 												
+					A.businessTypeCode, A.processTypeCode, A.cioTypeCode, A.seq, 
+					A.runningDivCode, A.runningDeptCode,
+					(select description from smGroup where id = A.runningDivCode) as runningDivCodeName,
+					(select description from smGroup where id = A.runningDeptCode) as runningDeptCodeName,					
+					B.data_1 AS businessTypeCodeName, A.industryTypeCode, A.costOver, A.payCostOver, A.etcCostOver, A.adminOpen,
+					A.customerName, A.attach, A.parentProjectCode					
+			  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK)										
+			 WHERE 	A.businessTypeCode = B.KEY_1													
+			   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'												
+			) A																						
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS pmSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PM'																		
+			   AND 	trainingYN = 'Y'																
+			) D																						
+			ON 	A.projectCode = D.projectCode														
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS plSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PL'																		
+			   AND 	trainingYN = 'Y'																
+			) E																						
+			ON A.projectCode = E.projectCode
+			/~chartSsn:
+	        LEFT OUTER JOIN (
+				SELECT  distinct projectCode, ssn chartSsn
+	              FROM  projectMember WITH(NOLOCK)
+				 where  trainingYN = 'Y'
+				  and   ssn = {chartSsn}
+	        ) F
+	        ON A.projectCode = F.projectCode
+			~/																			
+	) res 
+	where 1=1 
+		/~ssn:					AND	projectCode in (select projectCode from projectMember WITH(NOLOCK) where ssn= ({ssn}) and trainingYn='Y')~/
+		/~delayState:			AND	delayState = {delayState} and projectState in ('3','4','5')~/
+		/~delayStateAll:		AND	delayState in ('R','ER','RR') and projectState in ('3','4','5')~/
+		/~projectCode:			AND	projectCode = {projectCode}~/
+		/~projectName:			AND	projectName LIKE {projectName}~/
+		/~projectState:			AND projectState = {projectState}~/
+		/~endProcess:			AND projectState in ('4','5')~/
+		/~payCostOver:			AND payCostOver = {payCostOver}~/
+		/~etcCostOver:			AND etcCostOver = {etcCostOver}~/
+		/~endGubun:				AND endGubun = {endGubun}~/
+		/~businessTypeCode:		AND businessTypeCode = {businessTypeCode}~/
+		/~projectTypeCode:		AND projectTypeCode = {projectTypeCode}~/
+		/~runningDivCode:		AND runningDivCode = {runningDivCode}~/
+		/~runningDeptCode:		AND runningDeptCode LIKE (CASE WHEN {runningDeptCode} = '합계' THEN '%%' ELSE {runningDeptCode} END)~/	
+		/~runningPUCode:		AND runningPUCode = {runningPUCode}~/	
+		/~industryTypeCode:		AND industryTypeCode = {industryTypeCode}~/
+		/~pjtEndYear:			AND	realEndDate LIKE {pjtEndYear}~/	
+		/~realStartDate:	    AND  (  ({realStartDate} >= realStartDate or  ~/
+		/~realEndDate:			   		 {realEndDate} >= realStartDate ) and  ~/ 
+		/~realStartDate:                	   ({realStartDate} <= realEndDate or ~/ 
+		/~realEndDate:			   		 {realEndDate} <= realEndDate ) )  ~/ 
+		/~costOver:				AND costOver = {costOver}~/
+		/~adminOpen:			AND adminOpen = {adminOpen}~/
+		/~chartSsn:				AND chartSsn = {chartSsn}~/
+		/~customerName:			AND customerName LIKE {customerName}~/
+	)result
+  	/*ORDER BY res.seq DESC*/
+	order by (case when delayState in ('R','ER','RR') and projectstate = '3' then runningdeptcode else projectstate end) asc,  
+	(case when delayState in ('R','ER','RR') and projectstate = '3' then pmname else projectcode end) desc						
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectSearchListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="delayProjectSearchList2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+  SELECT result.* FROM 
+	(
+  	SELECT	*, count(delayState) over(partition by delayState) as realCount from 																					
+		(SELECT																						
+			A.projectState, A.endGubun,											
+			A.projectCode, replace(A.projectName, '''', '') projectName, A.projectTypeCode,										
+			A.preStartDate, A.preEndDate, A.realStartDate, A.realEndDate, 							
+			A.industryTypeCode, A.businessTypeCode, A.cioTypeCode, A.processTypeCode, A.seq, A.runningDeptCode, runningDivCode,	
+			'' as runningPUCode, A.businessTypeCodeName, 
+			(case when len(A.runningDivCodeName) > 3 then left(A.runningDivCodeName, len(A.runningDivCodeName)-2) else A.runningDivCodeName end) as runningDivCodeName,
+			(case when len(A.runningDeptCodeName) > 3 then replace(left(A.runningDeptCodeName, len(A.runningDeptCodeName)-2),'본부','') else replace(A.runningDeptCodeName,'본부','') end) as runningDeptCodeName,
+			A.payCostOver, A.etcCostOver, A.attach, A.parentProjectCode,				
+			dbo.getExpertPoolName(D.pmSsn) as pmSsn, E.plSsn, A.costOver, A.adminOpen,	A.customerName, dbo.getexpertpoolname(D.pmSsn) pmname,
+			isNull((case 	when (A.attach='Y' and a.parentProjectCode = a.projectcode) then 'B'	
+							when A.projectState in ( '2', '3') 
+							then	(												
+						/~realEndDate:	SELECT	(case	when (endDate >= (select convert(varchar, {realEndDate}, 112)))  then 'B' else 'R' end) ~/
+										FROM	projectScheduleM WITH(NOLOCK)
+										WHERE	projectCode = a.projectCode												
+										AND	workSeq =																	
+											(																		
+												SELECT min(workSeq)													
+												FROM	projectScheduleM WITH(NOLOCK)
+												WHERE	projectCode = a.projectCode									
+												AND	(realEndDate = ''  OR realEndDate is null )						
+											)
+										UNION
+						/~realEndDate:	SELECT	(case	when (a.realEndDate >= (select convert(varchar,  {realEndDate}, 112)) ) then 'B' else 'R' end) ~/
+										FROM	projectScheduleM WITH(NOLOCK)
+										WHERE	projectCode = a.projectCode												
+										AND
+											(																		
+												SELECT min(workSeq)													
+												FROM	projectScheduleM WITH(NOLOCK)
+												WHERE	projectCode = a.projectCode									
+												AND	(realEndDate = ''  OR realEndDate is null )						
+											) IS NULL
+									)
+				/~realEndDate:		when A.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), {realEndDate}) > 30 THEN 'ER'	~/	
+				/~realEndDate:		when A.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), {realEndDate}) > 50 THEN 'RR'	~/	
+					end		 			 																
+				), 'R') as delayState,																			
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and (email is null or email = '') GROUP BY bbsid), 0) AS boardArticleCount,
+			isNUll((SELECT count(bbsid) FROM standardBbs WITH(NOLOCK) WHERE bbsid = A.projectCode and email is not null and email != '' GROUP BY bbsid), 0) AS boardArticleCountQM
+			/~chartSsn: ,F.chartSsn~/		
+	  	FROM (
+	  		SELECT																					
+					A.projectState, A.endGubun,					
+					A.projectCode, A.projectName, A.projectTypeCode, 								
+					A.preStartDate, A.preEndDate,													
+					A.realStartDate, A.realEndDate, 												
+					A.businessTypeCode, A.processTypeCode, A.cioTypeCode, A.seq, 
+					A.runningDivCode, A.runningDeptCode,
+					(select description from smGroup where id = A.runningDivCode) as runningDivCodeName,
+					(select description from smGroup where id = A.runningDeptCode) as runningDeptCodeName,					
+					B.data_1 AS businessTypeCodeName, A.industryTypeCode, A.costOver, A.payCostOver, A.etcCostOver, A.adminOpen,
+					A.customerName, A.attach, A.parentProjectCode					
+			  FROM 	project A WITH(NOLOCK), cmTableData B WITH(NOLOCK)										
+			 WHERE 	A.businessTypeCode = B.KEY_1													
+			   AND 	B.table_Name = 'BUSINESS_TYPE_CODE'												
+			) A																						
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS pmSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PM'																		
+			   AND 	trainingYN = 'Y'																
+			) D																						
+			ON 	A.projectCode = D.projectCode														
+			LEFT OUTER JOIN 																		
+			(																						
+			SELECT 	projectCode, ssn AS plSsn														
+			  FROM 	projectMember WITH(NOLOCK)
+			 WHERE 	role = 'PL'																		
+			   AND 	trainingYN = 'Y'																
+			) E																						
+			ON A.projectCode = E.projectCode
+			/~chartSsn:
+	        LEFT OUTER JOIN (
+				SELECT  distinct projectCode, ssn chartSsn
+	              FROM  projectMember WITH(NOLOCK)
+				 where  trainingYN = 'Y'
+				  and   ssn = {chartSsn}
+	        ) F
+	        ON A.projectCode = F.projectCode
+			~/																			
+	) res 
+	where 1=1 
+		/~ssn:					AND	projectCode in (select projectCode from projectMember WITH(NOLOCK) where ssn= ({ssn}) and trainingYn='Y')~/
+		/~delayState:			AND	delayState = {delayState} and projectState in ('3','4','5')~/
+		/~delayStateAll:		AND	delayState in ('R','ER','RR') and projectState in ('3','4','5')~/
+		/~projectCode:			AND	projectCode = {projectCode}~/
+		/~projectName:			AND	projectName LIKE {projectName}~/
+		/~projectState:			AND projectState = {projectState}~/
+		/~endProcess:			AND projectState in ('4','5')~/
+		/~payCostOver:			AND payCostOver = {payCostOver}~/
+		/~etcCostOver:			AND etcCostOver = {etcCostOver}~/
+		/~endGubun:				AND endGubun = {endGubun}~/
+		/~businessTypeCode:		AND businessTypeCode = {businessTypeCode}~/
+		/~projectTypeCode:		AND projectTypeCode = {projectTypeCode}~/
+		/~runningDivCode:		AND runningDivCode = {runningDivCode}~/
+		/~runningDeptCode:		AND runningDeptCode LIKE (CASE WHEN {runningDeptCode} = '합계' THEN '%%' ELSE {runningDeptCode} END)~/	
+		/~runningPUCode:		AND runningPUCode = {runningPUCode}~/	
+		/~industryTypeCode:		AND industryTypeCode = {industryTypeCode}~/
+		/~pjtEndYear:			AND	realEndDate LIKE {pjtEndYear}~/	
+		/~costOver:				AND costOver = {costOver}~/
+		/~adminOpen:			AND adminOpen = {adminOpen}~/
+		/~chartSsn:				AND chartSsn = {chartSsn}~/
+		/~customerName:			AND customerName LIKE {customerName}~/
+		AND runningdeptcode not in ('9261','9263')
+	)result
+  	/*ORDER BY res.seq DESC*/													
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectSearchListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="projectCustomerRelationList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>workSeq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+							SELECT	p.projectState, p.businessTypeCode, p.runningDivCode, 
+									'['+p.projectCode+'] '+ p.projectName as projectName, p.realEndDate, isNull(i.custCnt,0) as boardArticleCount,
+									p.projectCode, p.projectTypeCode, p.processTypeCode, p.cioTypeCode, p.industryTypeCode, p.realStartDate, p.realEndDate,
+									p.endGubun, p.costOver, p.payCostOver, p.etcCostOver, p.preStartDate, p.preEndDate, p.attach, p.parentProjectCode,
+									(select data_1 from cmtabledata where table_name='RUNNING_DIV_CODE' and key_1 = p.runningDivCode) as runningDivCodeName,
+									(select data_1 from cmtabledata where table_name='BUSINESS_TYPE_CODE' and key_1 = p.businessTypeCode) as businessTypeCodeName,
+									m.pmSsn, dbo.getExpertPoolName(m.pmSsn) as plSsn, p.adminOpen, d.pjtYear,
+									isNull((case when (p.attach='Y' and p.parentProjectCode = p.projectcode) then 'B'		
+											when p.projectState in ( '2', '3') 
+											then	(												
+														SELECT	(case	when (endDate >= (select convert(varchar, getDate(), 112)) ) then 'B' else 'R' end) 
+														FROM	projectScheduleM WITH(NOLOCK)
+														WHERE	projectCode = p.projectCode												
+														AND	workSeq =																	
+															(																		
+																SELECT min(workSeq)													
+																FROM	projectScheduleM WITH(NOLOCK)
+																WHERE	projectCode = p.projectCode									
+																AND	(realEndDate = ''  OR realEndDate is null )						
+															)
+													)
+											when p.projectState = '4' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 30 THEN 'ER'		
+											when p.projectState = '5' AND datediff(day, convert(smalldatetime, realEndDate), getDate()) > 50 THEN 'RR'		
+									end		 			 																
+									), 'R') as delayState
+							FROM project p 
+							LEFT OUTER JOIN
+							(
+								select projectCode, count(customerCodeIdx) as custCnt, convert(varchar,createDate, 112) regDate 
+								from projectCustomerInfo group by projectCode,  convert(varchar,createDate, 112)
+							) i
+							ON p.projectCode = i.projectCode
+							LEFT OUTER JOIN
+							(
+								SELECT projectCode, left(convert(varchar,ceoDate,112),4) pjtYear
+								FROM sanctionDoc
+								WHERE (approvalType='A' or approvalType='PA') 
+								AND state='SANCTION_STATE_COMPLETE'
+							) d
+							ON p.projectCode = d.projectCode
+							LEFT OUTER JOIN
+							(
+								SELECT projectCode, ssn as pmSsn
+								FROM projectMember
+								WHERE role='PM' AND trainingYN='Y'
+							) m
+							ON p.projectCode = m.projectCode
+							WHERE 1=1
+		/~projectCode:			AND	projectCode = {projectCode}~/
+		/~projectName:			AND	projectName LIKE {projectName}~/
+		/~projectState:			AND projectState = {projectState}~/
+		/~businessTypeCode:		AND businessTypeCode = {businessTypeCode}~/
+		/~runningDivCode: 		AND	(runningDivCode = {runningDivCode} or refRunningDivCode = {runningDivCode})~/
+		/~industryTypeCode:		AND industryTypeCode = {industryTypeCode}~/	
+		/~realStartDate:	    AND  (  ({realStartDate} >= realStartDate or  ~/
+		/~realEndDate:			   		 {realEndDate} >= realStartDate ) and  ~/ 
+		/~realStartDate:                	   ({realStartDate} <= realEndDate or ~/ 
+		/~realEndDate:			   		 {realEndDate} <= realEndDate ) )  ~/
+		/~zero:					AND i.custCnt IS NULL~/
+		/~notZero:				AND i.custCnt IS NOT NULL~/
+		/~pjtYear:				AND pjtYear={pjtYear}~/
+							ORDER BY p.projectState, p.projectCode
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectSearchListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getProjectReportList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>assignDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 	p.projectcode, p.taskFormTypeId, B.workName name, p.seq, p.state,
+											p.assignDate, 
+											p.writeDate, p.writerSsn, e.name writerName, 
+											p.revieweDate, p.reviewerSsn, dbo.getExpertPoolName(p.reviewerSsn) reviewerName,
+											p.approveDate, p.approverSsn, dbo.getExpertPoolName(p.approverSsn) approverName
+									FROM projectReportContent p WITH(NOLOCK) LEFT OUTER JOIN projectReport b WITH(NOLOCK)
+									ON p.projectCode = b.projectCode
+										AND p.assignDate = b.year+b.month+b.day
+										--INNER JOIN projectScheduleM pld ON p.projectCode = pld.projectCode AND b.workSeq = pld.workSeq
+										INNER JOIN expertPool e ON p.writerSsn = e.ssn
+									WHERE 1=1
+		 			   /~writerName:   AND	e.name like {writerName}~/
+		 				/~from: 	   AND 	writeDate >= {from}~/
+					   /~until: 	   AND 	writeDate<={until}~/
+					   /~projectCode:  AND 	p.projectCode = {projectCode}	~/
+								 
+					  				ORDER BY p.assignDate desc, p.writerSsn					  				 
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectReportWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getProjectRollingMonitor">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>assignDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	b.projectCode, b.projectName, 
+											b.runningDeptCode as runningDivCode,
+											replace(replace((SELECT description FROM smGroup WHERE id = b.runningDeptCode),'본부',''),'센터','') as runningDiv,
+											b.businessTypeCode, c2.data_1 as businessTypeName, 
+											b.projectState, c1.data_1 projectStateName, b.realEndDate, 
+											a.surveySendDate, a.receiveDate, a.surveyEndDate, a.seq as customerSeq, a.customerWorkPEmail as receiveEmail,
+											(CASE WHEN b.projectState = '4' THEN datediff(day, convert(datetime,b.realEndDate), getDate()) ELSE '' END) evalDelayDate
+									FROM projectCsrInfo a
+									INNER JOIN project b
+									ON a.projectCode = b.projectCode
+									INNER JOIN cmTableData c1
+									ON b.projectState = c1.key_1
+									AND c1.table_name = 'PROJECT_STATE' 
+									INNER JOIN cmTableData c2
+									ON b.businessTypeCode = c2.key_1
+									AND c2.table_name = 'BUSINESS_TYPE_CODE' 
+									WHERE	1=1
+									  AND	b.projectState > '3'
+									  AND	b.processTypeCode <> 'N2'
+				/~businessTypeAll:    AND	(b.businessTypeCode='BTA' OR b.businessTypeCode='BTD' OR b.processTypeCode='N4' OR b.processTypeCode='DE')~/
+				/~businessTypeCode:	  AND	b.businessTypeCode = {businessTypeCode}~/
+				/~processTypeCode:	  AND	b.processTypeCode= {processTypeCode}~/
+				/~runningDivCode:	  AND	(b.runningDivCode = {runningDivCode} or b.refRunningDivCode = {runningDivCode})~/
+				/~runningDeptCode:	  AND	b.runningDeptCode = {runningDeptCode}~/
+				/~year:				  AND	substring(convert(varchar(10),surveySendDate,120),1,4) = {year}~/ 
+				/~month:			  AND	substring(convert(varchar(10),surveySendDate,120),6,2) = {month}~/ 
+				/~projectName:		  AND	b.projectName like {projectName}~/
+				/~isFinishYes:		  AND	surveyEndDate is not null~/
+				/~isFinishNo:		  AND	surveyEndDate is null~/
+									ORDER BY b.projectState, b.runningDeptCode, b.businessTypeCode, b.realEndDate 
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectRollingMonitorWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getProjectRollingPersonalMonitor">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>assignDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	b.projectCode, b.projectName,
+											b.runningDeptCode as runningDivCode,
+											replace(replace((SELECT description FROM smGroup WHERE id = b.runningDeptCode),'본부',''),'센터','') as runningDiv,
+											b.businessTypeCode, c2.data_1 as businessTypeName, 
+											b.projectState, c1.data_1 projectStateName, b.realEndDate, 
+											a.surveySendDate, a.receiveDate, a.surveyEndDate, a.seq as customerSeq, a.customerWorkPEmail as receiveEmail,
+											(CASE WHEN b.projectState = '4' THEN datediff(day, convert(datetime,b.realEndDate), getDate()) ELSE '' END) evalDelayDate,
+											isnull((case when b.processTypeCode in ('N1','N2') then
+												round(convert(real,p.answer1)+convert(real,p.answer2)+convert(real,p.answer3)+convert(real,p.answer4)+convert(real,p.answer5)+convert(real,p.answer6),2) 
+											 else
+												convert(real,p.answer3)+convert(real,p.answer4)+convert(real,p.answer5)+convert(real,p.answer6) 
+											 end), 0) as answer
+									FROM projectCsrInfo a
+									INNER JOIN project b
+									ON a.projectCode = b.projectCode
+									INNER JOIN cmTableData c1
+									ON b.projectState = c1.key_1
+									AND c1.table_name = 'PROJECT_STATE' 
+									INNER JOIN cmTableData c2
+									ON b.businessTypeCode = c2.key_1
+									AND c2.table_name = 'BUSINESS_TYPE_CODE'
+									INNER JOIN projectMember m
+									ON a.projectCode = m.projectCode
+									left join ProjectRolling p
+									on a.projectCode = p.projectCode
+									WHERE	1=1
+									  AND	b.projectState > '3'
+									  AND	b.processTypeCode <> 'N2'	
+				/~businessTypeAll:    AND	(b.businessTypeCode='BTA' OR b.businessTypeCode='BTD' OR b.processTypeCode='N4' OR b.processTypeCode='DE')~/ 
+				/~businessTypeCode:	  AND	b.businessTypeCode = {businessTypeCode}~/
+				/~processTypeCode:	  AND	b.processTypeCode= {processTypeCode}~/
+				/~year:				  AND	substring(convert(varchar(10),surveySendDate,120),1,4) = {year}~/ 
+				/~month:			  AND	substring(convert(varchar(10),surveySendDate,120),6,2) = {month}~/ 
+				/~projectName:		  AND	b.projectName like {projectName}~/
+				/~isFinishYes:		  AND	surveyEndDate is not null~/
+				/~isFinishNo:		  AND	surveyEndDate is null~/
+									  AND	((m.trainingYN='Y' AND m.role='PM') or (m.trainingYN='Y' AND m.role='AR'))
+				/~ssn:				  AND	m.ssn={ssn}~/
+									ORDER BY b.projectState, b.realEndDate desc, b.businessTypeCode, b.runningDeptCode
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectRollingMonitorWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getProjectReportMonthlyAnnualList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>dept</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								
+									select a.year, a.dept, a.deptName, a.jobClass, a.jobClassName,
+										a.M01 memberCnt01, a.M02 memberCnt02, a.M03 memberCnt03, a.M04 memberCnt04,
+										a.M05 memberCnt05, a.M06 memberCnt06, a.M07 memberCnt07, a.M08 memberCnt08,
+										a.M09 memberCnt09, a.M10 memberCnt10, a.M11 memberCnt11, a.M12 memberCnt12,
+										b.M01 preportCnt01, b.M02 preportCnt02, b.M03 preportCnt03, b.M04 preportCnt04,
+										b.M05 preportCnt05, b.M06 preportCnt06, b.M07 preportCnt07, b.M08 preportCnt08,
+										b.M09 preportCnt09, b.M10 preportCnt10, b.M11 preportCnt11, b.M12 preportCnt12
+									from (
+										select *
+										from (
+											select	r.year, r.month, r.dept, r.deptName,
+													r.jobClass, r.jobClassName,
+													memberCnt
+											from (
+												select year, 'M'+month month, r2.* from (
+													select year, month from CommonWorkDay 
+													where 1=1
+													/~year:	and	year = {year}~/
+												) r1 cross join (
+													select * from (
+														select id dept, ltrim(name) deptName, 'C' jobClass, '엑스퍼트' jobClassName
+														from smGroup
+														where id in ('2110','2310','2150','2380','2120','2130','2140','2370','2160','2390','2670','2320','2360')
+														union
+														select id dept, ltrim(name) deptName, 'J' jobClass, '전문가그룹' jobClassName
+														from smGroup
+														where id in ('2110','2310','2150','2380','2120','2130','2140','2370','2160','2390','2670','2320','2360')
+													) e
+												) r2
+											) r left outer join (
+												select	year, 'M'+month month, dept, deptName,
+														jobClass, 
+														count(distinct ssn) as memberCnt
+												from (
+													select year, month, p.runningDivCode as dept, ltrim(s.name) deptName, h.jobClass, h.ssn 
+													from projectReportHistoryInfo h 
+													inner join project p
+													on h.projectCode = p.projectCode 
+													inner join smGroup s
+													on p.runningDivCode = s.id
+													where 1=1
+													/~year:	and	year = {year}~/
+													and ((h.approveDate <> '' and h.state='approver') or h.state='complete') 
+													and h.jobClass in ('C', 'J')
+												) r
+												group by year, month, dept, deptName, jobClass
+											) d
+											on r.dept = d.dept
+											and r.jobClass = d.jobClass
+											and r.year = d.year
+											and r.month = d.month
+										) r
+										pivot ( SUM(memberCnt)	FOR month IN (M01,M02,M03,M04,M05,M06,M07,M08,M09,M10,M11,M12)) as pvt1
+									) a inner join (
+										select *
+										from (
+											select	r.year, r.month, r.dept, r.deptName,
+													r.jobClass, r.jobClassName,
+													preportCnt
+											from (
+												select year, 'M'+month month, r2.* from (
+													select year, month from CommonWorkDay 
+													where 1=1
+													/~year:	and	year = {year}~/
+												) r1 cross join (
+													select * from (
+														select id dept, ltrim(name) deptName, 'C' jobClass, '엑스퍼트' jobClassName
+														from smGroup
+														where id in ('2110','2310','2150','2380','2120','2130','2140','2370','2160','2390','2670','2320','2360')
+														union
+														select id dept, ltrim(name) deptName, 'J' jobClass, '전문가그룹' jobClassName
+														from smGroup
+														where id in ('2110','2310','2150','2380','2120','2130','2140','2370','2160','2390','2670','2320','2360')
+													) e
+												) r2
+											) r left outer join (
+												select	year, 'M'+month month, dept, deptName,
+														jobClass, 
+														count(*) as preportCnt
+												from (
+													select year, month, p.runningDivCode as dept, ltrim(s.name) deptName, h.jobClass, h.ssn 
+													from projectReportHistoryInfo h 
+													inner join project p
+													on h.projectCode = p.projectCode 
+													inner join smGroup s
+													on p.runningDivCode = s.id
+													where 1=1
+													/~year:	and	year = {year}~/
+													and ((h.approveDate <> '' and h.state='approver') or h.state='complete') 
+													and h.jobClass in ('C', 'J')
+												) r
+												group by year, month, dept, deptName, jobClass
+											) d
+											on r.dept = d.dept
+											and r.jobClass = d.jobClass
+											and r.year = d.year
+											and r.month = d.month
+										) r
+										pivot ( SUM(preportCnt)	FOR month IN (M01,M02,M03,M04,M05,M06,M07,M08,M09,M10,M11,M12)) as pvt1
+									) b
+									on a.year = b.year
+									and a.dept = b.dept
+									and a.jobClass = b.jobClass
+									order by 1, 2, 3, 4 desc
+
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="projectReportMonthlyAnnualWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getWeeklyReportList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>assignDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT projectCode
+								      ,assignDate
+								      ,assignYear
+								      ,assignMonth
+								      ,assignWeekOfMonth
+								      ,weekOfProject
+								      ,realProgress
+								      ,planProgress
+								      ,progressRatio
+								      ,thisWeekFromDate
+								      ,thisWeekToDate
+								      ,nextWeekFromDate
+								      ,nextWeekToDate
+								      ,attach
+								      ,state
+								      ,writerSsn, writerName, writeDate
+								      ,reviewerSsn, reviewerName, revieweDate
+								      ,approverSsn, approverName, approveDate
+								  FROM ProjectWeeklyReport WITH(NOLOCK)
+ 								WHERE 1=1
+		 			   /~writerName:   AND	writerName like {writerName}~/
+		 				/~from: 	   AND 	writeDate >= {from}~/
+					   /~until: 	   AND 	writeDate<={until}~/
+					   /~projectCode:  AND 	projectCode = {projectCode}	~/
+					   /~state: 	   AND 	state = {state}	~/
+					  			ORDER BY 3 desc,4 desc,5 desc
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="weeklyReportWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getWeeklyReportStatus">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>assignDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								select  a.projectCode, a.projectName, a.projectState, a.projectStateStr, 
+										a.preStartDate, a.preEndDate,
+									    a.runningDivCode, a.runningDeptCode,
+									    b.writerName, b.writerCnt, b.reviewerCnt, b.approverCnt, b.completeCnt
+								from (
+								    select  projectCode, projectName, projectState, dbo.getCommonCodeToData('PROJECT_STATE' ,projectState) as projectStateStr, 
+										  preStartDate, preEndDate,
+										  runningDivCode, runningDeptCode
+								    from project p                                                             
+								    where projectTypeCode = 'MM'
+						/~runningDivCode: and runningDivCode = {runningDivCode}~/
+					   /~runningDeptCode: and runningDeptCode = {runningDeptCode}~/
+		 			      /~projectState: and projectState = {projectState}~/
+						   /~projectName: and projectName like {projectName}~/
+						   /~projectCode: and projectCode = {projectCode}~/
+								) a left outer join (
+								    select projectcode, writerName, sum(writerCnt) writerCnt, sum(reviewerCnt) reviewerCnt, sum(approverCnt) approverCnt, sum(completeCnt) completeCnt
+								    from (
+									   select projectcode, writerName,
+											case when state = 'writer'   then 1 else 0 end as writerCnt,
+											case when state = 'reviewer' then 1 else 0 end as reviewerCnt,
+											case when state = 'approver' then 1 else 0 end as approverCnt,
+											case when state = 'complete' then 1 else 0 end as completeCnt
+									   from ProjectWeeklyReport
+									   where 1=1
+							   /~fromDate: and assignDate >= {fromDate}~/
+							   	 /~toDate: and assignDate <= {toDate}~/
+								    ) res
+								    group by projectcode, writerName
+								) b
+								on a.projectCode = b.projectCode
+								order by 1		  				 
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="weeklyReportStatusWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="getMonthlyReportList">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" /> 
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>10</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>assignDate</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT projectCode
+								      ,assignDate
+								      ,assignYear
+								      ,assignMonth
+								      ,reportTitle
+								      ,reportContent
+								      ,etcContent
+								      ,attach
+								      ,state
+								      ,writerSsn, writerName, writeDate
+								      ,reviewerSsn, reviewerName, revieweDate
+								      ,approverSsn, approverName, approveDate
+								  FROM ProjectMonthlyReport WITH(NOLOCK)
+ 								WHERE 1=1
+		 			   /~writerName:   AND	writerName like {writerName}~/
+		 				/~from: 	   AND 	writeDate >= {from}~/
+					   /~until: 	   AND 	writeDate<={until}~/
+					   /~projectCode:  AND 	projectCode = {projectCode}	~/
+					   /~state: 	   AND 	state = {state}	~/
+					  			ORDER BY 1 desc,4 desc
+					 			]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="monthlyReportWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="projectReportMonthlyAnnualWrapper"	class="kr.co.kmac.pms.project.preport.vl.ProjectReportMonthlyAnnualWrapper" />
+	<bean id="projectReportWrapper" 				class="kr.co.kmac.pms.project.preport.vl.ProjectReportWrapper" />
+	<bean id="projectSearchListWrapper" 			class="kr.co.kmac.pms.project.master.vl.ProjectSearchListWrapper" />
+	<bean id="progessEntityListWrapper" 			class="kr.co.kmac.pms.project.progress.vl.ProjectProgressEntityListWrapper" />
+	<bean id="myProjectListWrapper" 				class="kr.co.kmac.pms.project.myproject.vl.MyProjectListWrapper" />
+	<bean id="projectWorkNameWrapper" 				class="kr.co.kmac.pms.project.master.vl.ProjectWorkNameWrapper" />
+	<bean id="projectMemberWrapper" 				class="kr.co.kmac.pms.project.master.vl.ProjectMemberWrapper" />
+	<bean id="erpProjectListWrapper" 				class="kr.co.kmac.pms.project.master.vl.ErpProjectListWrapper"/>
+	<bean id="registerProjectListWrapper" 			class="kr.co.kmac.pms.project.master.vl.RegisterProjectListWrapper"/>		
+	<bean id="projectRollingMonitorWrapper" 		class="kr.co.kmac.pms.project.endprocess.vl.ProjectRollingMonitorWrapper"/>		
+	<bean id="weeklyReportWrapper"			 		class="kr.co.kmac.pms.project.wreport.vl.WeeklyReportWrapper"/>
+	<bean id="weeklyReportStatusWrapper"			class="kr.co.kmac.pms.project.wreport.vl.WeeklyReportStatusWrapper"/>		
+	<bean id="monthlyReportWrapper"			 		class="kr.co.kmac.pms.project.mreport.vl.MonthlyReportWrapper"/>
+</beans>

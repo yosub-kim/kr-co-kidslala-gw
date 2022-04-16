@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--  - Application context definition  -->
+<beans>
+	<bean id="projectExpenseSalary" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="getExpenseRealTimeResultDetailForSanction">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>2147483647</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>jobClass</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+
+select   substring(yearMonth, 1, 4) year, substring(yearMonth, 5, 6) month, 
+               jobClass, salaryDeptType, dept, name, res.ssn, dbo.getCommonCodeToData('EMP_WORKING_TYPE', JOBCLASS) AS jobClassDesc,
+               (select data_2 from cmTableData where table_name='EMP_WORKING_TYPE' and key_1=jobClass) as jobClassErp, 
+               projectCode, projectName, isNull(preportCount,0) as preportCount, isNull(cost,0) as cost, isNull(resRate,0) as resRate,
+               isNull(realTimeSalaryEachProject,0) as realTimeSalaryEachProject, isNull(sum(realTimeSalaryEachProject) over (partition by res.ssn),0) as totalRealTimeSalary, 
+               isNull(isHolding,0) as isHolding, isNull(isExceed,0) as isExceed,
+               'N' as isMMExceed,
+               isNull((select sum(convert(float, amount))
+                  from projectTeachingFeeMDetail d
+                  where 1=1
+                  and billSendYN = 'Y'
+                  and d.projectCode = res.projectCode
+                  and d.chargeSsn = res.ssn
+                  group by projectCode, chargeSsn
+               ),0) + realTimeSalaryEachProject as cumulativeRealTimeSalaryEachProject,
+              	isNull(cost,0) as totalSalaryBudget,              
+               type, count(res.ssn) over (partition by res.ssn) ssnCnt
+         from 
+         (
+         
+            select * 
+            from 
+            (
+               select   (teachingFee.year+teachingFee.month) yearMonth
+                     , teachingFee.projectCode, project.projectName, project.businessTypeCode, '-' as preportCount
+                     , expertPool.jobclass, expertPool.name, expertPool.ssn, project.runningDeptCode as dept
+                     , (case when substring(project.runningDeptCode, 1, 3) = substring(expertpool.dept, 1, 3) then '001' else '002' end) salaryDeptType
+                     , (select top 1 cost from projectMember where projectCode = teachingFee.projectCode and ssn = teachingFee.ssn order by cost desc) as cost
+                     , (select top 1 resRate from projectMember where projectCode = teachingFee.projectCode and ssn = teachingFee.ssn order by resRate desc) resRate
+                     , teachingFee.totalRealTimeSalary as realTimeSalaryEachProject
+                     , sum(convert(real, totalRealTimeSalary)) over(partition by expertPool.dept, expertPool.ssn)   as totalRealTimeSalary
+                     , isExceed as isExceed, 'N' as isHolding   
+                     , 'KEYIN' as type                   
+               from    expertPool expertPool, project project, 
+                     ( 
+                        select    p.projectCode, p.year, p.month, p.chargeSsn as ssn, sum(convert(real, p.amount)) as totalRealTimeSalary, p.isExceed
+                        from    projectTeachingFeeMDetail p, projectMember m
+                        where    p.projectCode = m.projectCode
+                        and      m.role = 'AR' and m.trainingYN = 'Y'
+                        and      convert(real, p.amount) > 0
+                        /~year:	and		year = {year}~/
+					   /~month:	and		month = {month}~/
+						/~init: and 	approvalYN = 'N' and	ctmCheckYN = 'N' ~/
+					 /~refresh:	and 	approvalYN = 'N' ~/
+					   /~arSsn:	and 	m.ssn = {arSsn}~/
+                        group    by p.projectCode, year, month, chargeSsn, p.isExceed
+                     ) teachingFee
+               where expertPool.ssn = teachingFee.ssn
+               and project.projectCode = teachingFee.projectCode
+            ) res2
+         ) res            
+         order by res.jobclass, res.name, res.ssn, res.isExceed desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expenseRealTimeResultDetailForSanctionWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getExpenseRealTimeRestResultDetailForSanction">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>2147483647</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>jobClass</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+select	substring(yearMonth, 1, 4) year, substring(yearMonth, 5, 6) month, 
+					jobClass, salaryDeptType, dept, name, res.ssn, dbo.getCommonCodeToData('EMP_WORKING_TYPE', JOBCLASS) AS jobClassDesc,
+					(select data_2 from cmTableData where table_name='EMP_WORKING_TYPE' and key_1=jobClass) as jobClassErp, 
+					projectCode, projectName, isNull(preportCount, 0) as preportCount, isNull(cost, 0) as cost, isNull(resRate, 0) as resRate,
+					isNull(realTimeSalaryEachProject,0) as realTimeSalaryEachProject, isNull(sum(realTimeSalaryEachProject) over (partition by res.ssn),0) as totalRealTimeSalary, 
+					isNull(isHolding, 0) as isHolding, isNull(isExceed, 0) as isExceed,
+					round(isNull(mmValue.mmValueRatio,0),2) mmValueRatio,
+					(case when isNull(mmValue.mmValueRatio,0) > 1 then 'Y' else 'N' end) isMMExceed,
+					isNull((select sum(convert(float, amount))
+						from projectTeachingFeeMDetail d
+						where 1=1
+						and billSendYN = 'Y'
+						and d.projectCode = res.projectCode
+						and d.chargeSsn = res.ssn
+						group by projectCode, chargeSsn
+					),0) + 
+					isNull((
+						select 	sum(convert(float, p.amount))
+						from 	projectTeachingFeeMDetail p, projectMember m
+						where 	p.projectCode = m.projectCode
+						and		m.role = 'AR' and m.trainingYN = 'Y'
+						and		p.amount <> ''
+				/~year:	and		year = {year}~/
+			   /~month:	and		month = {month}~/
+						and 	ctmCheckYN = 'Y' /* COO가 성과급 품의 실행 */
+						and		p.projectCode = res.projectCode
+						and		p.chargeSsn = res.ssn
+						group 	by p.projectCode, year, month, chargeSsn
+					),0) +					
+					realTimeSalaryEachProject as cumulativeRealTimeSalaryEachProject,
+					isNull(round((
+						/* 최종 버전 예산 */
+						SELECT MM.TOTALAMT
+						FROM (
+								SELECT PROJID, EMP.EMPNO, MST.ENTNO
+								FROM DW_PROJECTMST MST, DW_PROJECTWORKMAN EMP
+								WHERE MST.ENTNO = EMP.ENTNO
+								AND MST.ENTNO IN 
+									(SELECT TOP 1 ENTNO FROM DW_PROJECTMST 
+									 WHERE PROJID=res.projectCode AND ACPTTYPE = '1' ORDER BY INPUTDATE DESC)
+								GROUP BY MST.PROJID, EMP.EMPNO, MST.ENTNO
+						) MST,
+						/* 투입 인력별 총 인건비 */
+						(
+								/* MM형 */
+								SELECT	ENTNO, EMPNO, RATE,
+										SUM(WORKMD) AS TOTALWORKING,
+										SUM(AMT) AS TOTALAMT  
+								FROM  
+								(  
+									SELECT	A.ENTNO,A.EMPNO,   
+									A.RATE,A.WORKMD,A.INSENAMT AS AMT  
+									FROM DW_PROJECTWORKMAN_MM A  
+									WHERE 1=1
+									AND ENTNO in (SELECT ENTNO FROM DW_PROJECTMST WHERE ACPTTYPE = '1' AND OPTYPE = '01')  
+								)B  
+								GROUP BY ENTNO, EMPNO, RATE
+
+								UNION
+
+								/* MD형, MH형 */
+								SELECT	ENTNO, EMPNO, RATE,
+										SUM(WORKMD)AS TOTALWORKING,
+										SUM(AMT)/COUNT(AMT)*SUM(WORKMD)AS TOTALAMT  
+								FROM  
+								(  
+									SELECT	A.ENTNO,A.EMPNO, 
+									A.RATE,A.WORKMD,A.INSENAMT+A.STDAMT AS AMT  
+									FROM DW_PROJECTWORKMAN_MM A  
+									WHERE 1=1									
+									AND ENTNO in (SELECT ENTNO FROM DW_PROJECTMST WHERE ACPTTYPE = '1' AND (OPTYPE IS NULL OR OPTYPE <> '01'))
+								)B  
+								GROUP BY ENTNO, EMPNO, RATE
+						) MM
+						WHERE MST.ENTNO = MM.ENTNO
+						AND MST.EMPNO = MM.EMPNO
+						AND MST.EMPNO = res.ssn
+						AND MST.PROJID = projectCode
+						AND MM.TOTALAMT > 0
+					),2),0) totalSalaryBudget,					
+					type
+			from 
+			(
+				select * 
+				from 
+				(
+					select	(teachingFee.year+teachingFee.month) yearMonth
+							, teachingFee.projectCode, project.projectName, project.businessTypeCode, '-' as preportCount
+							, expertPool.jobclass, expertPool.name, expertPool.ssn, project.runningDeptCode as dept
+							, (case when substring(project.runningDeptCode, 1, 3) = substring(expertpool.dept, 1, 3) then '001' else '002' end) salaryDeptType
+							, (select top 1 cost from projectMember where projectCode = teachingFee.projectCode and ssn = teachingFee.ssn order by cost desc) as cost
+							, (select top 1 resRate from projectMember where projectCode = teachingFee.projectCode and ssn = teachingFee.ssn order by resRate desc) as resRate
+							, teachingFee.totalRealTimeSalary as realTimeSalaryEachProject
+							, sum(convert(real, totalRealTimeSalary)) over(partition by expertPool.dept, expertPool.ssn)	as totalRealTimeSalary
+							, isExceed as isExceed, 'N' as isHolding	
+							, 'KEYIN' as type 						
+					from 	expertPool expertPool, project project, 
+							( 
+								select 	p.projectCode, p.year, p.month, p.chargeSsn as ssn, sum(convert(real, p.amount)) as totalRealTimeSalary, p.isExceed
+								from 	ProjectTeachingRestFeeDetail p, projectMember m
+								where 	p.projectCode = m.projectCode
+								and		m.role = 'AR' and m.trainingYN = 'Y'
+								and		convert(real, p.amount) > 0
+						/~year:	and		year = {year}~/
+					   /~month:	and		month = {month}~/
+						/~init: and 	approvalYN = 'N' and	ctmCheckYN = 'N' ~/
+					 /~refresh:	and 	approvalYN = 'N' ~/
+					   /~arSsn:	and 	m.ssn = {arSsn}~/
+								group 	by p.projectCode, year, month, chargeSsn, p.isExceed
+							) teachingFee
+					where expertPool.ssn = teachingFee.ssn
+					and project.projectCode = teachingFee.projectCode
+				) res2
+			) res
+			left outer join 
+			(
+				select	res.ssn, res.year, res.month,
+						sum(res.mmValueAdd) mmValueRatio
+				from (
+					/* MD, MH 실적 값 */
+					select	writerSsn as ssn,
+							left(YYYYMM,4) as year, right(YYYYMM,2) month,  
+							(case when projectTypeCode = 'MD' then count(projectTypeCode) 
+									when projectTypeCode = 'ED' then sum(time)
+							else 0 end) as mmValue,
+							(case when projectTypeCode = 'MD' then round((convert(float, count(projectTypeCode)) / 20 ), 2)
+									when projectTypeCode = 'ED' then round((convert(float, (sum(time)) / 8) / 20), 2)
+							else 0 end) as mmValueAdd
+					from (
+						select	report.projectCode, left(report.assignDate,6) as YYYYMM, report.writerSsn, 
+								convert(int, isNull(reportTime.time,0)) as time
+						from projectReportContent report
+						left outer join
+						(
+							select projectCode, (year+month+day) as assignDate, chargeSsn, time
+							from ProjectReportDetail
+							where time is not null and time <> ''
+						) reportTime
+						on report.projectCode = reportTime.projectCode 
+						and report.assignDate = reportTime.assignDate 
+						and report.writerSsn = reportTime.chargeSsn
+						where 1=1
+						and report.state = 'complete'
+						and report.payYN = 'Y'
+	/~assignDate:		and report.assignDate like {assignDate}~/
+					) res
+					inner join Project p
+					on res.projectCode = p.projectCode
+					where 1=1
+					group by p.projectTypeCode, res.YYYYMM, res.writerSsn
+										
+					UNION
+					
+					/* MM 실적 값  */
+					SELECT ssn, year, month, sum(mmValue) mmValue, sum(mmValue) mmValueAdd
+					FROM projectMemberMMPlan
+					WHERE 1=1
+					AND	  trainingYN = 'Y'
+					AND	  checkYN = 'Y'
+			/~year:	AND	  year = {year}~/
+		   /~month:	AND	  month = {month}~/
+					GROUP BY ssn, year, month
+				) res
+				GROUP BY res.ssn, res.year, res.month
+			) mmValue
+			on res.ssn = mmValue.ssn
+			order by res.jobclass, res.name, res.ssn, res.isExceed desc
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expenseRealTimeResultDetailForSanctionWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				
+				<entry key="getKMExpenseResultDetailForSanction">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>2147483647</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>name</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+select	substring(yearMonth, 1, 4) year, substring(yearMonth, 5, 6) month, '' salaryDeptType,
+		jobclass, dept, name, ssn, dbo.getCommonCodeToData('EMP_WORKING_TYPE', JOBCLASS) AS jobclassDesc,
+		(select data_2 from cmTableData where table_name='EMP_WORKING_TYPE' and key_1=jobClass) as jobClassErp,
+		projectCode, projectName, preportCount,  cost, resRate,
+		realTimeSalaryEachProject, totalRealTimeSalary, isHolding, type
+from 
+(
+	select *, 
+			'' as isHolding, 'PREPORT' as type 
+	from (
+		select 	yearMonth, projectCode, projectName, businessTypeCode, preportCount, jobclass, name, ssn, dept, cost, resRate, 
+				realTimeSalaryEachProject, sum(convert(real, realTimeSalaryEachProject)) over(partition by ssn) as totalRealTimeSalary
+		from ( 
+			select 	yearMonth, projectCode, projectName, businessTypeCode, 
+					jobclass, name, ssn, dept, 
+					sum(eachSalary) as realTimeSalaryEachProject,
+					(case when businessTypeCode ='BTE' or businessTypeCode ='BTI' then
+							convert(varchar,sum(convert(int,time))) + '시간'
+						  else convert(varchar,count(assignDate))
+					end) as preportCount, convert(real,cost) cost, resRate
+					--dbo.getProjectCost(ssn, projectCode) as cost,
+					--dbo.getProjectResRate(ssn, projectCode) as resRate
+			from (
+				select	report.yearMonth, report.projectCode, projectName, report.businessTypeCode, 
+						report.arSsn, report.jobclass, report.ssn, report.name, report.companyPosition, report.dept, report.rate, report.cost,  
+						report.assignDate, report.payAmount, preTime.time, report.resRate,
+						(case	when	(report.businessTypeCode = 'BTA' or report.businessTypeCode = 'BTB' or report.businessTypeCode = 'BTC' 
+											or  report.businessTypeCode = 'BTD' or report.businessTypeCode = 'BTF') 
+								then 	convert(int, (convert(real, report.resRate) * convert(real, report.cost) * convert(real, report.payAmount)))
+								else	convert(int, (convert(real, report.cost) * convert(real, report.resRate) * convert(real, preTime.time)))
+						 end) as eachSalary
+				 from 
+				(
+					select	substring(projectReportContent.assignDate, 1, 6) as yearMonth, 
+							project.projectCode, project.projectName, project.businessTypeCode, projectMember.ssn as arSsn,
+							expertpool.ssn, expertpool.dept, expertPool.name, expertPool.rate, expertPool.jobClass, expertPool.companyPosition, 
+							dbo.getProjectCost(expertpool.ssn, project.projectCode) as cost,
+							dbo.getProjectResRate(expertpool.ssn, project.projectCode) as resRate,
+							projectReportContent.assignDate, projectReportContent.writerSsn, projectReportContent.writeDate, projectReportContent.approveDate, 
+							(case	when projectReportContent.payAmount is null then '1' 
+									when projectReportContent.payAmount = '' then '1'
+									else projectReportContent.payAmount   
+							 end) as payAmount 
+					from	project project, projectReportContent projectReportContent, expertPool expertPool, projectMember projectMember
+					where	project.projectCode = projectReportContent.projectCode
+					and		expertPool.ssn = projectReportContent.writerSsn
+					and		projectMember.projectCode = project.projectCode
+					and		projectMember.role = 'AR' and projectMember.trainingYN = 'Y'
+					and		projectReportContent.payYn = 'Y'
+					and		projectReportContent.state = 'complete'
+					and		projectReportContent.isExceed = 'N'
+					and		(projectReportContent.groupCheck is null or projectReportContent.groupCheck = 'N')
+					and		(expertPool.jobClass = 'C' or expertPool.jobClass = 'J' or expertPool.jobClass = 'H') 
+	 /~refresh:		and		(projectReportContent.isSanction = 'ING' or projectReportContent.isSanction is null)~/
+		/~init:		and		projectReportContent.isSanction is null~/
+/~assignDate:		and 	assignDate like {assignDate}~/
+	  /~arSsn:		and 	projectMember.ssn = {arSsn}~/
+				) report
+				left outer join
+				(
+					select	projectCode, year+month+day as date, chargeSsn, 
+							(case	when time is null then '8' 
+								when time = '' then '8' else time  
+							 end) as time
+					from	projectReportDetail
+					where	chargeSsn <> ''
+				) preTime
+				on	preTime.projectCode = report.projectCode
+				and	preTime.chargeSsn = report.ssn
+				and	preTime.date = report.assignDate
+			) re
+			group by yearMonth, projectCode, projectName, businessTypeCode, name, ssn, dept, jobclass, cost, resRate
+		) f
+	) res1
+) res
+order by jobclass, name, ssn
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="expenseRealTimeResultDetailForSanctionWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+
+			</map>
+		</property>
+	</bean>
+
+	<bean id="expenseRealTimeResultDetailForSanctionWrapper" class="kr.co.kmac.pms.sanction.projectexpense.vl.ExpenseRealTimeResultDetailForSanctionWrapper" />
+</beans>

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+	<!--  - Application context definition  -->
+<beans>
+	<bean id="attachDataSelectListBean" singleton="true" class="net.mlw.vlh.DefaultValueListHandlerImpl">
+		<property name="config.adapters">
+			<map>
+				<entry key="attachDataSelectListEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT seq, taskId, projectCode, taskFormTypeId, 
+								attachCreateDate, attachCreatorId, (select name from expertpool where ssn = attachCreatorId) attachCreatorName, attachSeq, attachWorkName, 
+								attachOutputName, attachFileId, (case when attachOutputType='' then 0 else attachIsEssential end) attachIsEssential, attachFileName, 
+								(case when attachOutputType='' then 'ETC' else attachOutputType end) attachOutputType, (select data_1 from cmTableData 
+															where table_name = 'OUTPUT_TYPE_CODE' 
+															and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end) 
+															and key_2 = attachOutputBusType) as attachOutputTypeName,
+								attachOutputBusType, (select data_2 from cmTableData 
+																where table_name = 'OUTPUT_TYPE_CODE' 
+																and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end)
+																and key_2 = attachOutputBusType) as attachOutputBusTypeName,
+								attachFileIndex1, attachFileIndex2, attachFileIndex3, attachFileIndex4 , attachCount
+								FROM ProjectTaskFormAttachData
+								WHERE attachFileId IS NOT NULL AND attachFileId <> ''
+								/~taskId: AND taskId = {taskId}~/
+								/~projectCode: AND projectCode = {projectCode}~/
+								/~taskFormTypeId: AND taskFormTypeId = {taskFormTypeId}~/
+								/~attachCreateDate: AND attachCreateDate = {attachCreateDate}~/
+								/~attachCreatorId: AND attachCreatorId = {attachCreatorId}~/
+								/~attachSeq: AND attachSeq = {attachSeq}~/
+								/~attachWorkName: AND attachWorkName like {attachWorkName}~/
+								/~attachOutputName: AND attachOutputName like {attachOutputName}~/
+								/~attachFileId: AND attachFileId = {attachFileId}~/
+								/~attachIsEssential: AND attachIsEssential = {attachIsEssential}~/
+								/~attachFileName: AND attachFileName like {attachFileName}~/
+								/~attachOutputType: AND attachOutputType = {attachOutputType}~/
+								/~attachOutputBusType: AND attachOutputBusType = {attachOutputBusType}~/
+								/~attachOutputBusTypeOther: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ'~/
+								/~attachOutputBusTypeAttach: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ' AND attachOutputBusType <> 'BT3'~/
+								/~attachFileIndex1: AND attachFileIndex1 = {attachFileIndex1}~/
+								/~attachFileIndex2: AND attachFileIndex2 = {attachFileIndex2}~/
+								/~attachFileIndex3: AND attachFileIndex3 = {attachFileIndex3}~/
+								/~attachFileIndex4: AND attachFileIndex4 = {attachFileIndex4}~/
+								ORDER BY attachOutputBusType, attachSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="attachDataSelectListEntry_exc">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT seq, taskId, projectCode, taskFormTypeId, 
+								attachCreateDate, attachCreatorId, (select name from expertpool where ssn = attachCreatorId) attachCreatorName, attachSeq, attachWorkName, 
+								attachOutputName, attachFileId, (case when attachOutputType='' then 0 else attachIsEssential end) attachIsEssential, attachFileName, 
+								(case when attachOutputType='' then 'ETC' else attachOutputType end) attachOutputType, (select data_1 from cmTableData 
+															where table_name = 'OUTPUT_TYPE_CODE' 
+															and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end) 
+															and key_2 = attachOutputBusType) as attachOutputTypeName,
+								attachOutputBusType, (select data_2 from cmTableData 
+																where table_name = 'OUTPUT_TYPE_CODE' 
+																and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end)
+																and key_2 = attachOutputBusType) as attachOutputBusTypeName,
+								attachFileIndex1, attachFileIndex2, attachFileIndex3, attachFileIndex4 , attachCount
+								FROM ProjectTaskFormAttachData
+								WHERE attachFileId IS NOT NULL AND attachFileId <> ''
+								/~taskId: AND taskId = {taskId}~/
+								/~projectCode: AND projectCode = {projectCode}~/
+								/~taskFormTypeId: AND taskFormTypeId = {taskFormTypeId}~/
+								/~attachCreateDate: AND attachCreateDate = {attachCreateDate}~/
+								/~attachCreatorId: AND attachCreatorId = {attachCreatorId}~/
+								/~attachSeq: AND attachSeq = {attachSeq}~/
+								/~attachWorkName: AND attachWorkName like {attachWorkName}~/
+								/~attachOutputName: AND attachOutputName like {attachOutputName}~/
+								/~attachFileId: AND attachFileId = {attachFileId}~/
+								/~attachIsEssential: AND attachIsEssential = {attachIsEssential}~/
+								/~attachFileName: AND attachFileName like {attachFileName}~/
+								/~attachOutputType: AND attachOutputType = {attachOutputType}~/
+								/~attachOutputBusType: AND attachOutputBusType = {attachOutputBusType}~/
+								/~attachOutputBusTypeOther: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ'~/
+								/~attachOutputBusTypeAttach: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ' AND attachOutputBusType <> 'BT3'~/
+								/~attachFileIndex1: AND attachFileIndex1 = {attachFileIndex1}~/
+								/~attachFileIndex2: AND attachFileIndex2 = {attachFileIndex2}~/
+								/~attachFileIndex3: AND attachFileIndex3 = {attachFileIndex3}~/
+								/~attachFileIndex4: AND attachFileIndex4 = {attachFileIndex4}~/
+								AND attachOutputName not like '%비공개%' 
+								AND attachOutputType != 'PROPOSAL'
+								ORDER BY attachOutputBusType, attachSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="attachDataSelectListEntry2">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT seq, taskId, projectCode, taskFormTypeId, 
+								attachCreateDate, attachCreatorId, (select name from expertpool where ssn = attachCreatorId) attachCreatorName, attachSeq, attachWorkName, 
+								attachOutputName, attachFileId, (case when attachOutputType='' then 0 else attachIsEssential end) attachIsEssential, attachFileName, 
+								(case when attachOutputType='' then 'ETC' else attachOutputType end) attachOutputType, (select data_1 from cmTableData 
+															where table_name = 'OUTPUT_TYPE_CODE' 
+															and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end) 
+															and key_2 = attachOutputBusType) as attachOutputTypeName,
+								attachOutputBusType, (select data_2 from cmTableData 
+																where table_name = 'OUTPUT_TYPE_CODE' 
+																and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end)
+																and key_2 = attachOutputBusType) as attachOutputBusTypeName,
+								attachFileIndex1, attachFileIndex2, attachFileIndex3, attachFileIndex4 , attachCount
+								FROM ProjectTaskFormAttachData
+								WHERE attachFileId IS NOT NULL AND attachFileId <> ''
+								/~taskId: AND taskId = {taskId}~/
+								/~projectCode: AND projectCode = {projectCode}~/
+								/~taskFormTypeId: AND taskFormTypeId = {taskFormTypeId}~/
+								/~attachCreateDate: AND attachCreateDate = {attachCreateDate}~/
+								/~attachCreatorId: AND attachCreatorId = {attachCreatorId}~/
+								/~attachSeq: AND attachSeq = {attachSeq}~/
+								/~attachWorkName: AND attachWorkName like {attachWorkName}~/
+								/~attachOutputName: AND attachOutputName like {attachOutputName}~/
+								/~attachFileId: AND attachFileId = {attachFileId}~/
+								/~attachIsEssential: AND attachIsEssential = {attachIsEssential}~/
+								/~attachFileName: AND attachFileName like {attachFileName}~/
+								/~attachOutputType: AND attachOutputType = {attachOutputType}~/
+								/~attachOutputBusType: AND attachOutputBusType = {attachOutputBusType}~/
+								/~attachOutputBusTypeOther: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ'~/
+								/~attachOutputBusTypeAttach: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ' AND attachOutputBusType <> 'BT3'~/
+								/~attachFileIndex1: AND attachFileIndex1 = {attachFileIndex1}~/
+								/~attachFileIndex2: AND attachFileIndex2 = {attachFileIndex2}~/
+								/~attachFileIndex3: AND attachFileIndex3 = {attachFileIndex3}~/
+								/~attachFileIndex4: AND attachFileIndex4 = {attachFileIndex4}~/
+								AND taskId like '%tax%'
+								ORDER BY attachOutputBusType, attachSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="attachDataSelectListEntry3">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+								SELECT seq, taskId, projectCode, taskFormTypeId, 
+								attachCreateDate, attachCreatorId, (select name from expertpool where ssn = attachCreatorId) attachCreatorName, attachSeq, attachWorkName, 
+								attachOutputName, attachFileId, (case when attachOutputType='' then 0 else attachIsEssential end) attachIsEssential, attachFileName, 
+								(case when attachOutputType='' then 'ETC' else attachOutputType end) attachOutputType, (select data_1 from cmTableData 
+															where table_name = 'OUTPUT_TYPE_CODE' 
+															and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end) 
+															and key_2 = attachOutputBusType) as attachOutputTypeName,
+								attachOutputBusType, (select data_2 from cmTableData 
+																where table_name = 'OUTPUT_TYPE_CODE' 
+																and key_1 = (case when attachOutputType='' then 'ETC' else attachOutputType end)
+																and key_2 = attachOutputBusType) as attachOutputBusTypeName,
+								attachFileIndex1, attachFileIndex2, attachFileIndex3, attachFileIndex4 , attachCount
+								FROM ProjectTaskFormAttachData
+								WHERE attachFileId IS NOT NULL AND attachFileId <> ''
+								/~taskId: AND taskId = {taskId}~/
+								/~projectCode: AND projectCode = {projectCode}~/
+								/~taskFormTypeId: AND taskFormTypeId = {taskFormTypeId}~/
+								/~attachCreateDate: AND attachCreateDate = {attachCreateDate}~/
+								/~attachCreatorId: AND attachCreatorId = {attachCreatorId}~/
+								/~attachSeq: AND attachSeq = {attachSeq}~/
+								/~attachWorkName: AND attachWorkName like {attachWorkName}~/
+								/~attachOutputName: AND attachOutputName like {attachOutputName}~/
+								/~attachFileId: AND attachFileId = {attachFileId}~/
+								/~attachIsEssential: AND attachIsEssential = {attachIsEssential}~/
+								/~attachFileName: AND attachFileName like {attachFileName}~/
+								/~attachOutputType: AND attachOutputType = {attachOutputType}~/
+								/~attachOutputBusType: AND attachOutputBusType = {attachOutputBusType}~/
+								/~attachOutputBusTypeOther: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ'~/
+								/~attachOutputBusTypeAttach: AND attachOutputBusType <> 'BT1' AND attachOutputBusType <> 'BTZ' AND attachOutputBusType <> 'BT3'~/
+								/~attachFileIndex1: AND attachFileIndex1 = {attachFileIndex1}~/
+								/~attachFileIndex2: AND attachFileIndex2 = {attachFileIndex2}~/
+								/~attachFileIndex3: AND attachFileIndex3 = {attachFileIndex3}~/
+								/~attachFileIndex4: AND attachFileIndex4 = {attachFileIndex4}~/
+								AND taskId like '%chk%'
+								ORDER BY attachOutputBusType, attachSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachSelectListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="attachDataSelectListForTaskEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 	attachCreateDate, attachCreatorId, attachSeq, 
+											attachWorkName, attachOutputName, attachFileId, attachIsEssential, 
+											attachFileName, NULL as attachGubun, NULL as attachGubun2, attachOutputType, attachOutputBusType, 
+											attachFileIndex1, attachFileIndex2, attachFileIndex3, attachFileIndex4, attachCount
+									  FROM 	ProjectTaskFormAttachData 
+									 WHERE	1 = 1
+				/~taskId: 			   AND 	taskId = {taskId}		~/
+				/~projectCode:		   AND 	projectCode = {projectCode}		~/
+				/~taskFormTypeId:	   AND 	taskFormTypeId = {taskFormTypeId}		~/
+									ORDER BY attachIsEssential DESC, attachSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachSelectListForTaskWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="attachOutputTypeCodeSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_1</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	TABLE_NAME, KEY_1, KEY_2, DATA_1, DATA_2
+									  FROM  CMTableData
+									 WHERE	table_name = 'OUTPUT_TYPE_CODE'
+			/~projectCode: 	  	   	   AND 	key_2 = (
+			   											SELECT  businessTypeCode 
+			   											  FROM 	Project 
+			   											 WHERE 	projectCode = {projectCode}
+			   										)~/
+			/~businessTypeCode:    	   AND	key_2 = {businessTypeCode}~/
+								  ORDER BY 	SEQ, DATA_1 ASC 
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachOutputTypeCodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="attachOutputBusTypeCodeSelect">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>1000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>key_2</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT	'OUTPUT_TYPE_CODE' AS TABLE_NAME, KEY_2 AS KEY_1, DATA_2 AS DATA_1, '' AS KEY_2, '' AS DATA_2 
+									  FROM	CMTABLEDATA 
+									 WHERE	TABLE_NAME='OUTPUT_TYPE_CODE'
+			/~busTypeCode:			   AND	KEY_2 = {busTypeCode}~/
+								  GROUP BY	KEY_2, DATA_2
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachOutputTypeCodeListWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>
+				<entry key="outputTemplateDetailSelectListForTaskEntry">
+					<bean class="net.mlw.vlh.adapter.jdbc.objectWrapper.DefaultWrapperAdapter">
+						<property name="dataSource">
+							<ref bean="dataSource" />
+						</property>
+						<property name="defaultNumberPerPage">
+							<value>100000</value>
+						</property>
+						<property name="defaultSortColumn">
+							<value>seq</value>
+						</property>
+						<property name="defaultSortDirection">
+							<value>asc</value>
+						</property>
+						<property name="sql">
+							<value>
+								<![CDATA[
+									SELECT 
+										NULL as attachCreateDate, 
+										NULL as attachCreatorId, 
+										seq as attachSeq, 
+										workName as attachWorkName, 
+										outputName as attachOutputName, 
+										NULL as attachFileId, 
+										isEssential as attachIsEssential, 
+										NULL as attachFileName, 
+										gubun as attachGubun, 
+										gubun2 as attachGubun2, 
+										outputType as attachOutputType, 
+										outputBusType as attachOutputBusType, 
+										NULL as attachFIleIndex1, 
+										NULL as attachFIleIndex2, 
+										NULL as attachFIleIndex3, 
+										NULL as attachFIleIndex4, 
+										NULL as attachCount
+									FROM OutputTemplateDetail 
+									WHERE useNow = '1' 
+			/~taskFormTypeId: AND taskFormTypeId = {taskFormTypeId}~/
+								ORDER BY attachSeq
+								]]>
+							</value>
+						</property>
+						<property name="wrapper">
+							<ref bean="attachSelectListForTaskWrapper" />
+						</property>
+						<property name="wrapResultSet" value="true" />
+						<property name="showSql" value="false" />
+					</bean>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="attachOutputTypeCodeListWrapper" class="kr.co.kmac.pms.attach.vl.AttachOutputTypeCodeListWrapper" />
+	<bean id="attachSelectListWrapper" class="kr.co.kmac.pms.attach.vl.AttachSelectListWrapper" />
+	<bean id="attachSelectListForTaskWrapper" class="kr.co.kmac.pms.attach.vl.AttachSelectListForTaskWrapper" />
+</beans>

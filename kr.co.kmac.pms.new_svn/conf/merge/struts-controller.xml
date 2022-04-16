@@ -1,0 +1,5 @@
+	<!-- ========== Controller Configuration ================================ -->
+	<controller>
+		<set-property property="processorClass" value="org.springframework.web.struts.DelegatingRequestProcessor"/>
+		<set-property property="nocache" value="true"/>
+	</controller>

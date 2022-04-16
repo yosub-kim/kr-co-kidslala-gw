@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=1600">
+		<title>KMAC 통합 인트라넷</title>
+
+		<link rel="stylesheet" href="../resources/css/common.css" type="text/css" />
+		<link rel="stylesheet" href="../resources/css/login.css" type="text/css" />
+
+		<script type="text/javascript" src="../resources/js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" src="../resources/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="../resources/js/common.js"></script>
+
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="../resources/js/html5shiv.js"></script>
+		<![endif]-->
+ 
+	</head>
+
+	<body>	
+
+		<div class="wrap">
+
+			<div class="login_container">
+
+				<div class="login_bg">
+					<div class="logo"><img src="../resources/img/logo_login.png" alt="KMAC" /></div>
+				</div>
+				<!-- // login_bg -->		
+
+				<div class="login_inner">
+					<div class="login_contents">
+						<p class="h1">Log In</p>
+						<p class="login_info_text">KMAC 통합 인트라넷은 Value Creation의 원천인 우리의 핵심 자산입니다.<br />통합 인트라넷을 통한 구성원 개개인의 지식활동은 KMAC의 경쟁력입니다.</p>
+
+						<div class="form_box">
+							<div>
+								<label for="userId"></label>
+								<input type="text" name="userId" id="userId" placeholder="ID" title="아이디 입력" />
+								<button type="button"><i class="mdi mdi-account-outline"></i></button>
+							</div>
+						</div>
+						<div class="form_box">
+							<div>
+								<label for="userPassword"></label>
+								<input type="password" name="userPassword" id="userPassword" placeholder="Password" title="비밀번호 입력" />
+								<button type="button"><i class="mdi mdi-lock-outline"></i></button>
+							</div>
+						</div>
+
+						<div class="pass_check">
+							<input type="checkbox" class="btn_check" ch="" name="_acegi_security_remember_me" id="_acegi_security_remember_me" checked="checked" />
+							<label for="_acegi_security_remember_me"></label><p>Don't ask for my password for two weeks</p>
+						</div>
+
+						<div class="a-both">
+							<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">Login</button>
+							<a href="javascript:layer_open(this,'pop_pwSearch');" class="d-line">비밀번호 찾기</a>
+						</div>
+
+						<!-- 비밀번호 찾기 팝업 -->
+						<div id="pop_pwSearch" class="popup_layer">
+							<div class="popup_inner">								
+								<button type="button" class="btn-close" onclick="javascript:layer_close('pop_pwSearch');" title="닫기"><i class="mdi mdi-close"></i></button>
+								<div class="popup_contents">
+									<p class="h1">비밀번호 찾기</p>
+									<p class="popup_text">가입 시 입력한 <span>휴대 전화 번호</span>를 입력하시면<br />인증코드를 전송해 드립니다.</p>
+									
+									<div class="a-both">											
+										<input type="text" name="userPhone1" id="userPhone1" title="휴대폰번호 국번 입력" /><span class="dash">-</span>
+										<input type="text" name="userPhone2" id="userPhone2" title="휴대폰번호 중간자리 입력" /><span class="dash">-</span>
+										<input type="text" name="userPhone3" id="userPhone3" title="휴대폰번호 끝자리 입력" />
+									</div>
+									
+									<div class="btn_area">
+										<button type="button" class="btn btn_blue" onclick="location.href='javascript:;'">다음</button>
+										<button type="button" class="btn btn_grey" onclick="location.href='javascript:;'">취소</button>
+									</div>
+									<a href="javascript:;" class="d-line">이메일 문의</a>
+								</div>
+							</div>
+						</div>
+						<!-- // 비밀번호 찾기 팝업 -->
+
+						<div class="copyright">
+							<p>copyright © 2021 KMAC All Rights Reserved.<a href="mailto:mailadmin@kmac.co.kr">mailadmin@kmac.co.kr</a></p>
+						</div>
+					</div>
+				</div>
+				<!-- // login_inner -->	
+
+			</div>
+			<!-- // login_container -->				
+
+		</div>
+		<!-- // wrap -->
+
+	</body>
+</html>
