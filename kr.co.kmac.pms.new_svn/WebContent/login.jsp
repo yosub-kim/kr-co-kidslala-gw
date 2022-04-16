@@ -176,8 +176,8 @@ if (navigator.userAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Sy
 		} else if (String(ref).indexOf('/accessDenied.jsp') != -1){
 			document.write(" ");
 		} else {
-			alert("KMAC 통합 인트라넷은 회사 홈페이지를 통해서만 접속 가능합니다.");
-			location='https://www.kmac.co.kr/main/index.asp';
+			//alert("KMAC 통합 인트라넷은 회사 홈페이지를 통해서만 접속 가능합니다.");
+			//location='https://www.kmac.co.kr/main/index.asp';
 		}
 	} else {
 		

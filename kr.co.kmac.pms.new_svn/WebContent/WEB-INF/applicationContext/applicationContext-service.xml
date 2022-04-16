@@ -164,7 +164,7 @@
 	</bean>
 
 
-	<bean id="bizplayInfoSendCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<!-- <bean id="bizplayInfoSendCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="bizplayInfoSendJobDetail" />
 		<property name="cronExpression" value="0 0 7 * * ?" />
 	</bean>
@@ -176,15 +176,15 @@
 		<property name="jobDetail" ref="vocMailSendJobDetail" />
 		<property name="cronExpression" value="0 0 10 * * ?" />
 	</bean>
-<!-- 	<bean id="preportCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 	<bean id="preportCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="preportJobDetail" />
 		<property name="cronExpression" value="0 0 14 * * ?" />
-	</bean> -->
+	</bean>
 	<bean id="costOverTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="costOverJobDetail" />
 		<property name="cronExpression" value="0 0 19 * * ?" />
 	</bean>
-	<!-- Job Date: 2008-01-11	Author: yhyim	Description: dept history insert job -->
+	Job Date: 2008-01-11	Author: yhyim	Description: dept history insert job
 	<bean id="deptHistoryInsertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="deptHistoryInsertJobDetail" />
 		<property name="cronExpression" value="0 0 4 1 * ?" />
@@ -201,7 +201,7 @@
 		<property name="jobDetail" ref="monthlyReportJobDetail" />
 		<property name="cronExpression" value="0 0 3 20 * ?" />
 	</bean>
-	<!-- <bean id="expertPoolInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="expertPoolInitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="expertPoolJobDetail" />
 		<property name="cronExpression" value="0 30 4 6 * ?" />
 	</bean> -->
@@ -225,16 +225,16 @@
 		</property>
 		<property name="triggers">
 			<list>
-				<ref bean="vocMailSendCronTrigger" />
-				<!-- <ref bean="preportCronTrigger" /> -->
+				<!-- <ref bean="vocMailSendCronTrigger" />
+				<ref bean="preportCronTrigger" />
 				<ref bean="erpCronTrigger" />
 				<ref bean="costOverTrigger" />
 				<ref bean="deptHistoryInsertTrigger" />
 				<ref bean="downloadLimitInitTrigger" />
 				<ref bean="weeklyReportInitTrigger" />
 				<ref bean="monthlyReportInitTrigger" />
-				<!-- <ref bean="expertPoolInitTrigger" /> -->
-				<ref bean="bizplayInfoSendCronTrigger" />
+				<ref bean="expertPoolInitTrigger" />
+				<ref bean="bizplayInfoSendCronTrigger" /> -->
 			</list>
 		</property>
 	</bean>

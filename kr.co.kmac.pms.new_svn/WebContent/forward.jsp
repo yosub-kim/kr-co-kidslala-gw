@@ -40,7 +40,7 @@
 	if (context == null) {
 		response.sendRedirect(request.getContextPath() + "/login.jsp");
 	} else {
-		String clientIP = SessionUtils.getClientIP(request);
+		/* String clientIP = SessionUtils.getClientIP(request);
 		clientIP = clientIP.substring(0, 3);
 		if(clientIP.equals("192") || clientIP.equals("210") || (SessionUtils.getClientIP(request)).equals("127.0.0.1")){
 			//내부 아이피일 경우에는 pc인증 없이 로그인 진행
@@ -63,7 +63,7 @@
 					}
 				}
 			}
-		}
+		} */
 	}
 	
 	ExpertPoolManager expertPoolManager = (ExpertPoolManager) wac.getBean("expertPoolManager");
