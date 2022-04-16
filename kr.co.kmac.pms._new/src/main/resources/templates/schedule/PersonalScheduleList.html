@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=1600">
+<title>KMAC 통합 인트라넷</title>
+<link rel="stylesheet" href="/_new/css/common.css" type="text/css" />
+<link rel="stylesheet" href="/_new/css/board.css" type="text/css" /><!-- 서브페이지에서만 사용 -->	
+<link rel="stylesheet" href="/_new/css/dev.css" type="text/css" />	
+
+<script type="text/javascript" src="/_new/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/_new/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/_new/js/common.js"></script>
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../resources/js/html5shiv.js"></script>
+<![endif]-->
+
+<SCRIPT LANGUAGE="JavaScript" th:inline="javascript">
+/*<![CDATA[*/
+var ssn; 
+var readonly = /*[[ ${searchParam.readonly} ]]*/;
+if(readonly){
+	ssn = /*[[ ${searchParam.ssn} ]]*/;
+}
+/*]]*/
+</SCRIPT>					
+<script type="text/javascript">
+
+//개인 일정 검색
+function viewSearchDetail(){
+	var year = $("#year").val();
+	var month = $("#month").val();
+	var url = "/_new/schedule/personal/search/list"+"?startYear="+parseInt(year)+"&startMonth="+parseInt(month)+"&endYear="+parseInt(year)+"&endMonth="+parseInt(month)+"&keyword=";
+	var sFeatures = "top=140,left=140,width=990,height=880,resizable=no,scrollbars=yes";
+	var detailWin = window.open(url, "viewSearchDetail", sFeatures);
+	detailWin.focus();
+}
+
+function dateChange(){
+	var year = $("#year").val();
+	var month = $("#month").val();
+	var keyword = $("#keyword").val();
+	
+	if(readonly){
+		location.href = "/_new/schedule/personal/listview" 	+"?year=" + parseInt(year) + "&month=" + parseInt(month)+"&ssn="+ssn;
+	}else{
+		location.href = "/_new/schedule/personal/list" 	+"?year=" + parseInt(year) + "&month=" + parseInt(month);
+	}
+}
+
+function moveNext(){
+	var year = parseInt($("#year").val());
+	var month = parseInt($("#month").val());
+	var keyword = $("#keyword").val();
+	if (month == "12") {
+		year = parseInt(year) + 1;
+		month = 1;
+	} else {
+		month = month + 1; 
+	}
+	if(readonly){
+		location.href = "/_new/schedule/personal/listview" 	+"?year=" + parseInt(year) + "&month=" + parseInt(month)+"&ssn="+ssn;
+	}else{
+		location.href = "/_new/schedule/personal/list" 	+"?year=" + parseInt(year) + "&month=" + parseInt(month);
+	}
+}
+
+function movePrevious(){
+	var year = parseInt($("#year").val());
+	var month = parseInt($("#month").val());
+	var keyword = $("#keyword").val();
+	
+	if (month == "1") {
+		year = parseInt(year) - 1;
+		month = 12;
+	} else {
+		month = month - 1; 
+	}
+	if(readonly){
+		location.href = "/_new/schedule/personal/listview" 	+"?year=" + parseInt(year) + "&month=" + parseInt(month)+"&ssn="+ssn;
+	}else{
+		location.href = "/_new/schedule/personal/list" 	+"?year=" + parseInt(year) + "&month=" + parseInt(month);
+	}
+}
+
+function checkAllDay(){
+	if($("#check_day").is(":checked") == true ) {
+		$("#stime_edit").val("08:30");
+		$("#etime_edit").val("17:30");
+		/* $("#ss_edit").val("오전");
+		$("#ee_edit").val("오후"); */
+	} else {
+		$("#stime_edit").val("");
+		$("#etime_edit").val("");
+		/* $("#ss_edit").val("");
+		$("#ee_edit").val(""); */
+	}
+}
+
+function checkMultiYN(){
+	if($("#multiYN").is(":checked") == true){
+		$("#edateDiv").show();						
+		$("#holiday_li").show();
+	} else {
+		$("#edateDiv").hide();
+		$("#holiday_li").hide();
+	}
+}
+/* ******************************************************************* */
+var openItem="";
+var openItemType="";
+function layer_open_schedule(obj, el, idx, date, type){
+	if(el == 'pop_register'){
+		if(readonly){return;}
+		$("#idx_edit").val('');
+		if(date.startsWith('\"00')){
+			return false;
+		}
+		$("#multiYN_li").show();
+		$("#sdate_edit").val(date.replace(/"/gi, ''));
+		$("#edate_edit").val(date.replace(/"/gi, ''));
+		
+		 var temp = jQuery('#' + el);
+	    jQuery(obj).addClass('is-focus');
+	    temp.addClass('show');
+	
+	    temp.attr("tabindex","0").focus();
+	    jQuery('.btn_close').on('focus', function(){
+	        jQuery(this).keydown(function()  {
+	            if(event.which == 9) {
+	                temp.attr("tabindex","0").focus();
+	            }
+	        });
+	    });
+	    jQuery('.popup_bg').on('scroll touchmove mousewheel', function(event) {
+	        event.preventDefault();
+	        event.stopPropagation();
+	        return false;
+	    });	
+    	 /* layout popup close */
+	    jQuery('.popup_bg').on('click', function(event) {
+    		jQuery(obj).removeClass('is-focus');
+  	 	 	temp.removeClass('show');
+	  	});			
+	} else if(el == 'pop_register_edit' && idx != ''){
+		$.ajax({
+			type: "GET",
+			contentType: 'application/json',
+			url : "/_new/schedule/personal/detail?type="+type+"&readonly="+readonly+"&idx="+idx+(readonly?"&ssn="+ssn:""),
+			dataType: "json",
+	        cache: false,
+	        timeout: 60000
+		})
+		.done(function(data, textStatus, jqXHR ) { 
+			openItem = idx;
+			openItemType = type;
+
+			if(data.detail.iconCodeShort == 'ico-1' || data.detail.iconCodeShort == 'ico-2' || data.detail.iconCodeShort == 'ico-3'){
+				$("#customerName_view_li").show()
+				$("#stime_etime_li").show()
+				$("#place_view_li").show()
+				$("#relationUser_view_li").show()
+			} else  if(data.detail.iconCodeShort == 'ico-4' || data.detail.iconCodeShort == 'ico-5' || data.detail.iconCodeShort == 'ico-6'|| data.detail.iconCodeShort == 'ico-7'){
+				$("#place_view_li").hide()
+				$("#relationUser_view_li").hide()
+			}
+
+			$("#iconCode_view").attr('class', "dot_tit "+ data.detail.iconCodeShort);
+			// up-day는 재택근무로 대체
+			if(data.detail.type == 'Up-day'){
+				$("#iconCode_view").html("재택근무<span class='detail' id='content_view'>"+data.detail.content+"</span>");}
+			else{
+				$("#iconCode_view").html(data.detail.type + "<span class='detail' id='content_view'>"+data.detail.content+"</span>");}
+			$("#customerName_view").text(data.detail.customerName);
+			$("#stime_etime").text(data.detail.dateString);
+			var workType;
+			if(data.detail.workType == 'E') {
+				workType = "(외근) ";
+			} else if(data.detail.workType == 'I') {
+				workType = "(내근) ";
+			} else {
+				workType = "";				
+			} 
+			$("#place_view").text(workType + data.detail.place);
+			var relationUser_view;
+			if(data.detail.relationUser == '1') {
+				relationUser_view = "현장 출근";
+			} else if(data.detail.relationUser == '2') {
+				relationUser_view = "현장 퇴근";
+			} else if(data.detail.relationUser == '3') {
+				relationUser_view = "현장 출/퇴근 ";
+			} else {
+				relationUser_view = "";				
+			} 
+			
+			$("#relationUser_view").text(relationUser_view);
+			$("#workType_view").text(data.detail.workType);
+			
+			/* 아래는 업데이트 폼 값 세팅*/
+			$("#multiYN_li").hide();
+			
+			$("#idx_edit").val(data.detail.idx);
+			$("#seq_edit").val(data.detail.seq);
+			$("#editable_edit").val(data.detail.editable_edit);
+			
+			$("#content_edit").val(data.detail.content);
+			$("#customerName_edit").val(data.detail.customerName);
+			$("#type_edit").val(data.detail.type);
+			$("#place_edit").val(data.detail.place);
+			$(":radio[name='googleSyncId']").radioSelect(data.detail.googleSyncId);
+			$("#sdate_edit").val(data.detail.dateString2);
+			$("#edate_edit").val(data.detail.dateString2);
+			/* $("#ss_edit").val(data.detail.startHour > 0 && data.detail.startHour < 12 ? "오전" : "오후");
+			$("#ee_edit").val(data.detail.endHour > 0 && data.detail.endHour < 12 ? "오전" : "오후"); */
+			$("#stime_edit").val(data.detail.startHour +":"+data.detail.startMin);
+			$("#etime_edit").val(data.detail.endHour +":"+ data.detail.startMin);
+			$(":radio[name='workType']").radioSelect(data.detail.workType);
+
+			$("#relationUser_edit").val(data.detail.relationUser);
+			
+			if(data.detail.relationUser == 1){
+				$("#relationUser_1_edit").prop('checked',true);
+			} else if(data.detail.relationUser == 2){
+				$("#relationUser_2_edit").prop('checked',true);
+			} else if(data.detail.relationUser == 3){
+				$("#relationUser_1_edit").prop('checked',true);
+				$("#relationUser_2_edit").prop('checked',true);
+			} 
+			if(data.detail.secretYN == 'Y'){
+				$("#secretYN_edit").prop('checked',true);
+			}
+		    var temp = jQuery('#' + el);
+		    jQuery(obj).addClass('is-focus');
+		    temp.addClass('show');
+		
+		    temp.attr("tabindex","0").focus();
+		    jQuery('.btn_close').on('focus', function(){
+		        jQuery(this).keydown(function()  {
+		            if(event.which == 9) {
+		                temp.attr("tabindex","0").focus();
+		            }
+		        });
+		    });
+		    jQuery('.popup_bg').on('scroll touchmove mousewheel', function(event) {
+		        event.preventDefault();
+		        event.stopPropagation();
+		        return false;
+		    });		
+		    /* layout popup close */
+		    jQuery('.popup_bg').on('click', function(event) {
+        		jQuery(obj).removeClass('is-focus');
+      	 	 	temp.removeClass('show');
+  		  	});	
+			
+		}) 
+		.fail(function(jqXHR, textStatus, errorThrown ) {
+			alert("처리 중 오류가 발생하였습니다.1"+errorThrown+":"+status);
+		}) 
+		.always(function(jqXHR, textStatus, errorThrown ) { 
+		});	
+	}
+}
+//수정팝업 띄우기
+function layer_edit_schedule(obj, el){
+	if($("#editable_edit").val() == 'N'){
+		alert("해당 일정의 수정은 불가합니다.");
+	}
+	if(el == 'pop_register' && openItem != ''){
+	    var temp = jQuery('#' + el);
+	    jQuery(obj).addClass('is-focus');
+	    temp.addClass('show');
+	
+	    temp.attr("tabindex","0").focus();
+	    jQuery('.btn_close').on('focus', function(){
+	        jQuery(this).keydown(function()  {
+	            if(event.which == 9) {
+	                temp.attr("tabindex","0").focus();
+	            }
+	        });
+	    });
+	
+	    jQuery('.popup_bg').on('scroll touchmove mousewheel', function(event) {
+	        event.preventDefault();
+	        event.stopPropagation();
+	        return false;
+	    });		
+	}
+}
+
+function layer_close_schedule(el) {
+	$("#frm")[0].reset();
+	
+	    $("#tab_menu > li").removeClass("current");
+    $("#tab_menu > li").eq(0).addClass("current");
+    $("#tab_menu_content > div").hide();
+    $("#tab_menu_content > div").eq(0).show();
+    
+    var temp = jQuery('#' + el);
+    temp.removeClass('show');
+    jQuery('.is-focus').focus().removeClass('is-focus');
+}
+
+function insertSchedule(){
+	var action;
+
+	if($("#idx_edit").val() > 0 ){
+		action = "update";
+	} else {		
+		action = "create";
+	}
+
+	// 스케줄 시간 chk
+	//if($('#stime_edit').val() > $('#etime_edit').val().length) {alert("시작시간이 종료시간 이후가 될 수 없습니다.");return false;}
+	if($('#stime_edit').val().length != 5){alert("시작 시간을 정확히 입력하세요. "); return false;}
+	if($('#etime_edit').val().length != 5){alert("종료 시간을 정확히 입력하세요. "); return false;}
+	
+	
+	// 외/내근 유형 chk
+	var workTypeFlag = false;
+	for(var i=0; i<frm.workType.length; i++){
+		if(frm.workType[i].checked){
+			workTypeFlag = true;
+		}
+	}
+	if(($('#type_edit').val() != "휴가" && $('#type_edit').val() != "개인휴무" && $('#type_edit').val() != "교육참석" && $('#type_edit').val() != "Up-day" && $('#type_edit').val() != "전사행사" && $('#type_edit').val() != "기타") && !workTypeFlag){
+		alert("외/내근 유형을 선택하세요.");frm.workType[0].focus();return false;
+	}
+	
+	// 업무 내용 chk
+	if(frm.content.value == ""){
+		alert("업무내용을 입력하세요.");frm.content.focus();return false;
+	}
+	
+	// 고객사 입력 chk
+	if(($('#type_edit').val() != "휴가" && $('#type_edit').val() != "개인휴무" && $('#type_edit').val() != "교육참석" && $('#type_edit').val() != "Up-day" && $('#type_edit').val() != "전사행사" && $('#type_edit').val() != "기타") && frm.customerName.value == ""){
+		alert("관련회사를 입력하세요.");frm.customerName.focus();return false;
+	}
+	
+	// 장소 입력 chk
+	if(($('#type_edit').val() != "휴가" && $('#type_edit').val() != "개인휴무" && $('#type_edit').val() != "교육참석" && $('#type_edit').val() != "Up-day" && type_edit != "전사행사" && $('#type_edit').val() != "기타") && frm.place.value == ""){
+		if(frm.place.value == ""){
+			alert("장소를 입력하세요.");frm.place.focus();return false;
+		}
+	}
+	
+	//현장 출/퇴근 chk
+	//$("#relationUser_edit").val(parseInt($("#relationUser_1_edit").val()) + parseInt($("#relationUser_2_edit").val()));
+	var chkbox = document.getElementsByName('relationUser');
+	var chk = false;
+	var chk_result="0";
+	
+	for(var i=0; i<chkbox.length; i++){
+		if(chkbox[0].checked && chkbox[1].checked){
+			chk = false;
+		}else{
+			chk = true;
+		}
+		break;
+	}
+	if (frm.workType[1].checked){
+		chk_result="0";
+	}else{
+		if(!chk){
+			chk_result="3";
+		}else{
+			if(chkbox[0].checked){
+				chk_result="1";
+			}else if(chkbox[1].checked){
+				chk_result="2"; }
+		}
+	}
+	$("#relationUser_edit").val(parseInt(chk_result));
+	
+	$.ajax({
+		type: "POST",
+		contentType: 'application/json',
+		url : "/_new/schedule/personal/"+action,
+		data: formToJsonString("#frm"),
+		dataType: "json",
+        cache: false,
+        timeout: 60000
+	})
+	.done(function(data, textStatus, jqXHR ) { 
+		$("#frm")[0].reset();
+		layer_close_schedule('pop_register')
+		if(action == 'update'){
+			layer_close_schedule('pop_register_edit')
+		}
+		alert("저장하였습니다.");
+		dateChange();
+	}) 
+	.fail(function(jqXHR, textStatus, errorThrown ) {
+	}) 
+	.always(function(jqXHR, textStatus, errorThrown ) { 
+	});
+}
+
+function deleteSchedule(){
+	if(confirm("해당 일정을 삭제합니다.")){		
+		$.ajax({
+			type: "DELETE",
+			contentType: 'application/json',
+			url : "/_new/schedule/personal/delete?idx="+openItem,
+			dataType: "json",
+	        cache: false,
+	        timeout: 60000
+		})
+		.done(function(data, textStatus, jqXHR ) { 
+			alert("삭제하였습니다.");
+			dateChange();
+		}) 
+		.fail(function(jqXHR, textStatus, errorThrown ) {
+			alert("처리 중 오류가 발생하였습니다.3"+errorThrown+":"+status);
+		}) 
+		.always(function(jqXHR, textStatus, errorThrown ) { 
+		});
+	}
+}
+
+function setWorkType(){
+	
+	if ($('#type_edit').val() == "교육참석") {
+		alert("'교육참석'은 조직주도교육 및 개인주도학습(집합교육) 등에 참여하는 경우에만 해당합니다.\n교육과정 오픈 시에는 '사업관리'를 선택하시기 바랍니다.");		
+	}
+	
+	if ($('#type_edit').val() == "휴가" || $('#type_edit').val() == "개인휴무" || $('#type_edit').val() == "Up-day") {
+		document.all.place_edit.style.display = "none";
+		document.all.customerName_edit.style.display = "none";
+		document.all.customer_chk.style.display = "none";
+		document.all.workType_chk.style.display = "none";
+		document.all.relationUser_chk.style.display = "none";
+		document.all.secretYN_chk.style.display = "none";
+		
+	} else {
+		document.all.place_edit.style.display = "";
+		document.all.customerName_edit.style.display = "";
+		document.all.customer_chk.style.display = "";
+		document.all.workType_chk.style.display = "";
+		document.all.relationUser_chk.style.display = "";
+		document.all.secretYN_chk.style.display = "";
+	}
+}
+
+// 개인 연차 현황
+function viewOffDetail(){
+	var url = "/action/ExpertPoolManagerAction.do?mode=getExpertPoolWorkPeriodList_ra";
+	var sFeatures = "top=140,left=140,width=990,height=280,resizable=no,scrollbars=yes";
+	var detailWin = window.open(url, "viewExpertDetail", sFeatures);
+	detailWin.focus();
+}
+
+function setRelatedCompanyInfo(val) {
+	var sFrm = document.frm;
+	// 외근 버튼을 누를 시 관련사에 KMAC 라는 글씨가 있는 경우 삭제한다.
+	if (sFrm.workType[1].checked ){
+		sFrm.customerName.value = "";
+		sFrm.place.value = "";
+		document.getElementById('relationUser_1').disabled = false;
+		document.getElementById('relationUser_2').disabled = false;
+		document.getElementById('googleSyncId_1').disabled = false;
+		document.getElementById('googleSyncId_2').disabled = false;
+	}
+	// 내근 버튼을 최초로 누른 경우 관련사 입력란에 'KMAC'를 자동으로 넣어준다. 
+	else if (sFrm.workType[0].checked){
+		sFrm.customerName.value = "KMAC";
+		sFrm.place.value = "KMAC";
+		document.getElementById('relationUser_1').checked = false;
+		document.getElementById('relationUser_2').checked = false;
+		document.getElementById('googleSyncId_1').checked = false;
+		document.getElementById('googleSyncId_2').checked = false;
+		document.getElementById('relationUser_1').disabled = true;
+		document.getElementById('relationUser_2').disabled = true;
+		/* document.getElementById('googleSyncId_1').disabled = true;
+		document.getElementById('googleSyncId_2').disabled = true; */
+	}else {
+		
+	}
+}
+        
+     // bg 클릭시 팝업 닫기
+    jQuery('.popup_bg').on('click', function(event) {
+        jQuery(obj).removeClass('is-focus');
+        temp.removeClass('show');
+    });
+	
+</script> 
+</head>
+<body>
+	
+	<div class="location">
+		<p class="menu_title">개인일정</p>
+		<ul>
+			<li class="home">HOME</li>
+			<li>스케줄관리</li>
+			<li>개인일정</li>
+		</ul>
+	</div>
+		
+	<div class="contents sub">
+		
+		<div class="fixed_box">
+			<div class="title">
+				<div class="h1_area">
+					<p class="h1"><i class="mdi mdi-file-document-outline"></i>개인일정</p>
+				</div>
+			</div>
+			
+			<div class="schedule_status">
+				<ul>
+					<li class="total"	 ><a href="javascript:;" th:text="|전체(${count.totalCountCal})|"></a></li>
+					<li class="ico ico-1"><a href="javascript:;" th:text="|외부일정(${count.t2})|"></a></li>
+					<li class="ico ico-2"><a href="javascript:;" th:text="|내부일정(${count.t1})|"></a></li>									
+					<li class="ico ico-3"><a href="javascript:;" th:text="|교육참석(${count.t5})|"></a></li>
+					<li class="ico ico-4"><a href="javascript:;" th:text="|재택근무(${count.t7})|"></a></li>
+					<li class="ico ico-5"><a href="javascript:;" th:text="|프로젝트(${count.t4+count.t3})|"></a></li>
+					<li class="ico ico-6"><a href="javascript:;" th:text="|휴가(${count.t6+count.t8})|"></a></li>
+					<li class="ico ico-7"><a href="javascript:;" th:text="|고객정보(${count.t3})|"></a></li>	
+				</ul>
+			</div>
+				
+			<div class="fixed_contents schedule_view sc">
+			
+				<div class="board_box schedule">
+					<div class="board_contents">
+						<div class="schedule_head">
+							<div class="month_select">
+								<button type="button" onclick="location.href='javascript:movePrevious();'"><i class="mdi mdi-chevron-left"></i></button>
+								<div class="select_area">
+									<select name="year" id="year" class="select"  onchange="location.href='javascript:dateChange()'">
+										<option th:each="year : ${#numbers.sequence(#dates.year(#dates.createNow())-3, #dates.year(#dates.createNow()) + 3)}" 
+										th:value="${year}"
+										th:text="${year}" th:selected="${year eq searchParam.year}" ></option>
+									</select>
+									<select name="month" id="month" class="select" onchange="location.href='javascript:dateChange()'">
+										<option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}" th:text="${i}" 
+										th:selected="${i eq searchParam.month}" ></option>
+									</select> 
+								</div>
+								<button type="button" onclick="location.href='javascript:moveNext();'"><i class="mdi mdi-chevron-right"></i></button>
+							</div>
+							
+							<div th:if="${!searchParam.readonly}" class="search_input">
+								<label for="search"></label>
+								<input type="hidden" style="width: 250px;" name="keyword" id="keyword" placeholder="검색어를 입력하세요." title="검색어를 입력하세요." th:value="${searchParam.keyword}"/>
+								<button type="button" class="btn btn_d_blue" style="width: 100px;" onclick="location.href='javascript:viewSearchDetail();'">개인일정 검색</button>								
+								<div th:if="${searchParam.jobClass eq 'N'}">
+									<button type="button" class="btn btn_d_blue" style="width: 100px;" onclick="viewOffDetail()">연차 현황</button>
+								</div>
+							</div>
+						</div>	
+						<div class="gantt_box">
+							<div class="view month_box">
+								<div class="week">
+									<div class="sun">일요일</div>
+									<div class="mon">월요일</div>
+									<div class="tue">화요일</div>
+									<div class="wed">수요일</div>
+									<div class="thu">목요일</div>
+									<div class="fri">금요일</div>
+									<div class="sat">토요일</div>
+								</div>
+								
+								
+								<div th:each="rs : ${mainList}" class="month" >
+									<div th:each="rs_ : ${rs}" th:class="${rs_.dayOfTheWeek}" th:classappend="${rs_.today ? 'today' : ''}">	
+									
+										<p th:if="${rs_.isHoliday}" th:class="day_off" 
+											th:onclick="javascript:layer_open_schedule(this,'pop_register', '', '[[${rs_.dateString2}]]');" style="cursor: pointer;">
+											<span th:text="${rs_.holidayName}" class="day"></span>
+											<span th:if="${rs_.day != 0}" th:text="${rs_.day}"></span>										
+										</p>
+										<p th:unless="${rs_.isHoliday}" 
+											th:onclick="javascript:layer_open_schedule(this,'pop_register', '','[[${rs_.dateString2}]]');" style="cursor: pointer;">
+											<span class="day"></span>
+											<span th:if="${rs_.day != 0}" th:text="${rs_.day}"></span>
+										</p>
+										
+										<ul th:if="${rs_.scheduleDetailList == null}">
+											<!-- schedule insert -->
+											<p th:if="${rs_.isHoliday}" th:class="day_off" 
+												th:onclick="javascript:layer_open_schedule(this,'pop_register', '', '[[${rs_.dateString2}]]');" style="cursor: pointer;">								
+											</p>
+											<p th:unless="${rs_.isHoliday}" 
+												th:onclick="javascript:layer_open_schedule(this,'pop_register', '','[[${rs_.dateString2}]]');" style="cursor: pointer;">
+											</p>
+										</ul>	
+										<ul th:unless="${rs_.scheduleDetailList == null}" >
+											<li th:each="rs__ : ${rs_.scheduleDetailList}" th:class="${rs__.iconCode}">
+												<a href="javascript:;"
+													th:text="${rs__.content}"
+													onclick="" 
+													th:onclick="javascript:layer_open_schedule(this,'pop_register_edit', [[${rs__.idx}]], [[${rs_.dateString2}]],  [[${rs__.type}]]);"
+												></a>
+											</li>
+											<!-- schedule insert -->
+											<p th:if="${rs_.isHoliday}" th:class="day_off" 
+												th:onclick="javascript:layer_open_schedule(this,'pop_register', '', '[[${rs_.dateString2}]]');" style="cursor: pointer;">								
+											</p>
+											<p th:unless="${rs_.isHoliday}" 
+												th:onclick="javascript:layer_open_schedule(this,'pop_register', '','[[${rs_.dateString2}]]');" style="cursor: pointer;">
+											</p>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--  공통 수정 팝업 -->
+		<div id="pop_register_edit" class="popup_layer pop_register common">
+			<div class="popup_bg"></div>
+			<div class="popup_inner">
+				<div class="a-both">
+					<p class="h1">일정<span class="lock"><i class="mdi mdi-lock-open-outline"></i></span></p>									
+					<div class="btn_area icon">
+						<button type="button" th:if="${!searchParam.readonly}"  class="btn-pop edit" onclick="javascript:layer_edit_schedule(this,'pop_register');"><p>수정</p></button>
+						<button type="button" th:if="${!searchParam.readonly}"  class="btn-pop del" onclick="location.href='javascript:deleteSchedule();'"><p>삭제</p></button>
+						<button type="button" class="btn-close" onclick="javascript:layer_close_schedule('pop_register_edit');" title="닫기"><i class="mdi mdi-close"></i></button>
+					</div>	
+				</div>								
+				<div class="popup_contents">									
+					<p class="" id="iconCode_view"></p><!-- 사업관리 .ico-1 -->
+					<ul class="register_view">
+						<li id="customerName_view_li"><i class="mdi mdi-card-account-details-outline"></i><p id="customerName_view"></p></li>
+						<li id="stime_etime_li"><i class="mdi mdi-alarm-check"></i><p id="stime_etime"></p></li>
+						<li id="place_view_li"><i class="mdi mdi-map-marker-radius-outline"></i><p id="place_view"></p></li>										
+						<li id="relationUser_view_li"><i class="mdi mdi-train-car"></i><p id="relationUser_view"></p></li>										
+					</ul>		
+				</div>
+			</div>
+		</div>		
+		
+		<!-- 일정등록 팝업 -->
+		<div id="pop_register" class="popup_layer pop_register">
+			<form name="frm" id="frm" method="post">
+				<input name="editable_edit" id="editable_edit" type="hidden"/>
+				<input name="seq" id="seq_edit" type="hidden"/>
+				<input name="idx" id="idx_edit" type="hidden"/>
+				<div class="popup_bg"></div>
+				<div class="popup_inner myschedule"><!-- 개인 스케쥴관리 .myschedule -->
+					<div class="a-both">
+						<p class="h1">일정등록</p>						
+						<button type="button" class="btn-close" onclick="javascript:layer_close_schedule('pop_register');" title="닫기"><i class="mdi mdi-close"></i></button>
+					</div>								
+					<div class="popup_contents">					
+						<div class="a-both title">
+							<select class="select" name="type" id="type_edit" onchange="setWorkType()">
+								<option value="사업관리" >사업관리</option>
+								<option value="전사행사" >전사행사</option>
+								<option value="교육참석" >교육참석</option>
+								<option value="회의일정" >회의일정</option>
+								<option value="Up-day" >재택근무</option>
+								<option value="개인휴무" >개인휴무</option>
+								<option value="휴가" >휴가</option>
+								<option value="기타" >기타</option>
+							</select>
+							<input type="text" title="장소 입력" placeholder="장소 입력" name="place" id="place_edit"/>
+						</div>
+						<div class="w-100"><!-- width 100% 로 할 경우 -->
+							<input type="text" title="업무내용 입력" placeholder="업무내용 입력" name="content" id="content_edit"/>
+						</div>									
+						<div class="a-both">
+							<input type="text" title="고객사 입력" placeholder="고객사 입력" name="customerName" id="customerName_edit"/>
+							<ul class="chek_ui" id="customer_chk">
+								<li>
+									<p class="label">고객정보</p>
+									<input type="radio" id="googleSyncId_1_edit" name="googleSyncId" class="btn_radio"  value="Y"/>
+									<label for="googleSyncId_1_edit"><p>Y</p></label> 
+									<input type="radio" id="googleSyncId_2_edit" name="googleSyncId" class="btn_radio" checked value="N"/>
+									<label for="googleSyncId_2_edit"><p>N</p></label>      
+								</li>
+							</ul>
+						</div>
+						<br>								
+						<ul class="chek_ui mb-10">
+							<li>																					
+								<input type="checkbox" name="check_day" id="check_day" class="btn_check"  onclick="javascript:checkAllDay();"/>
+								<label for="check_day"><p>하루 종일</p></label><!-- TO-DO: 스트립트 추가 -->
+							</li>		
+							<!-- <li id="multiYN_li" >
+								<input type="checkbox" name="multiYN" id="multiYN" class="btn_check"  onclick="javascript:checkMultiYN();" value="Y"/>
+								<label for="multiYN"><p>연속 입력</p></label>TO-DO: 스트립트 추가
+							</li> -->
+							<input type="hidden" name="multiYN" id="multiYN" class="btn_check" value="Y"/>
+							<li id="holiday_li" >
+								<input type="checkbox" name="holidayYN" id="holidayYN" class="btn_check" value="Y" checked/>
+								<label for="holidayYN"><p>주말 제외</p></label><!-- TO-DO: 스트립트 추가 -->
+							</li>
+						</ul>
+						<div class="a-both">
+							<ul class="chek_ui">
+								<li>
+									<p class="label">시작 시간 : </p>
+								</li>
+							</ul>
+							<div class="input_date">
+								<input type="text" title="시작일" placeholder="시작일" name="sdate" id="sdate_edit" 
+									th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}" readonly
+									/>
+								<script>
+									jQuery(function(){jQuery( "#sdate_edit" ).datepicker({dateFormat: 'yy-mm-dd'});});
+								</script>								
+							</div>
+							<input type="text" title="" placeholder="12:00" class="time" name="stime" id="stime_edit"
+								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
+								onkeyup="javascript:inputTimeColon(this)" 
+								/>
+						</div>
+						<div class="a-both">
+							<ul class="chek_ui">
+								<li>
+									<p class="label">종료 시간 : </p>
+								</li>
+							</ul>
+							<div class="input_date" id="edateDiv">
+								<input type="text" title="종료일" placeholder="종료일" name="edate" id="edate_edit" 
+									th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}" readonly />
+								<script>
+									jQuery(function(){jQuery( "#edate_edit" ).datepicker({dateFormat: 'yy-mm-dd'});});
+								</script>	
+							</div>
+							<input type="text" title="" placeholder="12:00" class="time" name="etime" id="etime_edit"
+								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
+								onkeyup="javascript:inputTimeColon(this)" 
+								/>
+						</div>
+						<ul class="chek_ui" id="workType_chk">
+							<li>
+								<p class="label">외/내근 유형</p>
+								<input type="radio" id="workType_I_edit" name="workType" class="btn_radio" value="I" checked/>
+								<label for="workType_I_edit"><p>내근</p></label> 
+								<input type="radio" id="workType_E_edit" name="workType" class="btn_radio"  value="E" />
+								<label for="workType_E_edit"><p>외근</p></label>      
+							</li>
+						</ul>	
+						<ul class="chek_ui" id="relationUser_chk">
+							<li>			
+								<p class="label">현장 출/퇴근</p>																	
+								<input type="checkbox" class="btn_check" name="relationUser" value="" id="relationUser_1_edit"/>
+								<label for="relationUser_1_edit"><p>출근</p></label>
+								<input type="checkbox" class="btn_check" name="relationUser" value="" id="relationUser_2_edit"/>
+								<label for="relationUser_2_edit"><p>퇴근</p></label>
+							</li>
+							<input type="hidden" name="relationUser" value="0" id="relationUser_edit"/>
+						</ul>
+						<div class="a-c">
+							<ul class="chek_ui" id="secretYN_chk">
+								<li>																					
+									<input type="checkbox" name="secretYN" id="secretYN_edit" value="Y" class="btn_check" />
+									<label for="secretYN_edit"><p>비공개로 설정시 체크해 주세요.</p></label>
+								</li>
+							</ul>
+						</div>
+						<div class="btn_area">
+							<button type="button" th:if="${!searchParam.readonly}" class="btn btn_blue" onclick="javascript:insertSchedule();">등록</button>
+							<button type="button" class="btn btn_grey" onclick="javascript:layer_close_schedule('pop_register');">취소</button>
+						</div>									
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- // 일정등록 팝업 -->			
+	</div>			
+</body>
+</html>	
+
