@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<body onload="document.location.href='/pageRedirect.jsp'">
-</body>
+<script>
+var UserAgent = navigator.userAgent;
 
+// mobile pc control
+function redirectPage(){
+	if (UserAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null 
+		|| UserAgent.match(/LG|SAMSUNG|Samsung/) != null) 
+		location.href = "/action/AuthorityAction.do?mode=mobileMainPage";
+	else
+	location.href = "/action/AuthorityAction.do?mode=mainPage";
+}
+</script>
+
+<body onload="redirectPage()">
 </html>
