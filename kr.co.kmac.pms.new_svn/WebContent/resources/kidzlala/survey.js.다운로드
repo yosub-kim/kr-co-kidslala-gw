@@ -1,0 +1,43 @@
+	/*
+	 * 설문(문제) 작성
+	 */
+	function questionCheckForm(form, count) {
+		// 총 문항 수(i가 1부터 시작해서 + 1)
+		questionLength = count + 1;
+		
+		// 빈 정답 확인
+		for (var i = 1; i < questionLength; i++) {
+			// 문항 번호
+			var qNumber = "q" + i;
+			// 객관식
+			var questionType = $(":input:radio[name=" + qNumber + "]");
+			// 객관식 복수형
+			var questionType1 = $(":input:checkbox[name=" + qNumber + "]");
+			// 주관식
+			var questionType2 = $(":input:text[name=" + qNumber + "]");
+			
+			// 객관식 확인
+			if (questionType.val() && !$(":input:radio[name=" + qNumber + "]:checked").val()) {
+				alert(i + "번 문제를 풀지 않으셨습니다.");
+				questionType.focus();
+				
+				return false;
+			}
+			
+			// 객관식 복수형 확인
+			if (questionType1.val() && !$(":input:checkbox[name=" + qNumber + "]:checked").val()) {
+				alert(i + "번 문제를 풀지 않으셨습니다.");
+				questionType1.focus();
+				
+				return false;
+			}
+			
+			// 주관식 확인
+			if (questionType2.val() == "") {
+				alert(i + "번 문제를 풀지 않으셨습니다.");
+				questionType2.focus();
+				
+				return false;
+			}
+		}
+	}

@@ -1,0 +1,204 @@
+	/*
+	 * 비밀글 - 암호 입력
+	 */
+	function secretCheckForm(form) {
+		if (form.secretPassword.value == "") {
+			alert("비밀번호를 입력해 주세요.");
+			form.secretPassword.focus();
+			
+			return false;
+		}
+	}
+	
+	// 비밀글 레이어 보이기
+	function showView(dataUid, division) {
+		$("#overlay").show();
+		$("#dataUid").val(dataUid);
+		$(".popup_layer").css("top", $(window).scrollTop() + $(window).height() / 2 - $(".popup_layer").height() / 2);
+		$(".popup_layer").css("left", $(window).width() / 2 - $(".popup_layer").width() / 2);
+		$(".popup_layer").show();
+		if (division == "delete") {
+			$("#secretForm").attr('action', './action.9is?mode=delete');
+		} else if (division == "update") {
+			$("#secretForm").attr('action', './update.9is');
+		} else if (division == "view") {
+			$("#secretForm").attr('action', './view.9is');
+		}
+		$("#secretPassword").focus();
+	}
+	
+	function showCommentDelete(commentUid,boardUid) {
+		$("#overlay").show();
+		$(".popup_layer").css("top", $(window).scrollTop() + $(window).height() / 2 - $(".popup_layer").height() / 2);
+		$(".popup_layer").css("left", $(window).width() / 2 - $(".popup_layer").width() / 2);
+		$(".popup_layer").show();
+		$("#secretForm").attr('action', '/planweb/comment/action.9is?mode=delete&commentUid='+commentUid+'&boardUid='+boardUid);
+		$("#secretPassword").focus();
+	}
+	
+	
+	// 비밀글 레이어 닫기
+	function layerClose() {
+		$('#overlay', parent.document).hide();
+		$('.popup_layer', parent.document).fadeOut();
+	}
+	
+	// 데이터 등록
+	function dataCheckForm() {
+		if (!$("#dataTitle").val()) { alert("제목을 입력해 주세요."); $("#dataTitle").focus(); return false; }
+		if (!$("#userNickname").val()) { alert("작성자를 입력해 주세요."); $("#userNickname").focus(); return false; }
+		if (!$("#userPassword").val()) { alert("비밀번호를 입력해 주세요."); $("#userPassword").focus(); return false; }
+		if (!$("#dataContent").val()) { alert("내용을 입력해 주세요."); $("#dataContent").focus(); return false; }
+		if($("#mode").val() == 'write' && $("#push").val() == 'true'){alert("푸쉬를 보내는 시간이 오래걸립니다. 리스트 페이지로 변환될때 까지 기다려주세요.");}
+		document.dataWrite.submit();
+	}
+	
+	// 데이터 삭제
+	function deleteCheck(boardUid, dataUid, option) {
+		if (confirm("삭제하시겠습니까?")) {
+			document.location = "./action.9is?mode=delete&boardUid=" + boardUid + "&dataUid=" + dataUid + "&" + option;
+		} else return false;
+	}
+	
+	// 첨부파일 삭제
+	function deleteFile(boardUid, dataUid, fileUid, option) {
+		if (confirm("첨부파일을 삭제하시겠습니까?")) {
+			var password = $("#userPassword").val();
+			if (password == "") {
+				alert("비밀번호를 입력해 주세요.");
+				return;
+			} else {
+				document.location = "./action.9is?mode=deleteFile&boardUid=" + boardUid + "&dataUid=" + dataUid + "&fileUid=" + fileUid + "&" + option + password;
+			}
+		} else return;
+	}
+	
+	// 덧글 등록
+	function commentCheckForm(form) {
+		if (!form.userPassword.value) {
+			alert("비밀번호는 필수입니다.");
+			form.userPassword.focus();
+			
+			return false;
+		}
+		if (!form.commentContent.value) {
+			alert("덧글 내용은 필수입니다.");
+			form.commentContent.focus();
+			
+			return false;
+		}
+	}
+	
+	// 덧글 수정 레이어 띄우기
+	function showCommentView(commentUid, commentContent,count) {
+
+		//$("#overlay").show();
+		$("#updateCommentUid").val(commentUid);
+		$("#updateCommentContent").val(commentContent);
+		$("#commentModifyLayer"+count).css("top", $(window).scrollTop() + $(window).height() / 2 - $("#commentModifyLayer"+count).height() / 2);
+		$("#commentModifyLayer"+count).css("left", $(window).width() / 2 - $("#commentModifyLayer"+count).width() / 2);
+		$("#commentModifyLayer"+count).show();
+	}
+	
+	// 덧글 수정 레이어 띄우기
+	function showCommentTypeOneView(count) {
+
+		$("#commentModifyLayer"+count).css("top", $(window).scrollTop() + $(window).height() / 2 - $("#commentModifyLayer"+count).height() / 2);
+		$("#commentModifyLayer"+count).css("left", $(window).width() / 2 - $("#commentModifyLayer"+count).width() / 2);
+		$("#commentModifyLayer"+count).show();
+	}
+	
+	// 덧글 레이어 닫기
+	function commentLayerClose(count) {
+		$('#overlay', parent.document).hide();
+		$('#commentModifyLayer'+count, parent.document).fadeOut();
+	}
+	
+	/*
+	 * 비밀글 - 암호 입력
+	 */
+	function commentSecretCheckForm(form) {
+		if (form.userPassword.value == "") {
+			alert("비밀번호를 입력해 주세요.");
+			form.userPassword.focus();
+			
+			return false;
+		}
+	}
+	
+	// 덧글 삭제 비밀번호 레이어 띄우기
+	function showCommentPassword(commentUid){
+		$("#overlay").show();
+		$("#secretCommentUid").val(commentUid);
+		$(".popup_layer").css("top", $(window).scrollTop() + $(window).height() / 2 - $(".popup_layer").height() / 2);
+		$(".popup_layer").css("left", $(window).width() / 2 - $(".popup_layer").width() / 2);
+		$(".popup_layer").show();
+		
+		$("#userPassword").focus();
+	}
+	// 상태값 변경
+	 function setDatastate(bUid,uid,val){ 
+	        $.ajax({
+	            type: 'GET',
+	            url: '/planweb/board/setDatastate.9is',
+	            data: "boardUid="+bUid+"&dataUid="+uid+"&datastate="+val,
+	            cache: false,
+	            dataType: 'json',
+	            contentType :"application/x-www-form-urlencoded;charset=utf-8",
+	            timeout: 60000,
+	            success: function(json) {
+	                //alert(json[0].results[0].message);
+	                //if(json[0].results[0].code == '915')location.reload();
+	            },
+	            error: function(xhr, textStatus, errorThrown) {
+	                alert(xhr + "\n" + textStatus + "\n" + errorThrown);
+	            }
+	        });
+	    }
+
+		function setMultiDatastate(uid,val,boardUid){  	       
+	        $.ajax({
+	            type: 'GET',
+	            url: '/planweb/board/setMultiDatastate.9is',
+	            data: "dataUid="+uid+"&datastate="+val+"&boardUid="+boardUid,
+	            cache: false,
+	            dataType: 'json',
+	            contentType :"application/x-www-form-urlencoded;charset=utf-8",
+	            timeout: 60000,
+	            success: function(json) {
+	                //alert(json[0].results[0].message);
+	                //if(json[0].results[0].code == '915')location.reload();
+	            },
+	            error: function(xhr, textStatus, errorThrown) {
+	                alert(xhr + "\n" + textStatus + "\n" + errorThrown);
+	            }
+	        });
+	    }
+
+		// 상태값 변경
+	 function setDatastate1(uid,val){  	     
+		 alert(uid);
+		 alert(val);
+	        $.ajax({
+	            type: 'POST',
+	            url: '/planweb/board/setDatastate.9is',
+	            data: "dataUid="+uid+"&datastate="+val,
+	            cache: false,
+	            dataType: 'json',
+	            contentType :"application/x-www-form-urlencoded;charset=utf-8",
+	            timeout: 60000,
+	            success: function(json) {
+	                alert(json[0].results[0].message);
+	                //if(json[0].results[0].code == '915')location.reload();
+	            },
+	            error: function(xhr, textStatus, errorThrown) {
+					alert("------------");
+	                alert(xhr + "\n" + textStatus + "\n" + errorThrown);
+										alert("------------");
+	            }
+	        });
+	    }
+	
+	$(document).ready(function() { // 페이지 로딩이 끝나면 처리합니다.
+		  $(".ifrm", parent.document).height($(document).height()+70);  // 부모창에있는 아이프레임(클래스가 ifrm인) 높이 조절
+	});

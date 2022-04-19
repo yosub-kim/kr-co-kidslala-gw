@@ -21,7 +21,7 @@
 .form_box:not(:last-child) {margin-bottom: 30px;}
 .login_inner.password .form_box:not(:last-child) {margin-bottom: 15px;}
 .form_box:focus,
-.form_box:hover {border: 1px solid #64c1ed; -webkit-transition: all .35s ease; transition: all .35s ease;}
+.form_box:hover {border: 1px solid #FF8518; -webkit-transition: all .35s ease; transition: all .35s ease;}
 .form_box div {display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center;}
 .form_box input[type="text"],
 .form_box input[type="password"] {width: 498px; height: 38px; font-size: 14px; color: #888888; border: 0;}
@@ -32,7 +32,7 @@
 .form_box input:-ms-input-placeholder  {color: #888888;}
 .form_box i {font-size: 25px; color: #888888;}
 .form_box:focus,
-.form_box:hover i {color: #64c1ed; -webkit-transition: all .35s ease; transition: all .35s ease;}
+.form_box:hover i {color: #FF8518; -webkit-transition: all .35s ease; transition: all .35s ease;}
 
 .a-both input[type="text"] {height: 36px; font-size: 14px; color: #888888; text-indent: 20px;}
 .a-both span.dash {color: #222222; display: inline-block; width: 20px;}

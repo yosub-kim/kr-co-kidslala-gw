@@ -1,0 +1,139 @@
+	/**
+	 * 상품 정렬
+	 * @param goodsField 정렬할 필드명
+	 * @param asc 정렬 할 것인가 boolean (true : asc, false : desc)
+	 */
+	function goodsOrderBy(goodsField, asc) {
+		$("#order").val(goodsField);
+		$("#asc").val(asc);
+		document.goodsList.submit();
+	}
+	
+	// 결제, 배송정보 입력 시 주문자와 동일 체크박스
+	function orderSameCheck() {
+		if ($("#mallPaymentCheck").attr("checked")) {
+			$("#receiverName").val($("#orderName").val());
+			$("#receiverTel1").val($("#orderTel1").val());
+			$("#receiverTel2").val($("#orderTel2").val());
+			$("#receiverTel3").val($("#orderTel3").val());
+			$("#receiverPhone1").val($("#orderPhone1").val());
+			$("#receiverPhone2").val($("#orderPhone2").val());
+			$("#receiverPhone3").val($("#orderPhone3").val());
+			$("#receiverZipCode").val($("#orderZipCode").val());
+			$("#receiverAddress").val($("#orderAddress").val());
+			$("#receiverDetailAddress").val($("#orderDetailAddress").val());
+		} else {
+			$("#receiverName").val("");
+			$("#receiverTel1").val("");
+			$("#receiverTel2").val("");
+			$("#receiverTel3").val("");
+			$("#receiverPhone1").val("");
+			$("#receiverPhone2").val("");
+			$("#receiverPhone3").val("");
+			$("#receiverZipCode").val("");
+			$("#receiverAddress").val("");
+			$("#receiverDetailAddress").val("");
+		}
+	}
+	
+	// 결제하기 확인
+	function payCheckForm(form) {
+		if (!form.useSavedMoney.value) {
+			$("#useSavedMoney").val(0);
+		}
+		if (!form.orderName.value) {
+			alert("주문자명이 없습니다.");
+			return false;
+		}
+		if (!form.orderEmail.value) {
+			alert("e-mail을 입력해 주세요.");
+			form.orderEmail.focus();
+			return false;
+		}
+		if (form.orderTel1.value || form.orderTel2.value || form.orderTel3.value) {
+			form.orderTel.value = form.orderTel1.value + "-" + form.orderTel2.value + "-" + form.orderTel3.value;
+		} else {
+			form.orderTel.value = "";
+		}
+		if (!form.orderPhone1.value || !form.orderPhone2.value || !form.orderPhone3.value) { alert("휴대전화번호를 입력해 주세요."); form.orderPhone1.focus(); return false; }
+		if (form.orderPhone1.value || form.orderPhone2.value || form.orderPhone3.value) {
+			form.orderPhone.value = form.orderPhone1.value + "-" + form.orderPhone2.value + "-" + form.orderPhone3.value;
+		} else {
+			form.orderPhone.value = "";
+		}
+		if (!form.receiverName.value) {
+			alert("받는 사람 성함을 입력해 주세요.");
+			form.receiverName.focus();
+			return false;
+		}
+		if (form.receiverTel1.value || form.receiverTel2.value || form.receiverTel3.value) {
+			form.receiverTel.value = form.receiverTel1.value + "-" + form.receiverTel2.value + "-" + form.receiverTel3.value;
+		} else {
+			form.receiverTel.value = "";
+		}
+		if (!form.receiverPhone1.value || !form.receiverPhone2.value || !form.receiverPhone3.value) { alert("휴대전화번호를 입력해 주세요."); form.receiverPhone1.focus(); return false; }
+		if (form.receiverPhone1.value || form.receiverPhone2.value || form.receiverPhone3.value) {
+			form.receiverPhone.value = form.receiverPhone1.value + "-" + form.receiverPhone2.value + "-" + form.receiverPhone3.value;
+		} else {
+			form.receiverPhone.value = "";
+		}
+		if (!form.receiverZipCode.value || !form.receiverAddress.value) {
+			alert("우편번호 검색을 이용하세요.");
+			form.receiverZipCode.focus();
+			return false;
+		}
+		if (!form.receiverDetailAddress.value) {
+			alert("상세 주소를 입력해 주세요.");
+			form.receiverDetailAddress.focus();
+			return false;
+		}
+		if (form.payWay.value == 1 && !form.depositName.value) {
+			alert("입금자명을 입력해 주세요.");
+			form.depositName.focus();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * 세금계산서인지 현금영수증인지 확인한다.
+	 * 동시에 두 가지는 신청할 수 없다.
+	 * @param {int} ec 1 : 세금계산서, 2 : 현금영수증
+	 */
+	function evidenceCheck(ec) {
+		if (ec == 1) {
+			if ($("#taxInvoice").attr("checked") && $("#cashReceipt").attr("checked")) $("#cashReceipt2").attr("checked", "checked");
+		} else if (ec == 2) {
+			if ($("#taxInvoice").attr("checked") && $("#cashReceipt").attr("checked")) $("#taxInvoice2").attr("checked", "checked");
+		}
+	}
+	
+	/**
+	 * 일정 기준 이상 적립금이 있을 때 적립금을 사용 확인
+	 * @param {int} savedMoneyUse 적립금을 사용할 수 있는 기준 예) 5,000 원 이상
+	 * @param {int} savedMoney 사용할 수 있는 현재 적립금
+	 * @param {int} payPrice 총 결제금액
+	 */
+	function useSavedMoneyCheck(savedMoneyUse, savedMoney, payPrice) {
+		// 적립금을 사용할 수 있는 기준을 넘지 못하면 적립금을 사용할 수 없다.
+		if (savedMoneyUse > savedMoney) {
+			$("#useSavedMoney").val(0);
+			alert("적립금을 사용할 수 없습니다.");
+			return;
+		}
+		var useMoney = $("#useSavedMoney").val();
+		// 사용하려는 적립금(입력)보다 보유하고 있는 적립금이 적으면 보유한 적립금 입력
+		if (savedMoney < useMoney) {
+			$("#useSavedMoney").val(savedMoney);
+		}
+		// 사용하려는 적립금(입력)보다 결제액이 적으면 결제액 입력
+		if (payPrice < useMoney) {
+			$("#useSavedMoney").val(payPrice);
+		}
+		var sm = $("#useSavedMoney").val();
+		if (!sm) sm = 0;
+		$(".savedMoneySpan").html(commify(sm) + "원");
+		$(".savedMoneyView").show();
+		$(".payPriceSpan").html(commify(payPrice - sm) + "원");
+	}

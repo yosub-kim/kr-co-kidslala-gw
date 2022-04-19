@@ -35,6 +35,8 @@
 <title>KMAC 통합 인트라넷</title>
 <link rel="stylesheet" href="/resources/css/common.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/login.css" type="text/css" />
+<link rel="stylesheet" href="/resources/kidzlala/main.css" type="text/css" />
+<link rel="stylesheet" href="/resources/kidzlala/base.css" type="text/css" />
 <script type="text/javascript" src="/resources/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="/resources/js/common.js"></script>
@@ -202,15 +204,45 @@ if (navigator.userAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Sy
 
 			<div class="login_container">
 
-				<div class="login_bg">
-					<div class="logo"><img src="/resources/img/logo_login.png" alt="KMAC" /></div>
-				</div>
+			<div class="main01">
+                <div class="vis_t">
+                    <i class="Stit" lang="en">KIDS THEME PARK</i>
+                    <p class="Stitm">어린이 테마파크</p>
+                    <h2 class="Tyg">키즈라라</h2>
+                    <p class="scRoll"></p>
+                </div>
+                <div class="vis_m"><img src="/resources/kidzlala/m_star.png" alt="별 일러스트" class="rela">
+                    <img src="/resources/kidzlala/m_kids.png" alt="아이들 일러스트" class="absl"></div>
+                    <div id="container">
+            <div class="main02" style="padding: 600px 0 0 0">
+                <div class="conWr" style="height:100%;">
+                    <!-- <article>
+                        <div class="subTit">
+                            <i class="Stit" lang="en">KIDS THEME PARK</i>
+                            <h2>키즈라라 소개</h2>
+                        </div>
+                    </article>
+
+                    <section>
+                    <div class="subTit">
+                        <i class="Stit" lang="en">KIDSLALA STORY</i>
+                        <h2>키즈라라 소식</h2>
+                    </div>
+                    <div class="clearfix">
+                       
+                    </div>
+                    </section> -->
+                      
+                </div>
+            </div>
+        </div>
+            </div>
 				<!-- // login_bg -->		
 
 				<div class="login_inner">
 					<div class="login_contents">
 						<p class="h1">Log In</p>
-						<p class="login_info_text">KMAC 통합 인트라넷은 Value Creation의 원천인 우리의 핵심 자산입니다.<br />통합 인트라넷을 통한 구성원 개개인의 지식활동은 KMAC의 경쟁력입니다.</p>
+						<!-- <p class="login_info_text">KIDSLALA INTRANET</p> -->
 						<form name="loginform" action="<c:url value='j_acegi_security_check'/>" method="POST" onSubmit="return login();"> 
 							<div class="form_box">
 								<div>
@@ -263,7 +295,7 @@ if (navigator.userAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Sy
 						<!-- // 비밀번호 찾기 팝업 -->
 
 						<div class="copyright">
-							<p>copyright © 2021 KMAC All Rights Reserved.<a href="mailto:mailadmin@kmac.co.kr">mailadmin@kmac.co.kr</a></p>
+							<p>copyright © 2021 KIZLALA All Rights Reserved.<!-- <a href="mailto:mailadmin@kmac.co.kr">mailadmin@kmac.co.kr</a> --></p>
 						</div>
 					</div>
 				</div>
