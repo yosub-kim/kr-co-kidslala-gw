@@ -627,7 +627,7 @@
 		<% if((!session.getAttribute("jobClass").equals("N")) && (!session.getAttribute("jobClass").equals("C")) && (!session.getAttribute("jobClass").equals("R"))){ %>
 		<div class="section_box quick_menu">
 			<!-- 바로가기 링크 영역 .quick_menu  -->
-			<div class="menu_link">
+			<div class="menu_link" style="background-color:#FFB64B;">
 				<ul>
 					<li><a
 						href="javascript:goOnlineBudget('<authz:authentication operation="username" />');"><i
@@ -641,18 +641,14 @@
 							class="mdi mdi-monitor-edit"></i><span>TMC BOX</span></a></li>
 				</ul>
 			</div>
-			<div class="board_link">
+			<div class="board_link" style="background-color:#FFB64B;">
 				<ul>
 					<li><a href="javascript:goBlind_popup();">블라인드 소통채널</a></li>
-					<%if(session.getAttribute("jobClass").equals("A")) {%>
+<%-- 					<%if(session.getAttribute("jobClass").equals("A")) {%>
 						<li><a href="https://intranet.kmac.co.kr/kmac/comlist/suggest_filelist.asp">제안서 검색</a></li>
-					<%} %>
+					<%} %> --%>
 					<li><a href="javascript:goEducationManagement_popup();">교육 관리</a></li>
 					<li><a href="/action/BoardAction.do?mode=selectList&bbsId=newbasisbbs">기준 지침</a></li>
-					<!-- <li><a href="https://intranet.kmac.co.kr/kmac/task/projectshare_board/Board_list.asp">공공혁신 프로젝트 공유방</a></li> -->
-					<%if(session.getAttribute("userId").equals("sykim")){ %>
-						<li><a href="https://intranet.kmac.co.kr/kmac/embbs/src/embbs.asp">EMBBS 발송신청</a></li>
-					<%} %>
 					<%-- <%if(session.getAttribute("userId").equals("yskim") || session.getAttribute("userId").equals("harry2080")){ %>
 						<li><a href="/action/AuthorityAction.do?mode=userChkPage">인사평가</a></li>
 						<li><a href="/action/ExpertPoolManagerAction.do?mode=getExpertPoolWorkPeriodList_performance_admin">인사평가(관)</a></li>

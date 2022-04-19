@@ -1,0 +1,29 @@
+	/*
+	 * 예약 달력 선택
+	 */
+	function changeCalendar(link, message, layoutUid) {
+		var roomUid = $("#roomUid").val();
+		var year = $("#selectYear").val();
+		var month = $("#selectMonth").val();
+		if (roomUid == "") {
+			alert(message);
+			return;
+		}
+		
+		location.href = "/planweb/reservation/" + link + ".9is?reservationRoomUid=" + roomUid + "&selectYear=" + year + "&selectMonth=" + month + "&layoutUid=" + layoutUid;
+	}
+	
+	/*
+	 * 예약하기
+	 */
+	function reservationCheckForm(form) {
+		if (!form.userId.value) { alert("로그인 하지 않으셨습니다!"); return false; }
+		if (!form.userName.value) { alert("예약자명은 필수입니다."); form.userName.focus(); return false; }
+		if (!form.userPhone.value) { alert("휴대전화번호는 필수입니다."); form.userPhone.focus(); return false; }
+		if (!form.bDay.value) { alert("예약일을 선택해 주세요."); form.bDay.focus(); return false; }
+		if (!form.eDay.value) { alert("예약 종료일을 선택해 주세요."); form.eDay.focus(); return false; }
+		form.beginDay.value = form.bDay.value + " " + form.bTime.value;
+		form.endDay.value = form.eDay.value + " " + form.eTime.value;
+		if (!form.beginDay.value) { alert("예약일을 선택해 주세요."); form.bDay.focus(); return false; }
+		if (!form.endDay.value) { alert("예약 종료일을 선택해 주세요."); form.eDay.focus(); return false; }
+	}

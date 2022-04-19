@@ -1,0 +1,154 @@
+	/**
+	 * 오버레이를 생성한다.
+	 * @param {Object} overlayColor 오버레이의 색상
+	 * @param {Object} zIndex 오버레이 z-index
+	 * @param {Object} overlayOpacity 오버레이 색상의 투명도를 결정한다. (0에 가까울수록 투명화 : 0.0 - 1.0)
+	 */
+	function makeOverlay(overlayColor, zIndex, overlayOpacity) {
+		
+		if (!this.overlay) {
+			this.overlay = $("<div id='overlay' class='overlay'></div>");
+			this.overlay.css({
+				"display" : "none",
+				"position" : "fixed",
+				"height" : "100%",
+				"width"  : "100%",
+				"left" : "0",
+				"top"  : "0",
+				"background" : overlayColor,
+				"z-index" : zIndex,
+				"opacity": overlayOpacity
+			});
+			$('body').prepend(this.overlay);
+		}
+	}
+	
+	// search address
+	function searchPost(url, division) {		
+		$("#overlay").show();
+		$("#addressSearchFrame").attr("width", "400");
+		$("#addressSearchFrame").attr("height", "600");
+		$("#addressSearchFrame").attr("src", url + "&division=" + division);
+		
+		$("#addressSearchWrapper").css("width", 400);
+		$("#addressSearchWrapper").css("height", 600);
+		var wS = $(window).scrollTop();
+		var wH = $(window).height();
+		var lH = $("#addressSearchWrapper").height();
+		var topMargin = wS + (wH / 2) - (lH / 2);
+		if (topMargin < 0) topMargin = 0;
+		
+		$("#addressSearchWrapper").css("top", topMargin);
+		$("#addressSearchWrapper").css("left", $(window).width() / 2 - $("#addressSearchWrapper").width() / 2);
+		$("#addressSearchWrapper").show();
+	}
+	
+	/**
+	 * 페이징(paging)
+	 * @param link 목록 link 예) ./list.9is?page=__id__&searchType=${searchType}&keyword=${keyword}
+	 * @param total 데이터 총 개수
+	 * @param page 현재 페이지
+	 * @param rowCount 페이지당 데이터 개수
+	 */
+	function initPaging(link, total, page, rowCount) {
+		var opts = {
+				'total_record' : total,
+				'current_page' : page,
+				'link_to' : link,
+				'prev_text' : "&lsaquo;",
+				'next_text' : "&rsaquo;",
+				'prev_show_always' :true,
+				'next_show_always' :true ,
+				'block_size' : 10 ,
+				'addTag' : "",
+				'items_per_page' : rowCount
+		}
+			
+		if (total > 0) {
+			opts.selected_tag = "strong";
+			$("#paging").paging(opts);
+		}
+	}
+	
+	// 숫자 체크(숫자만 입력)
+	function checkNumber(Num) {
+		var temp = "";
+		for (var i = 0; i < Num.value.length; i++) {
+			achar = Num.value.substring(i, i + 1);
+			if (achar < "0" || achar > "9") {
+				alert("숫자만 입력해 주세요.");
+				Num.value = temp;
+				if(Num.value.length == 0){Num.value = "";}
+			} else {
+				temp += achar;
+			}
+
+		}		
+	}
+	
+	// 텍스트를 복사한다. (IE에서만 동작)
+	function copyText(text) {
+		window.clipboardData.setData('Text', text);
+		// UID 복사 선택 box 숨기기
+		$(".selectUidCopy").hide();
+		if (window.clipboardData.getData('Text') != "") {
+			alert(window.clipboardData.getData('Text') + "가 복사되었습니다.");
+		}
+	}
+	
+	// 다시 작성
+	function formReset(formId) {
+		if (confirm("다시 작성 하시겠습니까?")) {
+			$("#" + formId).each(function() {
+				this.reset();
+			});
+		}
+	}
+	
+	// 로그인(returnUrl)
+	function loginReturnUrl(URI, parameter) {
+		var returnUrl = URI + "?" + parameter;
+		document.location.href = "/index.9is?resultType=login&returnUrl=" + encodeURIComponent(returnUrl);
+	}
+	
+	// 서브패스 사이트 로그인(returnUrl)
+	function loginReturnUrl(URI, parameter,subPath) {
+		var returnUrl = URI + "?" + parameter;
+		console.log(subPath);
+		document.location.href = subPath+"/index.9is?resultType=login&returnUrl=" + encodeURIComponent(returnUrl);
+	}
+	
+	// 문자열에 포함된 모든 공백 제거
+	function compactTrim(str) {
+		return str.replace(/(\s*)/g, "");
+	}
+	
+	/**
+	 * 기본(action) 외 데이터 삭제
+	 * @param parameter 파라미터 값 예) question
+	 * @param UID parameter에 맞는 UID 값
+	 * @param option 기타 파라미터
+	 */
+	function deleteSubCheck(parameter, UID, option) {
+		if (confirm("삭제하시겠습니까?"))
+			document.location = "./" + parameter + "_action.9is?mode=delete&" + parameter + "Uid=" + UID + "&" + option;
+		else
+			return;
+	}
+	
+	function deleteResercationSubCheck(UID, option){
+		if (confirm("삭제하시겠습니까?"))
+			document.location = "./reservation_total_pension_action.9is?mode=delete&reservationUid=" + UID + "&" + option;
+		else
+			return;
+	}
+	
+	// 천단위 콤마 찍기
+	function commify(n) {
+		var reg = /(^[+-]?\d+)(\d{3})/;		// 정규식
+		n += '';							// 숫자를 문자열로 변환
+		
+		while (reg.test(n)) n = n.replace(reg, '$1' + ',' + '$2');
+		
+		return n;
+	}

@@ -29,7 +29,7 @@
 .ui-datepicker .ui-datepicker-calendar td a:hover {background-color: #eee; color: #333;}
 .ui-datepicker .ui-datepicker-calendar .date-sunday a {color: #d50000;}
 .ui-datepicker .ui-datepicker-calendar .date-saturday a {color: #0278d3;}
-.ui-datepicker .ui-datepicker-calendar .ui-datepicker-today a, .ui-datepicker .ui-datepicker-calendar .ui-datepicker-today a:hover, .ui-datepicker .ui-datepicker-calendar .ui-datepicker-today a:focus {background-color: #89cff0; color: #fff;}
+.ui-datepicker .ui-datepicker-calendar .ui-datepicker-today a, .ui-datepicker .ui-datepicker-calendar .ui-datepicker-today a:hover, .ui-datepicker .ui-datepicker-calendar .ui-datepicker-today a:focus {background-color: #FF9E10; color: #fff;}
 .ui-datepicker .ui-datepicker-calendar .ui-datepicker-current-day a, .ui-datepicker .ui-datepicker-calendar .ui-datepicker-current-day a:hover, .ui-datepicker .ui-datepicker-calendar .ui-datepicker-current-day a:focus {background-color: #e31f45; color: #fff;}
 .ui-datepicker .ui-datepicker-calendar .ui-state-disabled .ui-state-default {color: #c0ccda; background-color: #f5f6fa;}
 .ui-datepicker-multi .ui-datepicker-group {padding-right: 15px; width: auto; float: left;}
