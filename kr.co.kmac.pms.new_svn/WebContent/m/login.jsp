@@ -8,7 +8,6 @@
 <%@ page import="org.acegisecurity.AuthenticationException"%>
 <%@ taglib prefix="c"			uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="code"		uri="/WEB-INF/commonCode.tld" %>
-<link rel="shortcut icon" href="/images/kmac_favicon.ico">
 <meta name="viewport" content="width=460, user-scalable=yes">
 <%
 	SecurityContext context = (SecurityContext) request.getSession().getAttribute(HttpSessionContextIntegrationFilter.ACEGI_SECURITY_CONTEXT_KEY);

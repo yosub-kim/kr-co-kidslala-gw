@@ -8,7 +8,6 @@
 <%@page import="java.util.Date"%>
 <%@ page contentType="text/html; charset=utf-8"%>
 <%@ include file="/common/include/taglib.jsp"%>
-<link rel="shortcut icon" href="/images/kmac_favicon.ico">
 
 <%@page import="kr.co.kmac.pms.system.accesslog.dao.ILoginLogDao"%>
 <%@page import="kr.co.kmac.pms.common.util.DateTime"%>

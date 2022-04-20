@@ -13,7 +13,6 @@
 <%@page import="kr.co.kmac.pms.schedule.data.DailyProjectInfo"%>
 <%@page import="org.springframework.web.context.WebApplicationContext"%>
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
-<link rel="shortcut icon" href="/images/kmac_favicon.ico">
 
 <%@ include file="/common/include/taglib.jsp"%>
 <%@ include file="/common/include/includeJavaScript.jsp"%>
@@ -37,7 +36,7 @@
 
 <html lang="ko">
 <head>
-<title>KMAC 통합 인트라넷</title>
+<title>키즈라라 인트라넷</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="Generator" content="EditPlus" charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
@@ -577,9 +576,8 @@ j$(document).ready(function() {
 					</div>
 				</div>
 				<!-- // link_area -->
-				
 				<div class="status_area">
-					<div class="logo" ><a href="/"><img src="/resources/img/logo.png" alt="KMAC 한국능률협회컨설팅" /></a></div>
+					<div class="logo"><a href="/"><img style="width:180px; height:43px;" src="/resources/kidzlala/kidzlala_logo.jpg" alt="키즈라라" /></a></div>
 					<div class="profile"><img src="/servlet/PhotoDownLoadServlet?fileId=<%=expertPool.getPhoto() %>" alt="" /></div>
 						<p class="name"><%=expertPool.getName() %> <%=expertPool.getCompanyPositionName() %></p>
 						<p class="position"><%=expertPool.getDeptName() %></p>
@@ -998,7 +996,7 @@ j$(document).ready(function() {
 					<!-- // contentFrame -->
 					
 					<div class="footer">
-						<p>Copyright  ⓒ 2021 KMAC. All rights reserved</p>
+						<p>Copyright  ⓒ 2022 KIDZLALA. All rights reserved</p>
 					</div>
 					<!-- // footer -->		
 
