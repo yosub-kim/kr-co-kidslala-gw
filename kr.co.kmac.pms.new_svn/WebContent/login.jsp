@@ -8,7 +8,6 @@
 <%@ page import="org.acegisecurity.ui.AbstractProcessingFilter"%>
 <%@ page import="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter"%>
 <%@ page import="org.acegisecurity.AuthenticationException"%>
-<link rel="shortcut icon" href="/images/kmac_favicon.ico">
 
 
 <%
@@ -32,7 +31,7 @@
 <meta name="Generator" content="EditPlus" charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=1600">
-<title>KMAC 통합 인트라넷</title>
+<title>키즈라라 인트라넷</title>
 <link rel="stylesheet" href="/resources/css/common.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/login.css" type="text/css" />
 <link rel="stylesheet" href="/resources/kidzlala/main.css" type="text/css" />
@@ -206,7 +205,7 @@ if (navigator.userAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Sy
 
 			<div class="main01">
                 <div class="vis_t">
-                    <i class="Stit" lang="en">KIDS THEME PARK</i>
+                    <i class="Stit" lang="en"><!-- KIDS THEME PARK -->INTRANET</i>
                     <p class="Stitm">어린이 테마파크</p>
                     <h2 class="Tyg">키즈라라</h2>
                     <p class="scRoll"></p>
@@ -259,7 +258,7 @@ if (navigator.userAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Sy
 									<button type="button"><i class="mdi mdi-lock-outline"></i></button>
 								</div>
 							</div>
-							<div class="pass_check">
+							<div class="pass_check" style="display:none;">
 							 	<input type="checkbox" class="btn_check" ch name="_acegi_security_remember_me" id="_acegi_security_remember_me" checked="checked">
 							 	<label for="_acegi_security_remember_me"></label><p>&nbsp Don't ask for my password for two weeks</p>
 							</div>
@@ -295,7 +294,7 @@ if (navigator.userAgent.match(/iPhone|iPod|iPad|Android|Windows CE|BlackBerry|Sy
 						<!-- // 비밀번호 찾기 팝업 -->
 
 						<div class="copyright">
-							<p>copyright © 2021 KIZLALA All Rights Reserved.<!-- <a href="mailto:mailadmin@kmac.co.kr">mailadmin@kmac.co.kr</a> --></p>
+							<p>Copyright ⓒ 2022 KIDZLALA. All rights reserved<!-- <a href="mailto:mailadmin@kmac.co.kr">mailadmin@kmac.co.kr</a> --></p>
 						</div>
 					</div>
 				</div>

@@ -1,6 +1,6 @@
 /* 공통 */
 .section_box {display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: flex-start; align-items: flex-start; width: 100%;}
-.section_box .title {display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; padding: 0 20px 0 15px; width: calc(100% - 35px); border-bottom: 1px solid #eee; background-color: #eaf1f4;}
+.section_box .title {display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; padding: 0 20px 0 15px; width: calc(100% - 35px); border-bottom: 1px solid #eee; background-color: #F5F6FA;}
 .section_box .title .h1 {height: 50px; line-height: 50px; font-size: 18px; color: #222222;}
 .section_box .title .h1 i {margin-right: 10px; font-size: 24px; color: #555555;}
 .section_box .title .more i {color: #555555; font-size: 25px;}

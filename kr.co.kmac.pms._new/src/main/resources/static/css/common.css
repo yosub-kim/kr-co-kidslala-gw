@@ -98,7 +98,7 @@ input[type="file"]:focus + label {outline: #666 dotted 1px;}*/
 
 /* Scroll */
 .sc {overflow-y: auto; scrollbar-arrow-color: #ddd; scrollbar-base-color: #fff; scrollbar-Face-Color: #ddd; scrollbar-Track-Color: #fff;}
-.sc::-webkit-scrollbar {width: 15px;}
+.sc::-webkit-scrollbar {width: 10px; height: 10px;}
 .sc::-webkit-scrollbar-thumb {background-color: #ddd; border-radius: 10px; background-clip: padding-box;}
 .sc::-webkit-scrollbar-track {background-color: #fff; border-radius: 10px;}
 
@@ -365,7 +365,7 @@ body {overflow-y: hidden; overflow-x: auto;}
 .status_area .dropdown > li a {color: #222222; outline: none; font-size: 16px; display: inline-block;}
 .status_area .dropdown > li a span {font-size: 14px; color: #64c1ed; margin-left: 3px;}
 
-.status_area .dropdown .drop_title {display: -webkit-box; display: flex; -webkit-justify-content: flex-start; justify-content: flex-start; -webkit-align-items: center; align-items: center; z-index: 15;  background-color: #eaf1f4; border-radius: 10px 10px 0px 0px; height: 45px; width: 100%; position: relative;}
+.status_area .dropdown .drop_title {display: -webkit-box; display: flex; -webkit-justify-content: flex-start; justify-content: flex-start; -webkit-align-items: center; align-items: center; z-index: 15;  background-color: #F5F6FA; border-radius: 10px 10px 0px 0px; height: 45px; width: 100%; position: relative;}
 .status_area .dropdown .drop_title:after {position: absolute; right: 15px; top: 13px; font-family: 'Material Design Icons'; content: "\F0140"; font-size: 20px; color: #888888; text-align: center; -webkit-transition: all .35s ease; transition: all .35s ease; -webkit-transform: rotate(0deg); transform: rotate(0deg);}
 .status_area .dropdown > li.on .drop_title:after {-webkit-transform: rotate(-180deg); transform: rotate(-180deg); -webkit-transition: all .35s ease; transition: all .35s ease;}
 

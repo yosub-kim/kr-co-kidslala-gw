@@ -109,7 +109,7 @@ table td {vertical-align: middle;}
 /* TableFixed */
 .fixed_box {border-radius: 5px; border: 1px solid #eee; background-color: #fff; width: auto; margin-right: 25px; width: calc(100% - 410px); height: calc(100% - 201px); position: fixed; top: 136px;}
 
-.fixed_box .title {background-color: #a0c3d3; display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; height: 50px; line-height: 50px; padding: 0 20px 0 15px;}
+.fixed_box .title {background-color: #FF9E10; display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; height: 50px; line-height: 50px; padding: 0 20px 0 15px;}
 .fixed_box .title.a-l {-webkit-justify-content: flex-start; justify-content: flex-start;}
 .fixed_box .title .h1_area {display: -webkit-box; display: flex; -webkit-justify-content: flex-start; justify-content: flex-start; -webkit-align-items: center; align-items: center;}
 .fixed_box .title .h1_area .h1 {font-size: 16px; color: #fff;;}
@@ -161,7 +161,7 @@ table td {vertical-align: middle;}
 
 /* TableList */
 .tbl-list {width: calc(100% - 30px); margin: 0 auto; border: 1px solid #eee;}
-.tbl-list thead tr th {padding: 12px; font-size: 15px; color: #222222; border-bottom: 1px solid #eee; background-color: #eaf1f4}
+.tbl-list thead tr th {padding: 12px; font-size: 15px; color: #222222; border-bottom: 1px solid #eee; background-color: #F5F6FA}
 .tbl-list tbody tr td {padding: 15px 10px 10px 10px; font-size: 14px; color: #555555; text-align: center;}
 .tbl-list tbody tr td.subject {text-align: left; padding-left: 50px; color: #555555; position: relative; vertical-align: middle; max-width: 300px;}
 .tbl-list tbody tr td.subject a {color: #719db2;}
@@ -276,7 +276,7 @@ ul.input_area ul li:not(:last-child) {margin-right: 18px;}
 .tbl-view tr:nth-child(even) th {background-color: #eff3f5;}
 
 /* .tbl-view thead tr:first-child th,
-.tbl-view thead tr:first-child td {background-color: #eaf1f4;} */
+.tbl-view thead tr:first-child td {background-color: #F5F6FA;} */
 
 
 /* TableWrite */
@@ -548,7 +548,7 @@ ul.input_area ul li:not(:last-child) {margin-right: 18px;}
 .selection_ui li > p.status.non {color: #f089a5;}
 .selection_ui li > p.date {font-size: 13px; color: #555555;}
 
-.title_both {background-color: #eaf1f4; display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; height: 40px;    line-height: 40px; background-color: #dfeaef; border-bottom: 1px solid #eee; padding: 0 20px 0 15px;}
+.title_both {background-color: #F5F6FA; display: -webkit-box; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; height: 40px;    line-height: 40px; background-color: #dfeaef; border-bottom: 1px solid #eee; padding: 0 20px 0 15px;}
 .title_both .h1_area .h1 {font-size: 15px; color: #222222; margin-right: 0;}
 .title_both .h1_area .h1 span {color: #64c1ed;}
 

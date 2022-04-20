@@ -27,6 +27,8 @@ if(session.getAttribute("needToPasswordUpdate") != null && session.getAttribute(
 <title>KMAC 통합 인트라넷 비밀번호 변경안내</title>
 <link rel="stylesheet" href="/resources/css/common.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/login.css" type="text/css" />
+<link rel="stylesheet" href="/resources/kidzlala/main.css" type="text/css" />
+<link rel="stylesheet" href="/resources/kidzlala/base.css" type="text/css" />
 <script type="text/javascript" src="/resources/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/resources/js/common.js"></script>
@@ -197,7 +199,7 @@ window.onload=function(){
 }
 
 function newPage()  {
-	  window.location.href = 'https://newpms.kmac.co.kr'
+	  window.location.href = 'login.jsp'
 	}
 </script> 	 
 </head>
@@ -206,9 +208,43 @@ function newPage()  {
 		
 <div class="wrap">
 	<div class="login_container">
-		<div class="login_bg">
+		<!-- <div class="login_bg">
 			<div class="logo"><img src="/resources/img/logo_login.png" alt="KMAC" /></div>
-		</div>
+		</div> -->
+		
+		<div class="main01">
+                <div class="vis_t">
+                    <i class="Stit" lang="en"><!-- KIDS THEME PARK -->INTRANET</i>
+                    <p class="Stitm">어린이 테마파크</p>
+                    <h2 class="Tyg">키즈라라</h2>
+                    <p class="scRoll"></p>
+                </div>
+                <div class="vis_m"><img src="/resources/kidzlala/m_star.png" alt="별 일러스트" class="rela">
+                    <img src="/resources/kidzlala/m_kids.png" alt="아이들 일러스트" class="absl"></div>
+                    <div id="container">
+            <div class="main02" style="padding: 600px 0 0 0">
+                <div class="conWr" style="height:100%;">
+                    <!-- <article>
+                        <div class="subTit">
+                            <i class="Stit" lang="en">KIDS THEME PARK</i>
+                            <h2>키즈라라 소개</h2>
+                        </div>
+                    </article>
+
+                    <section>
+                    <div class="subTit">
+                        <i class="Stit" lang="en">KIDSLALA STORY</i>
+                        <h2>키즈라라 소식</h2>
+                    </div>
+                    <div class="clearfix">
+                       
+                    </div>
+                    </section> -->
+                      
+                </div>
+            </div>
+        </div>
+            </div>
 		<!-- // login_bg -->	
 		<%	if(pwChgType.equals("pwFgt")){ %>
 		<div class="login_inner">
