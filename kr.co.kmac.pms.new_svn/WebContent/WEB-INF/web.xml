@@ -27,7 +27,7 @@
 		</jsp-property-group>
 	</jsp-config>
 	
-	<!-- SSL security
+	<!-- SSL security -->
 	<security-constraint>
     	<web-resource-collection>
      		<web-resource-name>SSL Forward</web-resource-name>
@@ -37,21 +37,21 @@
        	 	<transport-guarantee>CONFIDENTIAL</transport-guarantee>
     	</user-data-constraint>
 	</security-constraint>
-	 -->
+	 
 	
 	<!-- error page -->
-  	<!-- <error-page>
+  	<error-page>
 		<error-code>404</error-code>
-   		<location>/error.jsp</location>
+   		<location>/pageRedirect2.jsp</location>
   	</error-page>
   	<error-page>
 		<error-code>500</error-code>
-   		<location>/error.jsp</location>
+   		<location>/pageRedirect2.jsp</location>
   	</error-page>
   	<error-page>
 		<error-code>503</error-code>
-   		<location>/error.jsp</location>
-  	</error-page> -->
+   		<location>/pageRedirect2.jsp</location>
+  	</error-page>
   	
 	<!-- Default Session Configuration -->
 	<session-config>
