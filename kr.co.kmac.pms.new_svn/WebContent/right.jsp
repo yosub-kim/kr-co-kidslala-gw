@@ -420,7 +420,7 @@
 					
 					<!-- 메일 / 새 업무 고정 -->
 					<div>
-						<% if (expertPool.getRole().equals("ROLE2006080116041070759") || expertPool.getRole().equals("ROLE2006080116061636366") || expertPool.getRole().equals("ROLE17404E902CA")
+						<%-- <% if (expertPool.getRole().equals("ROLE2006080116041070759") || expertPool.getRole().equals("ROLE2006080116061636366") || expertPool.getRole().equals("ROLE17404E902CA")
 						 || expertPool.getRole().equals("ROLE125B1491C42") || expertPool.getRole().equals("ROLE2006080118352520784") || expertPool.getRole().equals("ROLE2006050120451853989") || expertPool.getRole().equals("ROLE2006080116033211358")
 						 || expertPool.getRole().equals("ROLE17A73D54752") || expertPool.getRole().equals("ROLE179AB746279")) {%>
 						<ul class="line">
@@ -471,7 +471,7 @@
 							</li>
 							</a>
 						</ul>
-						<%} else { %>
+						<%} else { %> --%>
 							<ul>
 								<a href="javascript:goEmail();">
 								<li>											
@@ -490,7 +490,7 @@
 								</li>
 								</a>
 							</ul>
-						<%} %>
+						<%-- <%} %> --%>
 					</div>
 
 					<c:forEach var="item" items="${myWideGadgetList }" varStatus="status">

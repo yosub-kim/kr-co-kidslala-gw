@@ -20,9 +20,8 @@
 	<%@ include file="/common/include/includeCss.jsp" %>
 <%-- treeview 끝 --%>
 <script type="text/javascript">
-<!--
-<%-- 개별 스크립트 영역 --%>
 
+<%-- 개별 스크립트 영역 --%>
 var myDate = new Date();
 var nowYear = myDate.getYear();
 var vRoleNum = "<c:out value="${roleNum}"/>";  //treeDataRetrieve
@@ -155,18 +154,16 @@ function Node_Delete(){
 	var checkedCount = 0;
 	var vMsg = "";
 	var vVal = "";
-	for(var i = 0; i < sfrm.elements.length; i++){
-		var ele = sfrm.elements[i];
-		if(ele.type == "checkbox"){
-			if(ele.checked){
-				vMsg += ((checkedCount == 0) ? "" : ",") + ele.text;
-				vVal += ((checkedCount == 0) ? "" : ",") + ele.value;
-				checkedCount ++;
-			}
-		} 
-	}
+	var arr_Season = document.getElementsByName("checkTree");
+    for(var i=0;i<arr_Season.length;i++){
+        if(arr_Season[i].checked == true) {
+        	vMsg += ((checkedCount == 0) ? "" : ",") + arr_Season[i].text;
+			vVal += ((checkedCount == 0) ? "" : ",") + arr_Season[i].value;
+			checkedCount ++;
+        }
+    }
 	if(checkedCount > 0){
-		var sMsg = vMsg + "\n\n을 정말로 삭제 하시겠습니까?            ";
+		var sMsg = "삭제 하시겠습니까?";
 		if(confirm(sMsg)) {
 			var sFrm = document.frmMenuList;
 			sFrm.treeSaveMode.value = "REMOVE";
@@ -177,11 +174,12 @@ function Node_Delete(){
 					sFrm
 					,{ 'url':ActionURL
 						,'onSuccess':function(obj){
+							alert("삭제완료");
 							tree.root.reload();
 						}
 						,'onLoading':function(obj){}
 						,'onError':function(obj){
-							alert("노드 추가하는데 실패 하셨습니다.");
+							alert("실패 하셨습니다.");
 						}
 					}
 			); status = null;
@@ -189,7 +187,6 @@ function Node_Delete(){
 	}
 }
 
-//-->
 </script>
 
 <style type="text/css">
@@ -221,14 +218,14 @@ function Node_Delete(){
 		<td>
 			<table width="100%">
 				<tr>
-					<form name="frmTree">
-			    	<td width="42%">
-				    	<div>
-				    		<div id="c"><pre class="code"></pre></div>
-				    		<div id="tree-div" class="out_Line" style="text-align:left" ></div>
-				    	</div>
-			    	</td>
-			    	</form>
+					<form name="frmTree" method="post">
+						<td width="42%">
+							<div>
+					    		<div id="c"><pre class="code"></pre></div>
+					    		<div id="tree-div" class="out_Line" style="text-align:left" ></div>
+					    	</div>
+						</td>
+					</form>
 				    <td width="8%" valign="middle" align="center">
 				    	<a onclick="Node_Append();"><img src="/images/btn_left_arrow.gif"  class="IMGBTN"></a>
 				    	<br><br>
