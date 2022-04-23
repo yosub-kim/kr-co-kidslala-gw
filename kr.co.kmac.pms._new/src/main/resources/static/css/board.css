@@ -125,7 +125,7 @@ table td {vertical-align: middle;}
 .fixed_box.search {height: calc(100% - 290px); top: 227px;}
 
 .fixed_contents {padding: 0 15px; height: calc(100% - 82px); margin: 15px 0; background-color: #fff;}
-.fixed_contents.schedule_view {height: calc(100% - 130px);}
+.fixed_contents.schedule_view {height: calc(100% - 60px);}
 
 .fixed_box .btn_area .text-R {height: inherit; margin-top: 0;}
 
