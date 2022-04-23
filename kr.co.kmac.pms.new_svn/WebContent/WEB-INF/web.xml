@@ -40,18 +40,18 @@
 	 
 	
 	<!-- error page -->
-  	<error-page>
+  	<!-- <error-page>
 		<error-code>404</error-code>
-   		<location>/pageRedirect2.jsp</location>
+   		<location>/</location>
   	</error-page>
   	<error-page>
 		<error-code>500</error-code>
-   		<location>/pageRedirect2.jsp</location>
+   		<location>/</location>
   	</error-page>
   	<error-page>
 		<error-code>503</error-code>
-   		<location>/pageRedirect2.jsp</location>
-  	</error-page>
+   		<location>/</location>
+  	</error-page> -->
   	
 	<!-- Default Session Configuration -->
 	<session-config>

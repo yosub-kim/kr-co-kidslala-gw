@@ -1454,7 +1454,7 @@ public class ExpertPoolDaoImpl extends JdbcDaoSupport implements ExpertPoolDao {
 	public String selectWorkDayCnt(String ssn, String date) throws DataAccessException {
 		String result = "";
 		try{
-			result = (String) getJdbcTemplate().queryForMap(" select ssn From schedule where [type] = 'Up-day' and ssn = '" + ssn + "' and (year+month+day) = '" + date + "' ").get("ssn");
+			result = (String) getJdbcTemplate().queryForMap(" select top 1 ssn as ssn From schedule where [type] = 'Up-day' and ssn = '" + ssn + "' and (year+month+day) = '" + date + "' ").get("ssn");
 		}catch(EmptyResultDataAccessException e){
 			result="";
 		}
