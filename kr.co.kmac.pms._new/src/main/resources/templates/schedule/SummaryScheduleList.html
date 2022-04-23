@@ -209,7 +209,7 @@ function viewExpertDetail(){
 					<p class="h1"><i class="mdi mdi-file-document-outline"></i>일정관리</p>
 				</div>	
 			</div>
-			<div class="schedule_status">
+			<!-- <div class="schedule_status">
 				<ul>
 					<li class="total"	 ><a href="javascript:;" th:text="|전체(${count.totalCount})|"></a></li>
 					<li class="ico ico-1"><a href="javascript:;" th:text="|외부일정(${count.t2})|"></a></li>
@@ -220,7 +220,7 @@ function viewExpertDetail(){
 					<li class="ico ico-6"><a href="javascript:;" th:text="|휴가(${count.t6+count.t8})|"></a></li>
 					<li class="ico ico-7"><a href="javascript:;" th:text="|고객정보(${count.t3})|"></a></li>									
 				</ul>
-			</div>
+			</div> -->
 			<div class="fixed_contents schedule_view sc"><!-- 스케줄 관리 컨텐츠 요소 .schedule_view -->
 
 				<!-- 전사 스케줄 관리 -->
@@ -248,12 +248,6 @@ function viewExpertDetail(){
 								<button type="button" onclick="location.href='javascript:moveNext();'"><i class="mdi mdi-chevron-right"></i></button>
 							</div>
 							<input type="hidden" style="width: 200px;"  name="keyword" id="keyword" placeholder="검색어를 입력하세요." title="검색어를 입력하세요." th:value="${searchParam.keyword}">
-								<!-- <button type="button" class="btn btn_blue" onclick="location.href='javascript:dateChange();'">검색</button> -->		
-								
-							<div th:if="${searchParam.dept eq '9381' || searchParam.dept eq '9362' || searchParam.dept eq '9360'}" class="search_input">		
-								<button type="button" class="btn btn_d_blue" style="width: 100px;" onclick="viewRADetail()">RA 현황</button>
-								<button type="button" class="btn btn_d_blue" style="width: 100px;" onclick="viewExpertDetail()">엑스퍼트 현황</button>								
-							</div>
 						</div>									
 
 						<div class="gantt_box">

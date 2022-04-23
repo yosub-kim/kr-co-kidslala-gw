@@ -432,21 +432,40 @@ function viewInoutDetail(){
 							</div>
 						</div>
 						<div class="a-both">
-							<select class="select" name="ss" id="ss_edit">
-								<option value="오전">오전</option>
-								<option value="오후">오후</option>
-							</select>
+							<ul class="chek_ui">
+								<li>
+									<p class="label">시작 시간 : </p>
+								</li>
+							</ul>
+							<div class="input_date">
+								<input type="text" title="시작일" placeholder="시작일" name="sdate" id="sdate_edit" 
+									th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}" readonly
+									/>
+								<script>
+									jQuery(function(){jQuery( "#sdate_edit" ).datepicker({dateFormat: 'yy-mm-dd'});});
+								</script>								
+							</div>
 							<input type="text" title="" placeholder="12:00" class="time" name="stime" id="stime_edit"
 								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
-								onkeyup="javascript:inputTimeColon(this)"
-								/>  
-							~<select class="select" name="ee" id="ee_edit">
-								<option value="오전">오전</option>
-								<option value="오후">오후</option>
-							</select>
+								onkeyup="javascript:inputTimeColon(this)" 
+								/>
+						</div>
+						<div class="a-both">
+							<ul class="chek_ui">
+								<li>
+									<p class="label">종료 시간 : </p>
+								</li>
+							</ul>
+							<div class="input_date" id="edateDiv">
+								<input type="text" title="종료일" placeholder="종료일" name="edate" id="edate_edit" 
+									th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}" readonly />
+								<script>
+									jQuery(function(){jQuery( "#edate_edit" ).datepicker({dateFormat: 'yy-mm-dd'});});
+								</script>	
+							</div>
 							<input type="text" title="" placeholder="12:00" class="time" name="etime" id="etime_edit"
 								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" 
-								onkeyup="javascript:inputTimeColon(this)"
+								onkeyup="javascript:inputTimeColon(this)" 
 								/>
 						</div>
 						<div class="btn_area">
