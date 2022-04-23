@@ -566,10 +566,10 @@ j$(document).ready(function() {
 					</div>
 					<div>
 						<ul>
-							<% if(session.getAttribute("jobClass").equals("A") ||session.getAttribute("jobClass").equals("B")){ %>
+							<%-- <% if(session.getAttribute("jobClass").equals("A") ||session.getAttribute("jobClass").equals("B")){ %>
 							<li><a href="javascript:goOnlineBudget('<%=session.getAttribute("ssn") %>');" title="예산 관리"><i class="mdi mdi-shape-plus"></i><p>예산 관리</p></a></li>
 							<li><a href="javascript:openCredit();" title="법인 카드"><i class="mdi mdi-credit-card-outline"></i><p>법인 카드</p></a></li>
-							<%} %>
+							<%} %> --%>
 							<li><a href="javascript:openSchedule();" title="개인 일정"><i class="mdi mdi-calendar-month"></i><p>개인 일정</p></a></li>
 							<li><a href="javascript:openEp();" title="비상연락망"><i class="mdi mdi-contacts"></i><p>비상연락망</p></a></li>
 						</ul>
@@ -642,7 +642,7 @@ j$(document).ready(function() {
 							</div>
 						</div>
 	
-						<% if (expertPool.getRole().equals("ROLE2006080116041070759") || expertPool.getRole().equals("ROLE2006080116061636366") || expertPool.getRole().equals("ROLE17404E902CA")
+						<%-- <% if (expertPool.getRole().equals("ROLE2006080116041070759") || expertPool.getRole().equals("ROLE2006080116061636366") || expertPool.getRole().equals("ROLE17404E902CA")
 							 || expertPool.getRole().equals("ROLE125B1491C42") || expertPool.getRole().equals("ROLE2006080118352520784") || expertPool.getRole().equals("ROLE2006050120451853989")
 							 || expertPool.getRole().equals("ROLE2006080116033211358") || expertPool.getRole().equals("ROLE17A73D54752") || expertPool.getRole().equals("ROLE179AB746279")) {%>
 						<div class="data_box_both">
@@ -659,7 +659,7 @@ j$(document).ready(function() {
 								</a>
 							</div>
 						</div>
-						<%} %>
+						<%} %> --%>
 					</div>
 				</div>
 				<!-- // 메일/업무 -->				

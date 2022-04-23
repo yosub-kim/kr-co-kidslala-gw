@@ -97,7 +97,7 @@ Ext.extend(Ext.tree.CheckboxNodeUI, Ext.tree.TreeNodeUI, {
 				'<span class="x-tree-node-indent">',this.indentMarkup,"</span>",
 				'<img src="', this.emptyIcon, '" class="x-tree-ec-icon">',
 				'<img src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',(a.icon ? " x-tree-node-inline-icon" : ""),(a.iconCls ? " "+a.iconCls : ""),'" unselectable="on">',
-				'<input class="l-tcb" type="checkbox" value="' + a.id + '" text="' + a.text +'" ', (a.checked ? "checked>" : '>'),
+				'<input class="l-tcb" type="checkbox" name="checkTree" value="' + a.id + '" text="' + a.text +'" ', (a.checked ? "checked>" : '>'),
 				'<a hidefocus="on" href="',a.href ? a.href : "#",'" ',
 				 a.hrefTarget ? ' target="'+a.hrefTarget+'"' : "", '>',
 				 '<span unselectable="on">',n.text,"</span></a></div>",

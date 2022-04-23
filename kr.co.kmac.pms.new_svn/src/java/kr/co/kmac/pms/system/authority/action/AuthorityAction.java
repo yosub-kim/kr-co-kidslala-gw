@@ -730,11 +730,11 @@ public class AuthorityAction extends DispatchActionSupport {
 		ResponseForm result = (ResponseForm) form;
 
 		HashMap map = new HashMap();
-
 		try {
 			String roleNum = request.getParameter("roleNum");
 			String pNodeKey = request.getParameter("pNodeKey");
 			String treeSaveMode = request.getParameter("treeSaveMode");
+			System.out.println(treeSaveMode);
 
 			String[] chkMenu = request.getParameterValues("chkMenu");
 			String[] chkTree = request.getParameter("chkNodes").split(",");
