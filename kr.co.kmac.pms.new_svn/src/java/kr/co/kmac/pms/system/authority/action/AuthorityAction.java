@@ -10,6 +10,7 @@ package kr.co.kmac.pms.system.authority.action;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -493,6 +494,25 @@ public class AuthorityAction extends DispatchActionSupport {
 		}
 
 	}
+	// 좋아요 버튼 비동기식 처리 (210404 김요섭)
+	public ActionForward workDayCnt(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String ssn = SessionUtils.getUsername(request);
+		SimpleDateFormat format1 = new SimpleDateFormat ("yyyy-MM-dd");
+		Date time = new Date();
+		String resultTime = format1.format(time);
+		String resultTime2 = "";
+		
+		if (!resultTime.equals("")) {
+			resultTime2 = StringUtil.replace(resultTime, "-", "");
+		}
+		
+		int workDayCnt = this.getExpertPoolManager().selectWorkDayCnt(ssn, resultTime2).length();
+		PrintWriter out = response.getWriter();
+		out.println(workDayCnt);
+		out.close();
+		
+		return null;
+	}
 	
 	public ActionForward mainPage(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -521,7 +541,6 @@ public class AuthorityAction extends DispatchActionSupport {
 			int workDayOnCnt = this.getExpertPoolManager().selectWorkDayOn(ssn, resultTime).length();
 			int workDayOffCnt = this.getExpertPoolManager().selectWorkDayOff(ssn, resultTime).length();
 			int workDayCnt = this.getExpertPoolManager().selectWorkDayCnt(ssn, resultTime2).length();
-			
 			/* 스케줄  */
 			Calendar c = new GregorianCalendar();
 

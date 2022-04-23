@@ -50,6 +50,7 @@
 <!--[if lt IE 9]>
       <script type="text/javascript" src="/resources/js/html5shiv.js"></script>
       <![endif]-->
+      
 <script type="text/javascript">
 //if(isMobile){
 //	top.location.href="/m";
@@ -58,7 +59,7 @@
 var isPopUpEnable = "<%=popUpConfig.getIsEnable()%>";
 var wnWidth		= "<%=popUpConfig.getWidth()%>";
 var wnHeight	= "<%=popUpConfig.getHeight()%>";
-var workDayCnt  = <%=request.getAttribute("workDayCnt")%>;
+var workDayCnt  = "<%=request.getAttribute("workDayCnt")%>";
 
 function getCookie( name ){
 	var nameOfCookie = name + "=";
@@ -254,6 +255,25 @@ function iframeAutoResize(i, j){
 		j$(this).scrollTop(0);
 	    countMyPanel();
 	}
+	
+	/* work day hide */
+	var workDayChk = 0;
+
+	j$(document).ready(function () {
+		j$.ajax({
+			url: "/action/AuthorityAction.do?mode=workDayCnt",
+	        type: "POST",
+	        success: function (count) {
+	        	workDayChk = count;
+	        	if(workDayChk > 0){
+	        		document.getElementById("workDayMenu").style.display = "";
+	        	}else{
+	        		document.getElementById("workDayMenu").style.display = "none";
+	        	}
+	        },
+		})
+	});
+	
 }
 	
 function workOn(){
@@ -451,7 +471,7 @@ function countMyPanel(){
 				}
 			}
 	)
-	var status4 = AjaxRequest.post (
+	/* var status4 = AjaxRequest.post (
 			{	'url': "/action/WeeklyReportCabinetAction.do?mode=countMyWeeklyReport",
 				'onSuccess':function(obj){
 					var res = eval('(' + obj.responseText + ')');
@@ -474,7 +494,7 @@ function countMyPanel(){
 					alert("새 레포트  정보를 읽어올 수 없습니다.");
 				}
 			}
-	);	
+	);	 */
 }
 
 j$(document).ready(function() {
@@ -584,7 +604,7 @@ j$(document).ready(function() {
 					<div class="today_date"><p><%=DateTime.getDateString(". ") %> (<%=DateTime.getDayofWeek() %>)</p></div>
 
 					<!-- workDay -->
-					<c:if test="${workDayCnt > 0}">
+					<div id="workDayMenu" style="display: none;">
 						<div class="commute">
 							<input type="hidden" id="workOn" name="workOn" value="on" />
 							<input type="hidden" id="workOff" name="workOff" value="off" />
@@ -607,12 +627,12 @@ j$(document).ready(function() {
 								</li>
 							</ul>
 						</div>
-						<div class="data_box" style="background-color: #ffeebd;">
+						<div class="data_box" style="background-color: #F4F6F9;">
 							<div>
 								<a href="javascript:changeContentFrame('___1', '/action/BoardAction.do?mode=selectList_home&bbsId=home&writerId=<%=session.getAttribute("ssn")%>');"><i class="mdi mdi-notebook-edit"></i><p>재택근무 업무보고서 등록</p></a>
 							</div>
 						</div>
-					</c:if>
+					</div>
 					<!-- // workDay -->
 					<!-- <div class="data_box">
 						<div>
@@ -728,7 +748,7 @@ j$(document).ready(function() {
 %>
 <ul class="dropdown">
 	<li>
-		<div class="drop_title"><i class="mdi mdi-format-list-checks"></i><a href="javascript:;" title="메뉴 목록 보이기/숨기기">오늘 일정<span>(<%=todayScheduleListCount %>)</span></a></div>
+		<div class="drop_title"><i class="mdi mdi-format-list-checks"></i><a href="javascript:;" title="메뉴 목록 보이기/숨기기">오늘 일정<span class="rec_count"></span><span>(<%=todayScheduleListCount %>)</span></a></div>
 		<div class="drop_data sc">
 			<ul>
 			<%
