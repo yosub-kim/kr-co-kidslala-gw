@@ -40,9 +40,9 @@
 	 
 	
 	<!-- error page -->
-  	<!-- <error-page>
+  	<error-page>
 		<error-code>404</error-code>
-   		<location>/</location>
+   		<location>/error.jsp</location>
   	</error-page>
   	<error-page>
 		<error-code>500</error-code>
@@ -51,7 +51,7 @@
   	<error-page>
 		<error-code>503</error-code>
    		<location>/</location>
-  	</error-page> -->
+  	</error-page>
   	
 	<!-- Default Session Configuration -->
 	<session-config>
