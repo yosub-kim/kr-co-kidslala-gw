@@ -21,7 +21,7 @@ function getAuthToken(){
 					alert("시스템 오류\n관리자에게 연락하기 바랍니다.");
 				}
 	});	
-	location.href("http://newpms.kmac.co.kr/action/BoardAction.do?mode=selectList&bbsId=qna");
+	location.href("http://kidzlala.kmac.co.kr/action/BoardAction.do?mode=selectList&bbsId=qna");
 }
 
 function getAuthToken2(){
