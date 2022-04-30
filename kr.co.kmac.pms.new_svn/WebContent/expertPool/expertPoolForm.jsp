@@ -190,7 +190,7 @@ function expertPool_Save(){
 		if(expertForm.deptName.value == "") {			alert("소속 부서를 입력하시기 바랍니다.");	expertForm.deptName.focus();				return;	}
 		if(expertForm.companyPositionName.value == ""){ alert("직위를 입력하시기 바랍니다.");		expertForm.companyPositionName.focus();		return;	}
 		if(expertForm.mobileNo.value == "") {			alert("휴대전화번호를 입력하시기 바랍니다.");	expertForm.mobileNo.focus();				return;	}
-		if(expertForm.resume.value == ""){				alert("프로필을 등록하시기 바랍니다.");		expertForm.resume.focus();					return; }
+		/* if(expertForm.resume.value == ""){				alert("프로필을 등록하시기 바랍니다.");		expertForm.resume.focus();					return; } */
 	}
 	
 	var ActionURL = "/action/ExpertPoolManagerAction.do";
@@ -636,7 +636,7 @@ function openSpecialField(){
 			<!-- // 프로필 등록 -->
 								
 			<!-- 전문스킬·분야 -->
-			<div class="board_box">
+			<%-- <div class="board_box">
 				<div class="title">
 					<div class="h1_area">
 						<p class="h1">전문분야·스킬</p>
@@ -652,11 +652,11 @@ function openSpecialField(){
 				        </c:forEach>						        		
 					</ul>																	
 				</div>
-			</div>
+			</div> --%>
 			<!-- // 전문스킬·분야 -->
 			
 			<!-- 학력사항-->
-			<div class="board_box">
+			<%-- <div class="board_box">
 				<div class="title_both">
 					<div class="h1_area">
 						<p class="h1">학력 사항</p>
@@ -742,11 +742,11 @@ function openSpecialField(){
 						</tbody>
 					</table>
 				</div>
-			</div>
+			</div> --%>
 			<!-- // 학력사항 -->
 			
 			<!-- 경력사항-->
-			<div class="board_box">
+			<%-- <div class="board_box">
 				<div class="title_both">
 					<div class="h1_area">
 						<p class="h1">경력 사항</p>
@@ -832,7 +832,7 @@ function openSpecialField(){
 						</tbody>
 					</table>
 				</div>
-			</div>
+			</div> --%>
 			<!-- // 학력사항 -->
 			
 			
