@@ -105,6 +105,7 @@ function doDelete() {
 							<option value="mobileA" <c:if test="${role == 'mobileA'}">selected</c:if>>mobile(상근)</option>
 							<option value="mobileJ" <c:if test="${role == 'mobileJ'}">selected</c:if>>mobile(상임)</option>
 							<option value="mobileN" <c:if test="${role == 'mobileN'}">selected</c:if>>mobile(RA)</option>
+							<option value="ROLE18078999415" <c:if test="${role == 'ROLE18078999415'}">selected</c:if>>키즈라라</option>
 						</select>
 					</td>
 					<td class="detailTableTitle_center">고정여부</td>

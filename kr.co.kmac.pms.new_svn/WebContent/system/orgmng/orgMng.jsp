@@ -581,7 +581,7 @@ function saveListToExcel() {
 										</td>
 										<td class="detailTableTitle_center">소속기관</td>
 										<td class="detailTableField_left">
-											<input type="text"		name="company"		id="company" value="KMAC" class="contentInput_left" style="width:67;" readOnly/>
+											<input type="text"		name="company"		id="company" value="키즈라라" class="contentInput_left" style="width:67;" readOnly/>
 											<input type="hidden"	name="companyId"	id="companyId" value=""/>
 											<!-- <input type="button"	name="btnCompany"	value="검색" class="btnBox" onclick="search_Company();"> -->
 											<img src="/images/btn_src.jpg" name="btnCompany" id="btnCompany" alt="검색" width="38" height="21" align="absmiddle" border="0" style="cursor:hand;" onClick="search_Company();"/>
