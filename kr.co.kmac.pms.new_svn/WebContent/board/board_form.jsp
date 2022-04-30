@@ -197,19 +197,19 @@ function fileDownload(uuid, log){
 						<tr>
 							<c:choose><c:when test="${bbsId eq 'publicNotice' }">
 								<th><label for="subject">최상위글</label></th>
-								<td style="vertical-align:middle;">
+								<td style="vertical-align:middle;" colspan="3">
 									<ul class="chek_ui" style="padding: 8 0 0 0;"><li>
 										<input type="checkbox" class="btn_check"  name="topArticle" id="Y" value="Y" <c:if test="${boardData.topArticle=='Y'}">checked</c:if> <c:if test="${modeText=='답글'}">disabled</c:if>><label for="Y"></label> 체크 시 최상위글로 표시
 									</li></ul>
 								</td>
-								<th><label for="subject">공개범위</label></th>							
+								<%-- <th><label for="subject">공개범위</label></th>							
 								<td>
 									<ul class="chek_ui" style="padding: 8 0 0 0;">
 									<li><input type="radio" name="prjType" id="1" value="1" class="btn_radio" <c:if test="${boardData.prjType=='1'}">checked</c:if> checked>전체<label for="1"></label></li>
 					              	<li><input type="radio" name="prjType" id="2" value="2" class="btn_radio" <c:if test="${boardData.prjType=='2'}">checked</c:if>>상근<label for="2"></label></li>
 					              	<li><input type="radio" name="prjType" id="3" value="3" class="btn_radio" <c:if test="${boardData.prjType=='3'}">checked</c:if>>상임<label for="3"></label></li>
 									</ul>
-								</td>
+								</td> --%>
 							</c:when>
 							<c:when test="${projectCode != ''}"> </c:when>
 							<c:otherwise>
