@@ -239,7 +239,7 @@ function viewExpertDetail(){
 										<option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}" th:text="${i}" 
 										th:selected="${i eq searchParam.month}" ></option>
 									</select>
-									<select name="jobClass" id="jobClass" class="select"  onchange="location.href='javascript:javascript:dateChange()'">
+									<select name="jobClass" id="jobClass" class="select"  onchange="location.href='javascript:javascript:dateChange()'" style="display:none;">
 										<option value="A" th:selected="${'A' eq searchParam.jobClass}">상근</option>
 										<option value="J" th:selected="${'J' eq searchParam.jobClass}">상임</option>
 										<option value="N" th:selected="${'N' eq searchParam.jobClass}">RA</option>

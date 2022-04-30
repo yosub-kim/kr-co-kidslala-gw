@@ -60,12 +60,12 @@ function detailview(ssn) {
 			<div class="fixed_contents sc">
 				<div class="tab_menu_area">
 					<ul class="tab_ui" id="tab_menu">
-						<li class="current"><a href="#" class="active"	id="pane1">상근</a></li>
+						<li class="current"><a href="#" class="active"	id="pane1">키즈라라</a></li>
 						<!-- <li><a href="#" 				id="pane2">&nbsp;상근(2)&nbsp;</a></li> -->
-						<li><a href="#" 				id="pane2">상임</a></li>
+						<!-- <li><a href="#" 				id="pane2">상임</a></li> -->
 						<!-- <li><a href="#" 				id="pane4">&nbsp;AA&nbsp;</a></li> -->
-						<li><a href="#" 				id="pane3">RA</a></li>
-						<li><a href="#" 				id="pane4">아르바이트</a></li>
+						<!-- <li><a href="#" 				id="pane3">RA</a></li>
+						<li><a href="#" 				id="pane4">아르바이트</a></li> -->
 					</ul>
 		
 				<div id="Process_container">

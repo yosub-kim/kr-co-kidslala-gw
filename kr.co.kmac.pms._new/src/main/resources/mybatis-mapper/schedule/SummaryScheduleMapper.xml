@@ -50,7 +50,7 @@
 			  					ELSE                             	
 									CASE IsNull(groupParentId,'')	
 										WHEN '2000' THEN '부문장'  	
-										ELSE replace(replace(replace(replace(replace(replace(LTrim(groupName),'센터',''),'본부',''),' 상임',''),'상임',''),'기획실','기획'),'부문','')     	
+										ELSE replace(replace(replace(replace(replace(LTrim(groupName),'센터',''),'본부',''),' 상임',''),'상임',''),'기획실','기획')    	
 									END                          	
 						 		END  AS labelName                  	
 							, CASE IsNull((case when posName = 'CSO' then '7080' else groupParentId end),'')      	
@@ -227,7 +227,7 @@
 			  					ELSE                             	
 									CASE IsNull(groupParentId,'')	
 										WHEN '2000' THEN '부문장'  	
-										ELSE replace(replace(replace(replace(replace(replace(LTrim(groupName),'센터',''),'본부',''),' 상임',''),'상임',''),'기획실','기획'),'부문','')     	
+										ELSE replace(replace(replace(replace(replace(LTrim(groupName),'센터',''),'본부',''),' 상임',''),'상임',''),'기획실','기획')   	
 									END                          	
 						 		END  AS labelName                  	
 							, CASE IsNull((case when posName = 'CSO' then '7080' else groupParentId end),'')      	
