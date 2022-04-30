@@ -15,6 +15,7 @@
 					select * From expertPool
 					where 1=1
 					and dept != '2000'
+					and enable='1'
 					<if test="jobClass !=null and jobClass.length !=0">
 						and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 					</if>
@@ -68,6 +69,7 @@
 						select * From expertPool
 						where 1=1
 						and dept != '2000'
+						and enable='1'
 						<if test="jobClass !=null and jobClass.length !=0">
 							and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 						</if>
@@ -125,6 +127,7 @@
 					select * From expertPool
 					where 1=1
 					and dept != '2000'
+					and enable='1'
 					<if test="jobClass !=null and jobClass.length !=0">
 						and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 					</if>
@@ -182,6 +185,7 @@
 					select * From expertPool
 					where 1=1
 					and dept != '2000'
+					and enable='1'
 					<if test="jobClass !=null and jobClass.length !=0">
 						and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 					</if>
@@ -235,6 +239,7 @@
 					select * From expertPool
 					where 1=1
 					and dept != '2000'
+					and enable='1'
 					<if test="jobClass !=null and jobClass.length !=0">
 						and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 					</if>
@@ -291,6 +296,7 @@
 						where 1=1
 						and dept != '2000'
 						and ssn != 'G000942'
+						and enable='1'
 						<if test="jobClass !=null and jobClass.length !=0">
 							and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 						</if>
@@ -359,6 +365,7 @@
 					select * From expertPool
 					where 1=1
 					and dept != '2000'
+					and enable='1'
 					<if test="jobClass !=null and jobClass.length !=0">
 						and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 					</if>
@@ -414,6 +421,7 @@
 					select * From expertPool
 					where 1=1
 					and dept != '2000'
+					and enable='1'
 					<if test="jobClass !=null and jobClass.length !=0">
 						and jobClass in <foreach collection="jobClass" item="code" open="(" separator="," close=")">#{code}</foreach>
 					</if>
