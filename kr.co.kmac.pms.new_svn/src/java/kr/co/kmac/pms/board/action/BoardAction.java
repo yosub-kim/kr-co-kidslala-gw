@@ -262,68 +262,6 @@ public class BoardAction extends DispatchActionSupport {
 		return mapping.findForward("boardList_pjt");
 	}
 	
-	//qm 모니터링 화면
-	/*public ActionForward selectList_qm(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-
-		WebApplicationContext wc;
-
-		String pg = ServletRequestUtils.getStringParameter(request, "pg", "1");
-		int pageSize = ServletRequestUtils.getIntParameter(request, "pageSize", 10);
-		String bbsId = ServletRequestUtils.getRequiredStringParameter(request, "bbsId");
-		String keyword = ServletRequestUtils.getStringParameter(request, "keyword", "");
-		// Job Date: 2007-06-13 Author: yhyim Description: Reorganizing particular artice using attribute 'ref'
-		String ref = ServletRequestUtils.getStringParameter(request, "ref", "0");
-		String keyfield = ServletRequestUtils.getStringParameter(request, "keyfield", "");
-		// Job Date: 2012-02-24 Author: yhyim Description: 일반 게시판과 프로젝트 게시판 제목을 다르게 보여주기 위한 값 처리
-		String projectCode = ServletRequestUtils.getStringParameter(request, "projectCode", "");
-		String projectName = ServletRequestUtils.getStringParameter(request, "projectName", "");
-		String email = ServletRequestUtils.getStringParameter(request, "email", "");
-
-		try {
-			wc = WebApplicationContextUtils.getWebApplicationContext(super.getServletContext());
-
-			ValueListHandler vlh = (ValueListHandler) wc.getBean("boardListBean", ValueListHandler.class);
-			ValueListInfo info = new ValueListInfo();
-			Map<String, String> filters = new HashMap<String, String>();
-			filters.put(ValueListInfo.PAGING_PAGE, pg);
-			filters.put("bbsId", bbsId);
-			// Job Date: 2007-06-13 Author: yhyim Description: Adding ref to filter
-			filters.put("ref", ref);
-			filters.put(ValueListInfo.PAGING_NUMBER_PER, String.valueOf(pageSize == -1 ? Integer.MAX_VALUE - 1 : pageSize));
-
-			if (!keyword.equals("")) {
-				if (keyfield.equals("subject"))
-					filters.put("subject", "%" + keyword + "%");
-				else if (keyfield.equals("content"))
-					filters.put("content", "%" + keyword + "%");
-				else if (keyfield.equals("writer"))
-					filters.put("writer", "%" + keyword + "%");
-			}
-
-			info.setFilters(filters);
-			// Job Date: 2008-03-24 Author: yhyim Description: 
-			if (bbsId.equals("managementAll")) {
-				ValueList valueExceptionList = vlh.getValueList("selectExceptionListEntry", info);
-				request.setAttribute("result", valueExceptionList);
-			} else {
-				ValueList valueList = vlh.getValueList("selectListEntryQM", info);
-
-				request.setAttribute("result", valueList);
-			}
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		request.setAttribute("bbsId", bbsId);
-		request.setAttribute("keyfield", keyfield);
-		request.setAttribute("keyword", keyword);
-		request.setAttribute("projectCode", projectCode);
-		request.setAttribute("projectName", projectName);
-		return mapping.findForward("boardList2");
-	}*/
-	
 	public ActionForward selectList_home(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
