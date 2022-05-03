@@ -134,7 +134,7 @@
 		<property name="sessionController"><ref bean="concurrentSessionController"/></property>
 	</bean>
 	<bean id="concurrentSessionController" class="org.acegisecurity.concurrent.ConcurrentSessionControllerImpl">
-		<property name="maximumSessions"><value>2</value></property>
+		<property name="maximumSessions"><value>6</value></property>
 		<property name="sessionRegistry"><ref local="sessionRegistry"/></property>
 	</bean>
 	<bean id="sessionRegistry" class="org.acegisecurity.concurrent.SessionRegistryImpl"/>
