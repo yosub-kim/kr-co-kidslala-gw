@@ -90,14 +90,11 @@
 	lastModifiedDate.add(Calendar.DATE, 90);
 	
 	if(lastModifiedDate.compareTo(Calendar.getInstance()) < 0){
-		session.setAttribute("needToPasswordUpdate", "true");	
-		//System.out.println("########needToPasswordUpdate: true");
+		session.setAttribute("needToPasswordUpdate", "true");
 	} else {
-		session.setAttribute("needToPasswordUpdate", "false");	
-		//System.out.println("########needToPasswordUpdate: false");
+		session.setAttribute("needToPasswordUpdate", "false");
 	}
 	
-	//System.out.println("UserContext: "+SessionUtils.getUserContext());
 	// clientIP Log
 	loginLogDao.insertLoginLog(session, SessionUtils.getClientIP(request));	
 
@@ -118,17 +115,6 @@ var j$ = jQuery;
 function securityValue(){
 	// 신규 서버로 전송
 	var sFrm = document.frm;
-	/* j$.ajax({
-		url: "/_new/login_",
-        type: "POST",
-        data: JSON.stringify({ "id": sFrm.id.value, "pw": sFrm.pw.value }),
-        async: true,
-        contentType: "application/json",
-        success: function () { 
-        	alert("성공");
-        },
-        error: function(){ alert("실패");}
-	});	 */
 	
 	//asp 전송
 	top.document.location.href = 

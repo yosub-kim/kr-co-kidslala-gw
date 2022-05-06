@@ -93,23 +93,6 @@
 		// pageRedirect 처리
 		response.sendRedirect("/pageRedirect2.jsp");
 	}
-	
-	//response.sendRedirect("/pageRedirect2.jsp");
-	/* 
-	String authValue = getCookieValue(cookies, "m_kmacPms_auth");
-	if(authValue == null || authValue.equals("")){
-		//response.sendRedirect("/m/auth_msg.jsp");
-		response.sendRedirect("/pageRedirect2.jsp");
-	}else{
-		UserAuthenticationManager userAuthenticationManager = (UserAuthenticationManager) wac.getBean("userAuthenticationManager");
-		if(userAuthenticationManager.getUserAuthentication(expertPool.getSsn(), "empty", true).getAuthValue() != null 
-				&& userAuthenticationManager.getUserAuthentication(expertPool.getSsn(), "empty", true).getAuthValue().equals(authValue)){
-			response.sendRedirect("/pageRedirect2.jsp");
-		} else {
-			response.sendRedirect("/m/auth_msg.jsp");
-		}
-	} */
-
 %>
 
 	
