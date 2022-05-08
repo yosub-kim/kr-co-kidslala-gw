@@ -6,10 +6,27 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
-    
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+	   <!--  <file>C:\log/%d{yyyy-MM-dd}/debug.%i .log</file> 
+	     <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder> -->
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+	    <!-- daily rollover -->
+	     <fileNamePattern>C:/Users/Administrator/Desktop/NEW-PMS/log/%d{yyyy-MM}/%d{yyyy-MM-dd}.log</fileNamePattern> 
+	     <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB --> 
+
+	     <maxHistory>30</maxHistory> 
+	  
+	     </rollingPolicy> 
+	     <encoder> 
+	     <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern> 
+	     </encoder> 
+     </appender>
+
     <logger name="jdbc" level="off"/>
-    <logger name="jdbc.sqlonly" level="off"/>
-    <logger name="jdbc.sqltiming" level="debug"/>
+    <logger name="jdbc.sqlonly" level="INFO"/>
+    <logger name="jdbc.sqltiming" level="off"/>
     <logger name="jdbc.audit" level="off"/>
     <logger name="jdbc.resultset" level="off"/>
     <logger name="jdbc.resultsettable" level="off"/>
@@ -17,6 +34,7 @@
 
     <root level="info">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
     </root>
     
 </configuration>
