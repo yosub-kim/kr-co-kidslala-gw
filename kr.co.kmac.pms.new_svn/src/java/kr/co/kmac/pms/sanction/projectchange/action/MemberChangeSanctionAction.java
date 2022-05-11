@@ -104,17 +104,6 @@ public class MemberChangeSanctionAction extends DispatchActionSupport {
 		if(sanctionLine.getCfoSsn() != null && sanctionTemplate != null ){			
 			sanctionTemplate.setHasCfo(true);
 		}		
-	/*	List<ExpertPool> updayOfficer = this.getSanctionLineManager().selectUpdayOfficer(SessionUtils.getUsername(request));		
-		if (sanctionTemplate != null && !updayOfficer.isEmpty()) {
-			if (updayOfficer.size() > 1) {
-				sanctionTemplate.setRefMemberSsns(updayOfficer.get(0).getSsn() + ", " + updayOfficer.get(1).getSsn());
-				sanctionTemplate.setRefMemberNames(updayOfficer.get(0).getName() + ", " + updayOfficer.get(1).getName());
-			} else {
-				sanctionTemplate.setRefMemberSsns(updayOfficer.get(0).getSsn());
-				sanctionTemplate.setRefMemberNames(updayOfficer.get(0).getName());
-				
-			}
-		}*/
 
 		sanctionDoc.setProjectCode(projectCode);
 		sanctionDoc.setRegisterDate(new Date());
