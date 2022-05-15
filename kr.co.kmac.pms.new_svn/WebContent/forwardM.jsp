@@ -36,31 +36,7 @@
 <%
 	SecurityContext context = (SecurityContext) request.getSession().getAttribute(HttpSessionContextIntegrationFilter.ACEGI_SECURITY_CONTEXT_KEY);
 	WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
-	
 
-	ExpertPoolManager expertPoolManager = (ExpertPoolManager) wac.getBean("expertPoolManager");
-	ILoginLogDao loginLogDao = (ILoginLogDao ) wac.getBean("loginLogDao");
-	
-	ExpertPool expertPool = expertPoolManager.retrieve(SessionUtils.getUsername(request));
-	expertPoolManager.accountReset(expertPool.getSsn());
-	
-	session.setAttribute("ssn", expertPool.getSsn());
-	session.setAttribute("name", expertPool.getName());
-	session.setAttribute("userId", expertPool.getUserId());
-	session.setAttribute("password", expertPool.getPassword());
-	session.setAttribute("dept", expertPool.getDept());
-	try{
-		session.setAttribute("div", expertPool.getDept().substring(0, 3) + "0");
-		session.setAttribute("empno", expertPool.getEmplNo());
-	}catch(Exception e){}
-	session.setAttribute("deptName", expertPool.getDeptName());
-	session.setAttribute("companyPosition", expertPool.getCompanyPosition());
-	session.setAttribute("jobClass", expertPool.getJobClass());
-	session.setAttribute("deviceType", "mobile");
-	
-	// clientIP Log
-	loginLogDao.insertLoginLog(session, SessionUtils.getClientIP(request));
-	
 	if (context == null) {
 		response.sendRedirect(request.getContextPath() + "/m/login.jsp");
 	} else {
@@ -92,7 +68,31 @@
 		} */
 		// pageRedirect 처리
 		response.sendRedirect("/pageRedirect2.jsp");
-	}
+	}	
+	
+	ExpertPoolManager expertPoolManager = (ExpertPoolManager) wac.getBean("expertPoolManager");
+	ILoginLogDao loginLogDao = (ILoginLogDao ) wac.getBean("loginLogDao");
+	
+	ExpertPool expertPool = expertPoolManager.retrieve(SessionUtils.getUsername(request));
+	expertPoolManager.accountReset(expertPool.getSsn());
+	
+	session.setAttribute("ssn", expertPool.getSsn());
+	session.setAttribute("name", expertPool.getName());
+	session.setAttribute("userId", expertPool.getUserId());
+	session.setAttribute("password", expertPool.getPassword());
+	session.setAttribute("dept", expertPool.getDept());
+	try{
+		session.setAttribute("div", expertPool.getDept().substring(0, 3) + "0");
+		session.setAttribute("empno", expertPool.getEmplNo());
+	}catch(Exception e){}
+	session.setAttribute("deptName", expertPool.getDeptName());
+	session.setAttribute("companyPosition", expertPool.getCompanyPosition());
+	session.setAttribute("jobClass", expertPool.getJobClass());
+	session.setAttribute("deviceType", "mobile");
+	
+	// clientIP Log
+	loginLogDao.insertLoginLog(session, SessionUtils.getClientIP(request));
+	
 %>
 
 	
