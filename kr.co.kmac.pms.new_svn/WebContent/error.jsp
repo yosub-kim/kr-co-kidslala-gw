@@ -14,15 +14,18 @@
 .btn{margin-top:10px;}
 </style>	 
 </head>
-
+<script type="text/javascript">
+	alert("모바일에서 이용하실 수 없습니다.");
+	location.href='http://www.kidslala.co.kr/';
+</script>
 <body>
-	<table width="700" border="0" cellpadding="0" cellspacing="0" align="center">
+	<!-- <table width="700" border="0" cellpadding="0" cellspacing="0" align="center">
     	<tr>
         	<td width="700" align="center"><div class="box"><img src="/images/error.png"></div></td>
         </tr>
         <tr>
         	<td width="700" align="right"><div class="btn"><a href="javascript:history.back();" class="btnType fRight" style="width:30%;"><font color="white">이전 페이지</font></a></div></td>
         </tr>
-    </table>
+    </table> -->
 </body>
 </html>
