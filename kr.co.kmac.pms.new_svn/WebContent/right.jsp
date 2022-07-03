@@ -289,7 +289,7 @@
 														<li>
 															<div class="status">
 																<div class="subject">
-																	<span class='<c:out value="${t.info0Style}" />'><i class='<c:out value="${t.info0Style2 }" />'></i></span>
+																	<span class='<c:out value="${t.info0Style}" />'><c:out value="${t.info0Style2 }" /></span>
 																	<!-- 가치혁신부문 .value  -->
 																	<c:choose>
 																		<c:when test="${t.specialStyle eq 'N' }">
@@ -339,28 +339,6 @@
 																				</c:otherwise>
 																			</c:choose>
 																		</li>
-																		<li>
-																			<p class="<c:out value="${t.info4Style }" />">
-																				<c:choose><c:when test="${t.info4Style2 eq '' }">0</c:when><c:when test="${empty t.info4Style2 }">0</c:when>
-																				<c:otherwise>
-																				<a href="#" onclick="location.href='<c:out value="${t.info4Style2 }" />'"><c:out
-																						value="${t.info4 }" /></a></c:otherwise></c:choose>
-																			</p> <!-- 예산초과 .delay  -->
-																		</li>
-																		<c:choose>
-																			<c:when test="${t.specialStyle eq 'N' }">
-																				<li>
-																					<c:choose>
-																						<c:when test="${t.info5Style2 eq '' }"><p class="none">-</p></c:when><c:when test="${empty t.info4Style2 }"><p class="none">-</p></c:when>
-																						<c:otherwise>
-																							<p class="change">
-																								<a href="#" onclick="location.href='<c:out value="${t.info5Style2 }" />'"><c:out value="${t.info5 }" /></a>
-																							</p>
-																						</c:otherwise>
-																					</c:choose>
-																				</li>
-																			</c:when>
-																		</c:choose>
 																	</ul>
 																</div>
 															</div> <!-- status -->
@@ -472,7 +450,7 @@
 							</a>
 						</ul>
 						<%} else { %> --%>
-							<ul>
+							<%-- <ul>
 								<a href="javascript:goEmail();">
 								<li>											
 									<i class="mdi mdi-email"></i>
@@ -489,7 +467,7 @@
 									<p class="subject_count"><span><c:out value="${workCount }" /></span>건</p>											
 								</li>
 								</a>
-							</ul>
+							</ul> --%>
 						<%-- <%} %> --%>
 					</div>
 
@@ -624,7 +602,7 @@
 			</div>
 		</div>
 		
-		<% if((!session.getAttribute("jobClass").equals("N")) && (!session.getAttribute("jobClass").equals("C")) && (!session.getAttribute("jobClass").equals("R"))){ %>
+		<%-- <% if((!session.getAttribute("jobClass").equals("N")) && (!session.getAttribute("jobClass").equals("C")) && (!session.getAttribute("jobClass").equals("R"))){ %>
 		<div class="section_box quick_menu">
 			<!-- 바로가기 링크 영역 .quick_menu  -->
 			<div class="menu_link" style="background-color:#FFB64B;">
@@ -644,19 +622,19 @@
 			<div class="board_link" style="background-color:#FFB64B;">
 				<ul>
 					<li><a href="javascript:goBlind_popup();">블라인드 소통채널</a></li>
-<%-- 					<%if(session.getAttribute("jobClass").equals("A")) {%>
+					<%if(session.getAttribute("jobClass").equals("A")) {%>
 						<li><a href="https://intranet.kmac.co.kr/kmac/comlist/suggest_filelist.asp">제안서 검색</a></li>
-					<%} %> --%>
+					<%} %>
 					<li><a href="javascript:goEducationManagement_popup();">교육 관리</a></li>
 					<li><a href="/action/BoardAction.do?mode=selectList&bbsId=newbasisbbs">기준 지침</a></li>
-					<%-- <%if(session.getAttribute("userId").equals("yskim") || session.getAttribute("userId").equals("harry2080")){ %>
+					<%if(session.getAttribute("userId").equals("yskim") || session.getAttribute("userId").equals("harry2080")){ %>
 						<li><a href="/action/AuthorityAction.do?mode=userChkPage">인사평가</a></li>
 						<li><a href="/action/ExpertPoolManagerAction.do?mode=getExpertPoolWorkPeriodList_performance_admin">인사평가(관)</a></li>
-					<%} %> --%>
+					<%} %>
 				</ul>
 			</div>
 		</div>
-		<%} %>
+		<%} %> --%>
 	</div>
 </div>
 </body>

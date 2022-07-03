@@ -64,6 +64,7 @@ function doSearch() {
 							<option value="mobileJ" <c:if test="${role == 'mobileJ'}">selected</c:if>>mobile(상임)</option>
 							<option value="mobileN" <c:if test="${role == 'mobileN'}">selected</c:if>>mobile(RA)</option>
 							<option value="ROLE18078999415" <c:if test="${role == 'ROLE18078999415'}">selected</c:if>>키즈라라</option>
+							<option value="ROLE1807899B91E" <c:if test="${role == 'ROLE1807899B91E'}">selected</c:if>>키즈라라(관리자)</option>
 						</select>						
 					</td>
 					<td class="searchTitle_center">Gadget 명</td>
@@ -121,6 +122,7 @@ function doSearch() {
 							<option value="mobileJ" <c:if test="${role == 'mobileJ'}">selected</c:if>>mobile(상임)</option>
 							<option value="mobileN" <c:if test="${role == 'mobileN'}">selected</c:if>>mobile(RA)</option>
 							<option value="ROLE18078999415" <c:if test="${role == 'ROLE18078999415'}">selected</c:if>>키즈라라</option>
+							<option value="ROLE1807899B91E" <c:if test="${role == 'ROLE1807899B91E'}">selected</c:if>>키즈라라(관리자)</option>
 								</select>
 							</td>
 							<td><a href="/action/GadgetAction.do?mode=gadgetForm&gadgetId=<c:out value="${gadget.gadgetId}" />&role=<c:out value="${role}" />&keyword=<c:out value="${keyword}" />"><c:out value="${gadget.gadgetName}"/></a></td>

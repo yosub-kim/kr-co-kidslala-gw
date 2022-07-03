@@ -954,7 +954,7 @@ public class ExpertPoolManagerAction extends DispatchActionSupport {
 			request.setAttribute("rank", rank);
 			request.setAttribute("name", name);
 			request.setAttribute("groupList", this.getExpertPoolManager().getDeptLIst());
-
+ 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
