@@ -104,7 +104,7 @@ table td {vertical-align: middle;}
 .file_link p {line-height: 100%; margin-bottom: 10px;}
 .file_link.none p {margin-bottom: 0;}
 
-.new {font-size: 12px; margin-left: 5px; color: #fff; background-color: #ffb630; border-radius: 5px; text-align: center; padding: 0px 4px 0px 4px; display: inline-block; vertical-align: middle; height: 17px; line-height: 17px;}
+.new {font-size: 12px; margin-left: 5px; color: #fff; background-color: #ffb630; border-radius: 80px; text-align: center; padding: 0px 4px 0px 4px; display: inline-block; vertical-align: middle; height: 17px; line-height: 17px;}
 
 /* TableFixed */
 .fixed_box {border-radius: 5px; border: 1px solid #eee; background-color: #fff; width: auto; margin-right: 25px; width: calc(100% - 410px); height: calc(100% - 201px); position: fixed; top: 136px;}

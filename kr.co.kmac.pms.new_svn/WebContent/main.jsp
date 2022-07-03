@@ -265,11 +265,11 @@ function iframeAutoResize(i, j){
 	        type: "POST",
 	        success: function (count) {
 	        	workDayChk = count;
-	        	if(workDayChk > 0){
+	        	/* if(workDayChk > 0){
 	        		document.getElementById("workDayMenu").style.display = "";
 	        	}else{
 	        		document.getElementById("workDayMenu").style.display = "none";
-	        	}
+	        	} */
 	        },
 		})
 	});
@@ -604,7 +604,7 @@ j$(document).ready(function() {
 					<div class="today_date"><p><%=DateTime.getDateString(". ") %> (<%=DateTime.getDayofWeek() %>)</p></div>
 
 					<!-- workDay -->
-					<div id="workDayMenu" style="display: none;">
+					<div id="workDayMenu">
 						<div class="commute">
 							<input type="hidden" id="workOn" name="workOn" value="on" />
 							<input type="hidden" id="workOff" name="workOff" value="off" />
@@ -629,7 +629,7 @@ j$(document).ready(function() {
 						</div>
 						<div class="data_box" style="background-color: #F4F6F9;">
 							<div>
-								<a href="javascript:changeContentFrame('___1', '/action/BoardAction.do?mode=selectList_home&bbsId=home&writerId=<%=session.getAttribute("ssn")%>');"><i class="mdi mdi-notebook-edit"></i><p>재택근무 업무보고서 등록</p></a>
+								<a href="javascript:changeContentFrame('___1', '/action/BoardAction.do?mode=selectList_home&bbsId=home&writerId=<%=session.getAttribute("ssn")%>');"><i class="mdi mdi-notebook-edit"></i><p>업무보고서 등록</p></a>
 							</div>
 						</div>
 					</div>
@@ -645,8 +645,8 @@ j$(document).ready(function() {
 					Object mailCount = request.getAttribute("mailCount");
 					Object workCount = request.getAttribute("workCount");
 				%>		
-				<div id="leftMenuInfo" style="display: none;">	
-					<div id="leftMenu" style="display: none;">
+				<%-- <div id="leftMenuInfo">	
+					<div id="leftMenu">
 						<div class="data_box_both">
 							<div>
 								<a href="javascript:goEmail();">							
@@ -662,7 +662,7 @@ j$(document).ready(function() {
 							</div>
 						</div>
 	
-						<%-- <% if (expertPool.getRole().equals("ROLE2006080116041070759") || expertPool.getRole().equals("ROLE2006080116061636366") || expertPool.getRole().equals("ROLE17404E902CA")
+						<% if (expertPool.getRole().equals("ROLE2006080116041070759") || expertPool.getRole().equals("ROLE2006080116061636366") || expertPool.getRole().equals("ROLE17404E902CA")
 							 || expertPool.getRole().equals("ROLE125B1491C42") || expertPool.getRole().equals("ROLE2006080118352520784") || expertPool.getRole().equals("ROLE2006050120451853989")
 							 || expertPool.getRole().equals("ROLE2006080116033211358") || expertPool.getRole().equals("ROLE17A73D54752") || expertPool.getRole().equals("ROLE179AB746279")) {%>
 						<div class="data_box_both">
@@ -679,9 +679,9 @@ j$(document).ready(function() {
 								</a>
 							</div>
 						</div>
-						<%} %> --%>
+						<%} %>
 					</div>
-				</div>
+				</div> --%>
 				<!-- // 메일/업무 -->				
 	
 <%

@@ -3,7 +3,7 @@
 
 <%
 	String companyPosition = request.getParameter("companyPosition");
-	String titleMsg = "재택근무 출/퇴근 현황";
+	String titleMsg = "근무현황";
 %>
 
 <html>
@@ -39,11 +39,11 @@ function home_schedule(ssn){
 	<input type="hidden" id="today" name="today" value="<c:out value="${today}" />" />
 	<!-- location -->
 		<div class="location">
-			<p class="menu_title">재택근무 출/퇴근 현황</p>
+			<p class="menu_title">근무현황</p>
 			<ul>
 				<li class="home">HOME</li>
 				<li>스케줄 관리</li>
-				<li>재택근무 출/퇴근 현황</li>
+				<li>근무현황</li>
 			</ul>
 		</div>
 		<!-- // location -->

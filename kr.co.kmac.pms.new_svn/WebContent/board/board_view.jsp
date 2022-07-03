@@ -231,9 +231,7 @@ j$(document).ready(function () {
 						String ssn = (String)session.getAttribute("ssn");
 						pageContext.setAttribute("ssn", ssn);
 					%>
-					<c:choose>
-							<c:when test="${ssn eq 'A000128' || ssn eq 'A000132' || ssn eq 'A001561' || ssn eq 'H000087' || ssn eq 'A000031' || ssn eq 'A004298' || ssn eq 'G000840'}">
-								<button type="button" class="btn line btn_blue"
+					<button type="button" class="btn line btn_blue"
 									onclick="location.href='/action/BoardAction.do?mode=inputForm&bbsId=<c:out value="${bbsId}" />&seq=<c:out value="${result.boardData.seq}" />&saveMode=UPDATE&projectCode=<c:out value="${projectCode}"/>&projectName=<c:out value="${projectName}"/>'">
 									<i class="mdi mdi-square-edit-outline"></i>수정
 								</button>
@@ -241,30 +239,6 @@ j$(document).ready(function () {
 									onclick="location.href='javascript:deleteBoard();'">
 									<i class="mdi mdi-trash-can-outline"></i>삭제
 								</button>
-							</c:when>
-							<c:when test="${ssn eq 'H003949' || ssn eq 'A000106' || ssn eq 'A000024' || ssn eq 'A004297'}">
-								<button type="button" class="btn line btn_blue"
-									onclick="location.href='javascript:editBoard();'">
-									<i class="mdi mdi-square-edit-outline"></i>수정
-								</button>
-								<button type="button" class="btn line btn_pink"
-									onclick="location.href='javascript:deleteBoard();'">
-									<i class="mdi mdi-trash-can-outline"></i>삭제
-								</button>
-							</c:when>
-							<c:otherwise>
-								<c:if test="${myUserId == result.boardData.writerId}">
-									<button type="button" class="btn line btn_blue"
-									onclick="location.href='/action/BoardAction.do?mode=inputForm&bbsId=<c:out value="${bbsId}" />&seq=<c:out value="${result.boardData.seq}" />&saveMode=UPDATE&projectCode=<c:out value="${projectCode}"/>&projectName=<c:out value="${projectName}"/>'">
-									<i class="mdi mdi-square-edit-outline"></i>수정
-								</button>
-								<button type="button" class="btn line btn_pink"
-									onclick="location.href='javascript:deleteBoard();'">
-									<i class="mdi mdi-trash-can-outline"></i>삭제
-								</button>
-								</c:if>
-							</c:otherwise>
-						</c:choose>
 					<button type="button" class="btn line btn_grey"
 						onclick="location.href='javascript:history.back();'">
 						<i class="mdi mdi-backburger"></i>목록
@@ -359,12 +333,10 @@ j$(document).ready(function () {
 														</div>
 													<div class="btn_area">
 														<!-- <button type="button" class="btn line btn_blue" onclick="location.href='javascript:;'"><i class="mdi mdi-square-edit-outline"></i>수정</button> -->
-														<c:if test="${myUserId == item.writerId}">
-															<button type="button" class="btn line btn_pink"
+														<button type="button" class="btn line btn_pink"
 																onclick="deleteBoardComment(this, '<c:out value="${item.bbsId}"/>','<c:out value="${item.seq}"/>','<c:out value="${item.commentSeq}"/>');">
 																<i class="mdi mdi-trash-can-outline"></i>삭제
 															</button>
-														</c:if>
 													</div>
 													</div>
 													<!-- <div class="file_link">

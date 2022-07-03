@@ -1107,8 +1107,7 @@ select labelname, userName, posName, ssnResult, cusResult, result, groupSeq, ssn
 			/~endDate:		and CONVERT(char(10), workdate, 112) <= {endDate}~/
 					  )w2
 					  on q.ssn = w2.ssn and w3.date2 = w2.workDate
-					 WHERE (q.enabled = '1') 
-					  AND w3.type = 'Up-day'	   
+					 WHERE (q.enabled = '1')    
 					  AND q.userId IS NOT NULL 					   					
 					  AND q.ssn NOT IN ('E000817', 'A001559', 'G003279')   
 /~runningDeptCode:    AND q.groupId like {runningDeptCode} ~/
