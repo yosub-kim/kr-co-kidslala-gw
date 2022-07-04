@@ -38,12 +38,12 @@ function sanctionItemClick(projectCode, approvalType, seq, workType, woriTypeUrl
 	<div id="sub_location">
 		<div class="location">
 			<p class="menu_title">
-				<td width="100%" align="left">재택근무 업무보고서</td>
+				<td width="100%" align="left">근무현황</td>
 			</p>
 			<ul>
 				<li class="home">HOME</li>
 				<!-- <li>스케줄 관리</li> -->
-				<li>재택근무 업무보고서</li>
+				<li>근무현황</li>
 			</ul>
 		</div>
 	</div>
