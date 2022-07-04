@@ -385,6 +385,13 @@
 												</ul>
 											</div>
 										</c:when>
+										<c:otherwise>
+											<div class="status_ui">
+												<ul>
+													<li><span>결과가 존재하지 않습니다.</span></li>
+												</ul>
+											</div>
+										</c:otherwise>
 									</c:choose>
 								</div>
 							</c:otherwise>
